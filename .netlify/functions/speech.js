@@ -1,9 +1,26 @@
 // netlify/functions/speech.js
 exports.handler = async (event, context) => {
+  // Handle CORS preflight requests first
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS'
+      },
+      body: ''
+    };
+  }
+
   // Only allow POST requests
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({ error: 'Method not allowed' })
     };
   }
@@ -15,6 +32,10 @@ exports.handler = async (event, context) => {
     if (!ssml) {
       return {
         statusCode: 400,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({ error: 'SSML text required' })
       };
     }
@@ -25,8 +46,13 @@ exports.handler = async (event, context) => {
     const AZURE_TTS_ENDPOINT = `https://${AZURE_REGION}.tts.speech.microsoft.com/cognitiveservices/v1`;
 
     if (!AZURE_SPEECH_KEY) {
+      console.error('Azure Speech Key not configured');
       return {
         statusCode: 500,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({ error: 'Azure Speech Key not configured' })
       };
     }
@@ -43,10 +69,19 @@ exports.handler = async (event, context) => {
     });
 
     if (!response.ok) {
-      console.error('Azure TTS failed:', response.status, await response.text());
+      const errorText = await response.text();
+      console.error('Azure TTS failed:', response.status, errorText);
       return {
         statusCode: response.status,
-        body: JSON.stringify({ error: 'Azure TTS request failed' })
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+          error: 'Azure TTS request failed',
+          details: errorText,
+          status: response.status
+        })
       };
     }
 
@@ -59,7 +94,7 @@ exports.handler = async (event, context) => {
       statusCode: 200,
       headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*', // Allow CORS
+        'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Headers': 'Content-Type',
         'Access-Control-Allow-Methods': 'POST, OPTIONS'
       },
@@ -73,24 +108,14 @@ exports.handler = async (event, context) => {
     console.error('Function error:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Internal server error' })
-    };
-  }
-};
-
-// Handle CORS preflight requests
-exports.handler = async (event, context) => {
-  if (event.httpMethod === 'OPTIONS') {
-    return {
-      statusCode: 200,
       headers: {
         'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS'
+        'Content-Type': 'application/json'
       },
-      body: ''
+      body: JSON.stringify({ 
+        error: 'Internal server error',
+        details: error.message
+      })
     };
   }
-
-  return exports.handler(event, context);
 };

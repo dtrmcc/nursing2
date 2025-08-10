@@ -261,6 +261,41 @@
             border-radius: 4px;
             border: 1px solid #ddd;
         }
+
+        .debug-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #dc3545;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .debug-section h4 {
+            color: #dc3545;
+            margin-top: 0;
+        }
+
+        .debug-log {
+            background: #f8f9fa;
+            padding: 5px;
+            margin: 5px 0;
+            border-radius: 4px;
+            color: #6c757d;
+        }
+
+        .debug-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .debug-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
     </style>
 </head>
 <body>
@@ -303,6 +338,17 @@
                 </select>
             </label>
         </div>
+
+        <div id="debugSection" class="debug-section" style="display: none;">
+            <h4>🔧 Debug Information</h4>
+            <div id="debugLogs"></div>
+            <button onclick="clearDebugLogs()" class="btn btn-primary" style="font-size: 12px; padding: 5px 10px;">Clear Logs</button>
+            <button onclick="toggleDebug()" class="btn btn-primary" style="font-size: 12px; padding: 5px 10px;">Hide Debug</button>
+        </div>
+
+        <div class="controls">
+            <button onclick="toggleDebug()" class="btn btn-primary">🔧 Show Debug</button>
+        </div>
         
         <div id="status" class="status loading">
             <span class="loading-spinner"></span> 正在初始化Azure語音服務... Initializing Azure Speech Services...
@@ -342,6 +388,34 @@
         let conversationHistory = [];
         let selectedVoice = 'zh-HK-HiuMaanNeural';
         let selectedRecognitionLang = 'zh-HK';
+        let debugMode = false;
+        
+        // Debug logging function
+        function debugLog(message, type = 'info') {
+            console.log(`[${type.toUpperCase()}] ${message}`);
+            
+            if (debugMode) {
+                const debugLogs = document.getElementById('debugLogs');
+                const logDiv = document.createElement('div');
+                logDiv.className = `debug-log debug-${type}`;
+                logDiv.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+                debugLogs.appendChild(logDiv);
+                debugLogs.scrollTop = debugLogs.scrollHeight;
+            }
+        }
+
+        function clearDebugLogs() {
+            document.getElementById('debugLogs').innerHTML = '';
+        }
+
+        function toggleDebug() {
+            debugMode = !debugMode;
+            const debugSection = document.getElementById('debugSection');
+            debugSection.style.display = debugMode ? 'block' : 'none';
+            
+            const toggleBtn = document.querySelector('button[onclick="toggleDebug()"]');
+            toggleBtn.textContent = debugMode ? '🔧 Hide Debug' : '🔧 Show Debug';
+        }
         
         // Realistic nursing procedure flow with mixed Cantonese-English responses
         const nursingProcedure = [
@@ -467,10 +541,12 @@
         // Voice and language selection
         voiceSelect.addEventListener('change', (e) => {
             selectedVoice = e.target.value;
+            debugLog(`Voice changed to: ${selectedVoice}`);
         });
         
         recognitionLangSelect.addEventListener('change', (e) => {
             selectedRecognitionLang = e.target.value;
+            debugLog(`Recognition language changed to: ${selectedRecognitionLang}`);
             if (recognition) {
                 recognition.lang = selectedRecognitionLang;
             }
@@ -479,20 +555,27 @@
         // Initialize the application
         async function init() {
             try {
+                debugLog('Starting initialization...');
                 updateStatus('正在測試Netlify連接... Testing Netlify function connection...', 'loading');
                 
                 // Test Azure connection
+                debugLog('Testing Azure connection...');
                 await testAzureConnection();
+                debugLog('Azure connection test successful');
                 
                 updateStatus('正在載入語音識別... Loading speech recognition...', 'loading');
+                debugLog('Initializing speech recognition...');
                 await initSpeechRecognition();
+                debugLog('Speech recognition initialized successfully');
                 
                 updateStatus('🎉 Azure AI系統準備就緒！Ready to start professional training!', 'ready');
                 startBtn.disabled = false;
+                debugLog('Initialization completed successfully');
                 
             } catch (error) {
                 console.error('Initialization error:', error);
-                updateStatus('⚠️ 初始化失敗 Initialization failed. Please check connection.', 'error');
+                debugLog(`Initialization failed: ${error.message}`, 'error');
+                updateStatus(`⚠️ 初始化失敗 Initialization failed: ${error.message}`, 'error');
             }
         }
         
@@ -502,16 +585,39 @@
                 <voice name="zh-HK-HiuMaanNeural">測試</voice>
             </speak>`;
             
-            const response = await fetch(SPEECH_FUNCTION_ENDPOINT, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ ssml: testSSML })
-            });
+            debugLog(`Testing connection to: ${SPEECH_FUNCTION_ENDPOINT}`);
+            debugLog(`Test SSML: ${testSSML}`);
             
-            if (!response.ok) {
-                throw new Error(`Netlify function connection failed: ${response.status}`);
+            try {
+                const response = await fetch(SPEECH_FUNCTION_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ ssml: testSSML })
+                });
+                
+                debugLog(`Response status: ${response.status}`);
+                debugLog(`Response headers: ${JSON.stringify([...response.headers.entries()])}`);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    debugLog(`Response error text: ${errorText}`, 'error');
+                    throw new Error(`Netlify function failed: ${response.status} - ${errorText}`);
+                }
+                
+                const responseData = await response.json();
+                debugLog(`Response data keys: ${Object.keys(responseData)}`);
+                
+                if (!responseData.audio) {
+                    throw new Error('No audio data in response');
+                }
+                
+                debugLog('Azure connection test successful - audio data received');
+                
+            } catch (error) {
+                debugLog(`Connection test failed: ${error.message}`, 'error');
+                throw error;
             }
         }
         
@@ -519,10 +625,12 @@
         async function initSpeechRecognition() {
             if ('webkitSpeechRecognition' in window) {
                 recognition = new webkitSpeechRecognition();
+                debugLog('Using webkitSpeechRecognition');
             } else if ('SpeechRecognition' in window) {
                 recognition = new SpeechRecognition();
+                debugLog('Using SpeechRecognition');
             } else {
-                throw new Error('Speech recognition not supported');
+                throw new Error('Speech recognition not supported in this browser');
             }
             
             recognition.continuous = true;
@@ -533,6 +641,7 @@
                 const result = event.results[event.results.length - 1];
                 if (result.isFinal) {
                     const transcript = result[0].transcript.trim();
+                    debugLog(`Speech recognized: ${transcript}`);
                     addMessage('student', transcript);
                     conversationHistory.push({role: 'student', content: transcript});
                     processStudentInput(transcript);
@@ -540,31 +649,37 @@
             };
             
             recognition.onerror = function(event) {
-                console.log('Speech recognition error:', event.error);
+                debugLog(`Speech recognition error: ${event.error}`, 'error');
                 if (event.error === 'no-speech' && isRecording) {
                     setTimeout(() => {
                         try {
                             recognition.start();
+                            debugLog('Speech recognition restarted after no-speech');
                         } catch (e) {
-                            console.log('Recognition restart failed:', e);
+                            debugLog(`Recognition restart failed: ${e.message}`, 'error');
                         }
                     }, 1000);
                 }
             };
             
             recognition.onend = function() {
+                debugLog('Speech recognition ended');
                 if (isRecording) {
                     try {
                         recognition.start();
+                        debugLog('Speech recognition restarted');
                     } catch (e) {
-                        console.log('Recognition restart failed:', e);
+                        debugLog(`Recognition restart failed: ${e.message}`, 'error');
                     }
                 }
             };
+            
+            debugLog('Speech recognition configured successfully');
         }
         
         // Process student input and generate appropriate patient response
         function processStudentInput(transcript) {
+            debugLog(`Processing student input: ${transcript}`);
             const lowerTranscript = transcript.toLowerCase();
             let matchedPhase = null;
             let response = null;
@@ -581,6 +696,7 @@
                 if (hasKeywords) {
                     matchedPhase = phase;
                     response = phase.patientResponse.replace('{voice}', selectedVoice);
+                    debugLog(`Matched phase: ${phase.phase}`);
                     break;
                 }
             }
@@ -593,11 +709,13 @@
                     `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}">我唔係好明白你講咩。<lang xml:lang="en-US">I don't understand.</lang></voice></speak>`
                 ];
                 response = fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
+                debugLog('Using fallback response');
             }
             
             // Add patient response with delay for realism
             setTimeout(() => {
                 const responseText = extractTextFromSSML(response);
+                debugLog(`Patient responding: ${responseText}`);
                 addMessage('patient', responseText, matchedPhase?.notes);
                 conversationHistory.push({role: 'patient', content: responseText});
                 speakPatientResponseAzure(response);
@@ -614,6 +732,9 @@
         // Secure Azure Text-to-Speech via Netlify Function
         async function speakPatientResponseAzure(ssmlText) {
             try {
+                debugLog('Sending TTS request to Azure via Netlify function');
+                debugLog(`SSML length: ${ssmlText.length} characters`);
+                
                 const response = await fetch(SPEECH_FUNCTION_ENDPOINT, {
                     method: 'POST',
                     headers: {
@@ -622,8 +743,13 @@
                     body: JSON.stringify({ ssml: ssmlText })
                 });
                 
+                debugLog(`TTS response status: ${response.status}`);
+                
                 if (response.ok) {
                     const data = await response.json();
+                    debugLog('TTS response received successfully');
+                    debugLog(`Audio data length: ${data.audio ? data.audio.length : 'undefined'} characters`);
+                    
                     // Convert base64 back to audio
                     const audioBlob = new Blob(
                         [Uint8Array.from(atob(data.audio), c => c.charCodeAt(0))], 
@@ -631,13 +757,19 @@
                     );
                     const audioUrl = URL.createObjectURL(audioBlob);
                     const audio = new Audio(audioUrl);
-                    audio.play();
+                    
+                    audio.oncanplay = () => debugLog('Audio ready to play');
+                    audio.onerror = (e) => debugLog(`Audio playback error: ${e.message}`, 'error');
+                    
+                    await audio.play();
+                    debugLog('Audio playback started');
                 } else {
-                    console.error('Speech function failed:', response.status);
                     const errorData = await response.json();
-                    console.error('Error details:', errorData);
+                    debugLog(`TTS function failed: ${response.status}`, 'error');
+                    debugLog(`Error details: ${JSON.stringify(errorData)}`, 'error');
                 }
             } catch (error) {
+                debugLog(`TTS function error: ${error.message}`, 'error');
                 console.error('Speech function error:', error);
             }
         }
@@ -674,6 +806,7 @@
         // Start training session
         async function startSession() {
             try {
+                debugLog('Starting training session');
                 isRecording = true;
                 currentStep = 0;
                 audioChunks = [];
@@ -684,7 +817,10 @@
                 conversationEl.style.display = 'block';
                 
                 // Start audio recording
+                debugLog('Requesting microphone access');
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                debugLog('Microphone access granted');
+                
                 mediaRecorder = new MediaRecorder(stream);
                 
                 mediaRecorder.ondataavailable = function(event) {
@@ -692,13 +828,16 @@
                 };
                 
                 mediaRecorder.onstop = function() {
+                    debugLog('Media recorder stopped, creating download link');
                     const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
                     createDownloadLink(audioBlob);
                 };
                 
                 mediaRecorder.start();
+                debugLog('Audio recording started');
                 
                 // Start speech recognition
+                debugLog('Starting speech recognition');
                 recognition.start();
                 
                 // Start timer
@@ -707,6 +846,7 @@
                 
                 // Initial scenario setup with Azure TTS
                 setTimeout(() => {
+                    debugLog('Playing initial patient greeting');
                     const initialSSML = `<speak version="1.0" xml:lang="zh-HK">
                         <voice name="${selectedVoice}">
                             <mstts:express-as style="curious">
@@ -723,8 +863,10 @@
                 updateStatus('🎙️ 專業錄音進行中... Professional AI training in progress', 'recording');
                 startBtn.disabled = true;
                 stopBtn.disabled = false;
+                debugLog('Training session started successfully');
                 
             } catch (error) {
+                debugLog(`Error starting session: ${error.message}`, 'error');
                 console.error('Error starting session:', error);
                 alert('無法使用麥克風，請檢查權限設定 Error accessing microphone. Please check permissions.');
             }
@@ -732,14 +874,17 @@
         
         // Stop training session
         function stopSession() {
+            debugLog('Stopping training session');
             isRecording = false;
             
             if (mediaRecorder && mediaRecorder.state !== 'inactive') {
                 mediaRecorder.stop();
+                debugLog('Media recorder stopped');
             }
             
             if (recognition) {
                 recognition.stop();
+                debugLog('Speech recognition stopped');
             }
             
             stopTimer();
@@ -749,6 +894,7 @@
             stopBtn.disabled = true;
             
             downloadSection.style.display = 'block';
+            debugLog('Training session stopped successfully');
         }
         
         // Timer functions
