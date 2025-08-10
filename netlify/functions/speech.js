@@ -1,4 +1,6 @@
 // netlify/functions/speech.js
+const fetch = require('node-fetch');
+
 exports.handler = async (event, context) => {
   // Handle CORS preflight requests first
   if (event.httpMethod === 'OPTIONS') {
