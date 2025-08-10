@@ -1,0 +1,25 @@
+{
+  "name": "azure-nursing-training",
+  "version": "1.0.0",
+  "description": "Azure AI powered nursing student wound care training system",
+  "main": "index.html",
+  "scripts": {
+    "build": "echo 'No build step required'",
+    "dev": "netlify dev"
+  },
+  "dependencies": {
+    "node-fetch": "^2.7.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "keywords": [
+    "azure",
+    "speech",
+    "nursing",
+    "training",
+    "ai"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}

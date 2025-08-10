@@ -296,6 +296,19 @@
             background: #d1ecf1;
             color: #0c5460;
         }
+
+        .troubleshooting {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #ffc107;
+        }
+
+        .troubleshooting h4 {
+            color: #856404;
+            margin-top: 0;
+        }
     </style>
 </head>
 <body>
@@ -339,6 +352,24 @@
             </label>
         </div>
 
+        <div id="troubleshooting" class="troubleshooting" style="display: none;">
+            <h4>🔧 Troubleshooting - 如果遇到 404 錯誤</h4>
+            <p><strong>常見問題:</strong></p>
+            <ul>
+                <li>Netlify 函數未正確部署</li>
+                <li>缺少 package.json 文件</li>
+                <li>Azure API 密鑰未設置</li>
+            </ul>
+            <p><strong>解決步驟:</strong></p>
+            <ol>
+                <li>確保根目錄有 package.json 文件</li>
+                <li>運行 <code>npm install</code></li>
+                <li>在 Netlify 環境變量中設置 <code>AZURE_SPEECH_KEY</code></li>
+                <li>重新部署項目</li>
+            </ol>
+            <button onclick="testConnection()" class="btn btn-primary">重新測試連接</button>
+        </div>
+
         <div id="debugSection" class="debug-section" style="display: none;">
             <h4>🔧 Debug Information</h4>
             <div id="debugLogs"></div>
@@ -348,6 +379,7 @@
 
         <div class="controls">
             <button onclick="toggleDebug()" class="btn btn-primary">🔧 Show Debug</button>
+            <button onclick="toggleTroubleshooting()" class="btn btn-primary">📋 Troubleshooting</button>
         </div>
         
         <div id="status" class="status loading">
@@ -374,8 +406,15 @@
     </div>
 
     <script type="module">
-        // Netlify Function Configuration (API key now secure on server)
-        const SPEECH_FUNCTION_ENDPOINT = '/.netlify/functions/speech';
+        // Netlify Function Configuration - 多个端点尝试
+        const SPEECH_ENDPOINTS = [
+            '/.netlify/functions/speech',
+            '/api/speech',
+            'https://your-site-name.netlify.app/.netlify/functions/speech'
+        ];
+        
+        // 检测当前使用的端点
+        let CURRENT_ENDPOINT = SPEECH_ENDPOINTS[0];
         
         // Global variables
         let mediaRecorder;
@@ -415,6 +454,40 @@
             
             const toggleBtn = document.querySelector('button[onclick="toggleDebug()"]');
             toggleBtn.textContent = debugMode ? '🔧 Hide Debug' : '🔧 Show Debug';
+        }
+
+        function toggleTroubleshooting() {
+            const troubleshootingSection = document.getElementById('troubleshooting');
+            const isVisible = troubleshootingSection.style.display !== 'none';
+            troubleshootingSection.style.display = isVisible ? 'none' : 'block';
+        }
+
+        // 测试连接函数
+        async function testConnection() {
+            debugLog('Testing all available endpoints...');
+            
+            for (let i = 0; i < SPEECH_ENDPOINTS.length; i++) {
+                const endpoint = SPEECH_ENDPOINTS[i];
+                debugLog(`Testing endpoint ${i + 1}: ${endpoint}`);
+                
+                try {
+                    const response = await fetch(endpoint, {
+                        method: 'OPTIONS'
+                    });
+                    
+                    debugLog(`Endpoint ${i + 1} OPTIONS response: ${response.status}`);
+                    
+                    if (response.status === 200 || response.status === 204) {
+                        CURRENT_ENDPOINT = endpoint;
+                        debugLog(`✅ Found working endpoint: ${endpoint}`, 'info');
+                        return endpoint;
+                    }
+                } catch (error) {
+                    debugLog(`❌ Endpoint ${i + 1} failed: ${error.message}`, 'error');
+                }
+            }
+            
+            throw new Error('所有端點都無法連接 All endpoints failed');
         }
         
         // Realistic nursing procedure flow with mixed Cantonese-English responses
@@ -558,7 +631,12 @@
                 debugLog('Starting initialization...');
                 updateStatus('正在測試Netlify連接... Testing Netlify function connection...', 'loading');
                 
-                // Test Azure connection
+                // Test connection to find working endpoint
+                debugLog('Testing endpoint connections...');
+                await testConnection();
+                debugLog(`Using endpoint: ${CURRENT_ENDPOINT}`);
+                
+                updateStatus('正在測試Azure連接... Testing Azure connection...', 'loading');
                 debugLog('Testing Azure connection...');
                 await testAzureConnection();
                 debugLog('Azure connection test successful');
@@ -576,20 +654,23 @@
                 console.error('Initialization error:', error);
                 debugLog(`Initialization failed: ${error.message}`, 'error');
                 updateStatus(`⚠️ 初始化失敗 Initialization failed: ${error.message}`, 'error');
+                
+                // Show troubleshooting section on error
+                document.getElementById('troubleshooting').style.display = 'block';
             }
         }
         
-        // Test Netlify function connection
+        // Test Azure connection with better error handling
         async function testAzureConnection() {
             const testSSML = `<speak version="1.0" xml:lang="zh-HK">
                 <voice name="zh-HK-HiuMaanNeural">測試</voice>
             </speak>`;
             
-            debugLog(`Testing connection to: ${SPEECH_FUNCTION_ENDPOINT}`);
+            debugLog(`Testing connection to: ${CURRENT_ENDPOINT}`);
             debugLog(`Test SSML: ${testSSML}`);
             
             try {
-                const response = await fetch(SPEECH_FUNCTION_ENDPOINT, {
+                const response = await fetch(CURRENT_ENDPOINT, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -603,6 +684,12 @@
                 if (!response.ok) {
                     const errorText = await response.text();
                     debugLog(`Response error text: ${errorText}`, 'error');
+                    
+                    // Handle 404 specifically
+                    if (response.status === 404) {
+                        throw new Error(`Netlify function not found (404). Please check:\n1. netlify/functions/speech.js exists\n2. package.json with node-fetch dependency\n3. Correct build configuration\n4. AZURE_SPEECH_KEY environment variable set`);
+                    }
+                    
                     throw new Error(`Netlify function failed: ${response.status} - ${errorText}`);
                 }
                 
@@ -734,8 +821,9 @@
             try {
                 debugLog('Sending TTS request to Azure via Netlify function');
                 debugLog(`SSML length: ${ssmlText.length} characters`);
+                debugLog(`Using endpoint: ${CURRENT_ENDPOINT}`);
                 
-                const response = await fetch(SPEECH_FUNCTION_ENDPOINT, {
+                const response = await fetch(CURRENT_ENDPOINT, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -929,6 +1017,9 @@
             statusEl.textContent = message;
             statusEl.className = `status ${type}`;
         }
+        
+        // Make testConnection available globally
+        window.testConnection = testConnection;
         
         // Event listeners
         startBtn.addEventListener('click', startSession);
