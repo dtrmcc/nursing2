@@ -992,24 +992,31 @@
             previousExperience: "之前有做過傷口護理，但每次都很緊張"
         };
         
-        // Initialize AI Model (using rule-based system for better Chinese support)
+        // Initialize AI Model (using enhanced rule-based system)
         async function initializeAI() {
             try {
-                debugLog('Initializing AI conversation system...');
+                debugLog('Initializing enhanced rule-based conversation system...');
                 updateAIStatus('🤖 正在初始化智能對話系統... Initializing intelligent conversation system...', 'loading');
                 
-                // Use rule-based AI for better Chinese/Cantonese support
-                // This avoids the character encoding issues with pre-trained English models
+                // Initialize the rule-based AI system
                 textGenerator = {
                     initialized: true,
                     generateResponse: function(context, options) {
-                        return Promise.resolve([{
-                            generated_text: generateIntelligentResponse(context)
-                        }]);
+                        try {
+                            const response = generateIntelligentResponse(context);
+                            return Promise.resolve([{
+                                generated_text: response
+                            }]);
+                        } catch (error) {
+                            debugLog(`Rule-based generation error: ${error.message}`, 'error');
+                            return Promise.resolve([{
+                                generated_text: "唔好意思，你可唔可以再講一次？"
+                            }]);
+                        }
                     }
                 };
                 
-                debugLog('AI conversation system loaded successfully');
+                debugLog('Enhanced conversation system loaded successfully');
                 updateAIStatus('✅ 智能對話系統準備就緒！Intelligent conversation system ready!', 'ready');
                 isAIReady = true;
                 
@@ -1580,7 +1587,7 @@
             }
         }
         
-        // Test Azure connection
+        // Test Azure connection with better error handling
         async function testAzureConnection() {
             const testSSML = `<speak version="1.0" xml:lang="zh-HK">
                 <voice name="zh-HK-HiuMaanNeural">測試</voice>
@@ -1600,9 +1607,16 @@
                 debugLog(`Response status: ${response.status}`);
                 
                 if (!response.ok) {
-                    const errorText = await response.text();
-                    debugLog(`Response error text: ${errorText}`, 'error');
-                    throw new Error(`Netlify function failed: ${response.status} - ${errorText}`);
+                    let errorDetails = 'Unknown error';
+                    try {
+                        const errorData = await response.json();
+                        errorDetails = errorData.error || errorData.message || JSON.stringify(errorData);
+                    } catch (e) {
+                        const errorText = await response.text();
+                        errorDetails = errorText || `HTTP ${response.status}`;
+                    }
+                    debugLog(`Response error: ${errorDetails}`, 'error');
+                    throw new Error(`Azure connection test failed: ${response.status} - ${errorDetails}`);
                 }
                 
                 const responseData = await response.json();
@@ -1751,11 +1765,21 @@
             return tempDiv.textContent;
         }
         
-        // Enhanced Azure TTS with better audio handling
+        // Enhanced Azure TTS with better error handling and validation
         async function speakPatientResponseAzure(ssmlText, isTest = false) {
             try {
                 debugLog('Sending TTS request to Azure via Netlify function');
                 debugLog(`SSML length: ${ssmlText.length} characters`);
+                
+                // Validate SSML before sending
+                if (!ssmlText || ssmlText.trim().length === 0) {
+                    throw new Error('Empty SSML text provided');
+                }
+                
+                // Ensure SSML is properly formed
+                if (!ssmlText.includes('<speak')) {
+                    debugLog('Warning: SSML may be malformed', 'error');
+                }
                 
                 const response = await fetch(CURRENT_ENDPOINT, {
                     method: 'POST',
@@ -1771,6 +1795,10 @@
                     const data = await response.json();
                     debugLog('TTS response received successfully');
                     debugLog(`Audio data length: ${data.audio ? data.audio.length : 'undefined'} characters`);
+                    
+                    if (!data.audio) {
+                        throw new Error('No audio data in successful response');
+                    }
                     
                     // Enhanced audio playing with better browser compatibility
                     const audioBlob = new Blob(
@@ -1809,6 +1837,7 @@
                     
                     audio.onerror = (e) => {
                         debugLog(`Audio playback error: ${e.message || 'Unknown error'}`, 'error');
+                        URL.revokeObjectURL(audioUrl);
                         if (isTest) {
                             updateAudioStatus('❌ 音頻播放失敗 Audio playback failed', 'error');
                         }
@@ -1864,13 +1893,37 @@
                     await playAudio();
                     
                 } else {
-                    const errorData = await response.json();
+                    // Enhanced error handling for failed requests
+                    let errorDetails = 'Unknown error';
+                    let errorData = null;
+                    
+                    try {
+                        errorData = await response.json();
+                        errorDetails = errorData.error || errorData.message || errorData.details || JSON.stringify(errorData);
+                    } catch (e) {
+                        try {
+                            errorDetails = await response.text();
+                        } catch (e2) {
+                            errorDetails = `HTTP ${response.status} - Unable to read error details`;
+                        }
+                    }
+                    
                     debugLog(`TTS function failed: ${response.status}`, 'error');
-                    debugLog(`Error details: ${JSON.stringify(errorData)}`, 'error');
+                    debugLog(`Error details: ${errorDetails}`, 'error');
                     
                     if (isTest) {
-                        updateAudioStatus(`❌ TTS 請求失敗: ${response.status}`, 'error');
+                        if (response.status === 400) {
+                            updateAudioStatus(`❌ SSML格式錯誤 SSML format error: ${errorDetails}`, 'error');
+                        } else if (response.status === 401) {
+                            updateAudioStatus(`❌ Azure金鑰無效 Azure key invalid`, 'error');
+                        } else if (response.status === 500) {
+                            updateAudioStatus(`❌ 服務器錯誤 Server error: ${errorDetails}`, 'error');
+                        } else {
+                            updateAudioStatus(`❌ TTS 請求失敗: ${response.status} - ${errorDetails}`, 'error');
+                        }
                     }
+                    
+                    throw new Error(`TTS request failed: ${response.status} - ${errorDetails}`);
                 }
             } catch (error) {
                 debugLog(`TTS function error: ${error.message}`, 'error');
@@ -1879,6 +1932,8 @@
                 if (isTest) {
                     updateAudioStatus(`❌ 音頻請求錯誤: ${error.message}`, 'error');
                 }
+                
+                throw error;
             }
         }
         
@@ -1996,28 +2051,21 @@
                 setTimeout(async () => {
                     debugLog('Playing initial patient greeting');
                     
-                    // Use enhanced rule-based AI to generate initial greeting
+                    // Use enhanced rule-based system to generate initial greeting
                     let initialResponse;
                     let cacheKey = 'greeting_1'; // Use cached greeting for faster response
                     
                     try {
-                        if (isAIReady) {
-                            const context = createPatientContext("有人進入房間", []);
-                            const aiGreeting = await textGenerator.generateResponse(context, {
-                                max_length: 50,
-                                temperature: 0.7
-                            });
-                            
-                            let generatedGreeting = aiGreeting[0].generated_text;
-                            if (generatedGreeting.length < 10) {
-                                generatedGreeting = "呀？有人嚟喇。邊個呀？Who is there?";
-                            }
-                            
+                        // Generate contextual greeting using rule-based system
+                        const greetingContext = createPatientContext("有人進入房間", []);
+                        const generatedGreeting = generateIntelligentResponse(greetingContext);
+                        
+                        if (generatedGreeting && generatedGreeting.length > 10) {
                             initialResponse = formatResponseAsSSML(generatedGreeting);
-                            debugLog(`AI-generated initial greeting: ${generatedGreeting}`);
-                            cacheKey = null; // Don't use cache for custom AI response
+                            debugLog(`Rule-based generated greeting: ${generatedGreeting}`);
+                            cacheKey = null; // Don't use cache for custom response
                         } else {
-                            throw new Error('AI not ready');
+                            throw new Error('Generated greeting too short');
                         }
                     } catch (error) {
                         debugLog(`Using cached greeting: ${error.message}`);
