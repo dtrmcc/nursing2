@@ -251,6 +251,31 @@
             color: #34495e;
             border-left: 3px solid #3498db;
         }
+
+        .suggestion-box {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-size: 14px;
+            color: #856404;
+        }
+
+        .suggestion-box h5 {
+            margin: 0 0 8px 0;
+            color: #856404;
+            font-weight: bold;
+        }
+
+        .suggestion-box p {
+            margin: 5px 0;
+            line-height: 1.4;
+        }
+
+        .suggestion-box strong {
+            color: #b8860b;
+        }
         
         .download-section {
             text-align: center;
@@ -574,6 +599,50 @@
         let textGenerator = null;
         let isAIReady = false;
         
+        // Conversation flow tracking
+        let conversationFlow = {
+            currentStage: 0,
+            stages: [
+                {
+                    name: "greeting",
+                    keywords: ["護士", "何", "同學", "你好", "入嚟", "進來"],
+                    suggestion: "建議說：「你好，我叫何同學，是XX大學護理學生，今日嚟幫你做傷口護理。」",
+                    fallbackResponse: "你好護士，我係文力新先生。我已經準備好喇，今日要做咩傷口護理呀？"
+                },
+                {
+                    name: "identification",
+                    keywords: ["姓名", "對名", "HN", "23332099", "文生", "文力新"],
+                    suggestion: "建議說：「請問你係咪文力新先生？HN號碼23332099？」",
+                    fallbackResponse: "係呀，我係文力新，HN係23332099。請問要做咩傷口護理？"
+                },
+                {
+                    name: "procedureExplanation",
+                    keywords: ["傷口", "清洗", "換藥", "程序", "護理"],
+                    suggestion: "建議說：「我會幫你清洗腿部傷口，然後換上新嘅敷料，過程大約5分鐘，可能會有少少痛，但係我會小心啲。」",
+                    fallbackResponse: "哦，要洗傷口同換藥呀？我個傷口係喺右腳小腿度，有啲痛㗎，你可唔可以小心啲？"
+                },
+                {
+                    name: "consent",
+                    keywords: ["同意", "明白", "準備", "開始", "可以"],
+                    suggestion: "建議說：「請問你明白晒個程序，係咪同意我開始幫你做傷口護理？」",
+                    fallbackResponse: "我明白喇，你開始啦。我會配合你，但係請你輕手啲。"
+                },
+                {
+                    name: "duringProcedure",
+                    keywords: ["痛", "唔舒服", "緊張", "小心"],
+                    suggestion: "建議說：「如果覺得痛或者唔舒服，請即刻話我知，我會停一停。」",
+                    fallbackResponse: "好呀，如果我覺得痛我會話你知。你而家做到邊度呀？"
+                },
+                {
+                    name: "completion",
+                    keywords: ["完成", "搞掂", "好晒", "多謝"],
+                    suggestion: "建議說：「傷口護理已經完成咗，敷料已經換好。請問你有冇其他問題？」",
+                    fallbackResponse: "多謝你呀護士，我覺得好啲喇。下次幾時再換藥呀？"
+                }
+            ],
+            failedAttempts: {}
+        };
+
         // Patient personality and context
         const patientContext = {
             name: "文力新",
@@ -615,6 +684,39 @@
             }
         }
         
+        // Enhanced conversation flow management
+        function checkConversationStage(input) {
+            const currentStage = conversationFlow.stages[conversationFlow.currentStage];
+            if (!currentStage) return { shouldProgress: false, isKeywordMatch: false };
+            
+            const inputLower = input.toLowerCase();
+            const keywords = currentStage.keywords;
+            
+            // Check if any keyword is present
+            const isKeywordMatch = keywords.some(keyword => 
+                inputLower.includes(keyword.toLowerCase())
+            );
+            
+            // Track failed attempts
+            const stageName = currentStage.name;
+            if (!isKeywordMatch) {
+                conversationFlow.failedAttempts[stageName] = (conversationFlow.failedAttempts[stageName] || 0) + 1;
+                
+                // If second attempt, force progress
+                if (conversationFlow.failedAttempts[stageName] >= 2) {
+                    conversationFlow.currentStage++;
+                    return { shouldProgress: true, isKeywordMatch: false, isForced: true };
+                }
+            } else {
+                // Reset failed attempts for this stage
+                conversationFlow.failedAttempts[stageName] = 0;
+                conversationFlow.currentStage++;
+                return { shouldProgress: true, isKeywordMatch: true };
+            }
+            
+            return { shouldProgress: false, isKeywordMatch: false };
+        }
+
         // Generate intelligent response using rule-based AI optimized for Chinese/Cantonese
         function generateIntelligentResponse(context) {
             const lines = context.split('\n');
@@ -623,176 +725,45 @@
             
             debugLog(`Generating response for: ${lastStudentInput}`);
             debugLog(`Conversation length: ${conversationHistory.length}`);
+            debugLog(`Current stage: ${conversationFlow.currentStage}`);
+            debugLog(`Failed attempts: ${JSON.stringify(conversationFlow.failedAttempts)}`);
             
-            // Analyze conversation context
-            const analysis = analyzeConversationContext(lastStudentInput, conversationHistory);
-            debugLog(`Context analysis: ${JSON.stringify(analysis)}`);
+            // Check conversation flow
+            const flowCheck = checkConversationStage(lastStudentInput);
+            debugLog(`Flow check result: ${JSON.stringify(flowCheck)}`);
             
-            // Generate contextual response
-            return generateContextualResponse(analysis, lastStudentInput);
+            // Generate contextual response with flow consideration
+            return generateContextualResponse(lastStudentInput, flowCheck);
         }
         
-        // Analyze conversation context for better responses
-        function analyzeConversationContext(input, history) {
-            const inputLower = input.toLowerCase();
-            const historyText = history.join(' ').toLowerCase();
+        // Generate contextual response based on flow
+        function generateContextualResponse(input, flowCheck) {
+            const currentStage = conversationFlow.stages[conversationFlow.currentStage - 1];
             
-            return {
-                phase: determineConversationPhase(history.length, historyText),
-                emotion: detectEmotionalCues(inputLower),
-                topic: identifyTopic(inputLower),
-                hasIntroduced: historyText.includes('護士') || historyText.includes('何'),
-                hasIdentified: historyText.includes('文力新') || historyText.includes('23332099'),
-                isProcedureStarted: historyText.includes('傷口') || historyText.includes('換藥')
-            };
-        }
-        
-        // Determine conversation phase
-        function determineConversationPhase(historyLength, historyText) {
-            if (historyLength <= 2) return 'greeting';
-            if (historyLength <= 6 && !historyText.includes('文力新')) return 'identification';
-            if (historyLength <= 10 && !historyText.includes('傷口')) return 'explanation';
-            return 'procedure';
-        }
-        
-        // Detect emotional cues
-        function detectEmotionalCues(input) {
-            if (input.includes('痛') || input.includes('pain') || input.includes('hurt')) return 'pain';
-            if (input.includes('驚') || input.includes('scared') || input.includes('afraid') || input.includes('nervous')) return 'anxiety';
-            if (input.includes('好') || input.includes('唔該') || input.includes('thank')) return 'positive';
-            if (input.includes('唔明') || input.includes('不明') || input.includes('understand')) return 'confused';
-            return 'neutral';
-        }
-        
-        // Identify conversation topic
-        function identifyTopic(input) {
-            if (input.includes('護士') || input.includes('何') || input.includes('名')) return 'introduction';
-            if (input.includes('文') || input.includes('對名') || input.includes('23332099')) return 'identification';
-            if (input.includes('傷口') || input.includes('換藥') || input.includes('洗') || input.includes('wound')) return 'procedure';
-            if (input.includes('痛') || input.includes('pain')) return 'pain_concern';
-            return 'general';
-        }
-        
-        // Generate contextual response based on analysis
-        function generateContextualResponse(analysis, studentInput) {
-            const responses = getResponsesByContext(analysis);
-            
-            // Add emotional modulation
-            let selectedResponse = selectBestResponse(responses, analysis);
-            
-            // Add personality touches
-            selectedResponse = addPersonalityElements(selectedResponse, analysis);
-            
-            debugLog(`Generated response: ${selectedResponse}`);
-            return selectedResponse;
-        }
-        
-        // Get appropriate responses based on context
-        function getResponsesByContext(analysis) {
-            const responseBank = {
-                greeting: {
-                    neutral: [
-                        "好啊，入嚟啦。你叫咩名呀？",
-                        "呀？邊個呀？係護士嚟㗎？Who is there?",
-                        "入嚟入嚟，你係邊位護士？"
-                    ]
-                },
-                identification: {
-                    neutral: [
-                        "係啊，我係文力新。你要做咩呀？",
-                        "我個HN係23332099。點解要check㗎？",
-                        "文力新，65歲。My leg is hurt. 有啲痛㗎。"
-                    ],
-                    positive: [
-                        "好嘅，我係文力新，HN 23332099。你要幫我做咩？",
-                        "冇問題，我係文力新。Thank you for checking."
-                    ]
-                },
-                explanation: {
-                    neutral: [
-                        "洗傷口？要點洗㗎？會唔會好痛？",
-                        "換藥係咪要除咗舊嘅先？我應該點配合？",
-                        "你可唔可以解釋詳細啲？I want to understand."
-                    ],
-                    anxiety: [
-                        "洗傷口？會唔會好痛㗎？I am scared. 我有啲驚呀。",
-                        "我之前洗傷口都好痛㗎，今次會唔會好啲？",
-                        "可唔可以輕手啲？我真係好怕痛。"
-                    ],
-                    positive: [
-                        "好嘅，我會配合你。點樣做最好？",
-                        "唔該曬！你解釋得好清楚。"
-                    ]
-                },
-                procedure: {
-                    neutral: [
-                        "而家開始喇？我準備好喇。",
-                        "係咪咁樣？我做得啱唔啱？",
-                        "下一步要做咩？"
-                    ],
-                    pain: [
-                        "痛呀！可唔可以停一停？",
-                        "有啲痛，但係我頂得住。繼續啦。",
-                        "It hurts! 但係我知道要做㗎。"
-                    ],
-                    anxiety: [
-                        "我有啲緊張，可唔可以慢啲？",
-                        "深呼吸...深呼吸...我嘗試放鬆。",
-                        "你做緊咩？可唔可以話我知？"
-                    ]
-                },
-                general: {
-                    confused: [
-                        "咩話？我聽唔清楚呀。What did you say?",
-                        "你可唔可以講慢啲？Can you speak slower?",
-                        "唔好意思，我唔係好明。可唔可以再講一次？"
-                    ],
-                    neutral: [
-                        "係嘅，我聽緊你講。",
-                        "好嘅，繼續。",
-                        "明白。然後呢？"
-                    ]
+            if (flowCheck.isForced) {
+                // Second failed attempt - provide fallback response and guidance
+                return currentStage.fallbackResponse;
+            } else if (!flowCheck.shouldProgress && !flowCheck.isKeywordMatch) {
+                // First failed attempt - provide suggestion
+                return `${currentStage.fallbackResponse} ${currentStage.suggestion}`;
+            } else {
+                // Normal progression
+                if (conversationFlow.currentStage < conversationFlow.stages.length) {
+                    const nextStage = conversationFlow.stages[conversationFlow.currentStage];
+                    return nextStage.fallbackResponse;
                 }
-            };
-            
-            const phaseResponses = responseBank[analysis.phase] || responseBank.general;
-            return phaseResponses[analysis.emotion] || phaseResponses.neutral || responseBank.general.neutral;
-        }
-        
-        // Select best response with some randomization
-        function selectBestResponse(responses, analysis) {
-            // Add some personality-based selection logic
-            let weightedResponses = responses;
-            
-            // Patient is talkative, prefer longer responses sometimes
-            if (Math.random() > 0.7) {
-                weightedResponses = responses.filter(r => r.length > 20);
-                if (weightedResponses.length === 0) weightedResponses = responses;
             }
             
-            return weightedResponses[Math.floor(Math.random() * weightedResponses.length)];
+            return "多謝你呀護士，我覺得好啲喇。";
         }
-        
-        // Add personality elements to response
-        function addPersonalityElements(response, analysis) {
-            const personalityTouches = [
-                // Nervous additions
-                () => Math.random() > 0.8 ? response + " 我有啲緊張呀。" : response,
-                // English mixing
-                () => Math.random() > 0.9 ? response + " You know what I mean?" : response,
-                // Uncertainty
-                () => Math.random() > 0.85 ? "咁..." + response : response,
-                // Confirmation seeking
-                () => Math.random() > 0.9 ? response + " 係咪？" : response
-            ];
-            
-            // Apply one random personality touch
-            if (Math.random() > 0.6) {
-                const touch = personalityTouches[Math.floor(Math.random() * personalityTouches.length)];
-                return touch();
-            }
-            
-            return response;
+
+        // Create patient context for AI
+        function createPatientContext(input, history) {
+            return `Patient: 文力新先生, 65歲, 腿部傷口需要護理, 性格緊張但健談
+Conversation history:
+${history.map(h => `${h.role}: ${h.content}`).join('\n')}
+Student: ${input}
+Patient should respond in Cantonese mixed with some English, showing appropriate concern and cooperation.`;
         }
         
         // Escape XML special characters for SSML
@@ -801,7 +772,7 @@
                       .replace(/</g, '&lt;')
                       .replace(/>/g, '&gt;')
                       .replace(/"/g, '&quot;')
-                      .replace(/'/g, '&apos;');
+                      .replace(/'/g, ''');
         }
         
         // Format response as SSML
@@ -850,6 +821,19 @@
             } else {
                 return responses.default[Math.floor(Math.random() * responses.default.length)];
             }
+        }
+        
+        // Add suggestion box to interface
+        function addSuggestionBox(suggestion) {
+            const suggestionDiv = document.createElement('div');
+            suggestionDiv.className = 'suggestion-box';
+            suggestionDiv.innerHTML = `
+                <h5>💡 建議提示 Suggestion</h5>
+                <p>${suggestion}</p>
+                <p><em>提示：下次嘗試時將自動進入下一階段</em></p>
+            ``;
+            messagesEl.appendChild(suggestionDiv);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
         }
         
         // Update AI status display
@@ -1104,6 +1088,9 @@
             debugLog(`Processing student input: ${transcript}`);
             
             try {
+                // Check conversation flow first
+                const flowCheck = checkConversationStage(transcript);
+                
                 // Generate intelligent response using AI
                 const response = await generatePatientResponse(transcript, conversationHistory);
                 
@@ -1117,6 +1104,12 @@
                     
                     addMessage('patient', responseText, notes);
                     conversationHistory.push({role: 'patient', content: responseText});
+                    
+                    // Add suggestion if needed
+                    if (!flowCheck.isKeywordMatch && flowCheck.failedAttempts[conversationFlow.stages[conversationFlow.currentStage-1]?.name] === 1) {
+                        const currentStage = conversationFlow.stages[conversationFlow.currentStage-1];
+                        addSuggestionBox(currentStage.suggestion);
+                    }
                     
                     // Speak the response
                     await speakPatientResponseAzure(response);
@@ -1137,31 +1130,40 @@
         function generateContextualNotes(studentInput, history) {
             const input = studentInput.toLowerCase();
             const conversationLength = history.length;
+            const currentStage = conversationFlow.stages[conversationFlow.currentStage-1];
             
-            if (conversationLength <= 2) {
-                if (input.includes('護士') || input.includes('何') || input.includes('入嚟')) {
-                    return "Student introduction phase - establishing professional relationship";
-                }
-            } else if (conversationLength <= 6) {
-                if (input.includes('文') || input.includes('對名') || input.includes('23332099')) {
-                    return "Patient identification verification - important safety procedure";
-                }
-            } else if (conversationLength <= 10) {
-                if (input.includes('洗') || input.includes('換藥') || input.includes('傷口')) {
-                    return "Procedure explanation phase - building patient confidence";
+            if (currentStage) {
+                const failedCount = conversationFlow.failedAttempts[currentStage.name] || 0;
+                if (failedCount === 1) {
+                    return `First attempt failed - will provide guidance and auto-progress on next attempt`;
                 }
             }
             
-            // Advanced contextual notes
-            if (input.includes('痛') || input.includes('pain')) {
-                return "Patient expressing pain concerns - opportunity for empathy and reassurance";
-            } else if (input.includes('驚') || input.includes('scared') || input.includes('afraid')) {
-                return "Patient showing anxiety - requires calming approach";
-            } else if (input.includes('唔明') || input.includes('understand')) {
-                return "Patient needs clarification - good opportunity to demonstrate clear communication";
+            return `Stage ${conversationFlow.currentStage} of ${conversationFlow.stages.length} - ${currentStage?.name || 'completed'}`;
+        }
+        
+        // Generate patient response with flow consideration
+        async function generatePatientResponse(input, history) {
+            const flowCheck = checkConversationStage(input);
+            const currentStage = conversationFlow.stages[conversationFlow.currentStage-1];
+            
+            let responseText;
+            
+            if (flowCheck.isForced) {
+                // Second failed attempt - use fallback and auto-progress
+                responseText = currentStage.fallbackResponse;
+            } else if (!flowCheck.isKeywordMatch && flowCheck.failedAttempts[currentStage.name] === 1) {
+                // First failed attempt - provide guidance
+                responseText = `${currentStage.fallbackResponse} ${currentStage.suggestion}`;
+            } else if (flowCheck.shouldProgress) {
+                // Successful progression
+                responseText = currentStage.fallbackResponse;
+            } else {
+                // Continue with current stage
+                responseText = currentStage.fallbackResponse;
             }
             
-            return "Ongoing conversation - maintain professional rapport";
+            return formatResponseAsSSML(responseText);
         }
         
         // Extract text from SSML
@@ -1347,6 +1349,10 @@
                     alert('請先點擊"啟用音頻"按鈕，確保音頻正常工作！\nPlease click "Enable Audio" button first to ensure audio works properly!');
                     return;
                 }
+                
+                // Reset conversation flow
+                conversationFlow.currentStage = 0;
+                conversationFlow.failedAttempts = {};
                 
                 isRecording = true;
                 audioChunks = [];
