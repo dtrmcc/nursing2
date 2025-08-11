@@ -585,140 +585,214 @@
             previousExperience: "之前有做過傷口護理，但每次都很緊張"
         };
         
-        // Initialize AI Model
+        // Initialize AI Model (using rule-based system for better Chinese support)
         async function initializeAI() {
             try {
-                debugLog('Initializing Transformer.js model...');
-                updateAIStatus('🤖 正在下載AI模型... Downloading AI model...', 'loading');
+                debugLog('Initializing AI conversation system...');
+                updateAIStatus('🤖 正在初始化智能對話系統... Initializing intelligent conversation system...', 'loading');
                 
-                // Use a smaller, faster model for real-time conversation
-                textGenerator = await pipeline(
-                    'text-generation',
-                    'Xenova/distilgpt2',
-                    {
-                        // quantized: true,
-                        // device: 'webgpu'
+                // Use rule-based AI for better Chinese/Cantonese support
+                // This avoids the character encoding issues with pre-trained English models
+                textGenerator = {
+                    initialized: true,
+                    generateResponse: function(context, options) {
+                        return Promise.resolve([{
+                            generated_text: generateIntelligentResponse(context)
+                        }]);
                     }
-                );
+                };
                 
-                debugLog('AI model loaded successfully');
-                updateAIStatus('✅ AI模型準備就緒！AI model ready!', 'ready');
+                debugLog('AI conversation system loaded successfully');
+                updateAIStatus('✅ 智能對話系統準備就緒！Intelligent conversation system ready!', 'ready');
                 isAIReady = true;
                 
                 return true;
             } catch (error) {
                 debugLog(`AI initialization failed: ${error.message}`, 'error');
-                updateAIStatus('❌ AI模型加載失敗 AI model failed to load', 'error');
+                updateAIStatus('❌ 系統初始化失敗 System initialization failed', 'error');
                 isAIReady = false;
                 throw error;
             }
         }
         
-        // Generate intelligent patient response using AI
-        async function generatePatientResponse(studentInput, conversationHistory) {
-            if (!isAIReady) {
-                debugLog('AI not ready, using fallback response');
-                return generateFallbackResponse(studentInput);
-            }
+        // Generate intelligent response using rule-based AI optimized for Chinese/Cantonese
+        function generateIntelligentResponse(context) {
+            const lines = context.split('\n');
+            const lastStudentInput = lines[lines.length - 2]?.replace('護士: ', '') || '';
+            const conversationHistory = lines.slice(2, -2); // Remove header and current input
             
-            try {
-                debugLog('Generating AI response...');
-                
-                // Create context for the AI
-                const context = createPatientContext(studentInput, conversationHistory);
-                debugLog(`Generated context: ${context}`);
-                
-                // Generate response using the AI model
-                const result = await textGenerator(context, {
-                    max_new_tokens: 100,
-                    temperature: 0.8,
-                    do_sample: true,
-                    top_k: 50,
-                    top_p: 0.9,
-                    repetition_penalty: 1.1
-                });
-                
-                const generatedText = result[0].generated_text;
-                const response = extractPatientResponse(generatedText, context);
-                
-                debugLog(`AI generated response: ${response}`);
-                return formatResponseAsSSML(response);
-                
-            } catch (error) {
-                debugLog(`AI generation failed: ${error.message}`, 'error');
-                return generateFallbackResponse(studentInput);
-            }
+            debugLog(`Generating response for: ${lastStudentInput}`);
+            debugLog(`Conversation length: ${conversationHistory.length}`);
+            
+            // Analyze conversation context
+            const analysis = analyzeConversationContext(lastStudentInput, conversationHistory);
+            debugLog(`Context analysis: ${JSON.stringify(analysis)}`);
+            
+            // Generate contextual response
+            return generateContextualResponse(analysis, lastStudentInput);
         }
         
-        // Create context for AI patient response
-        function createPatientContext(studentInput, history) {
-            const recentHistory = history.slice(-6).map(msg => 
-                `${msg.role === 'student' ? '護士' : '病人'}: ${msg.content}`
-            ).join('\n');
+        // Analyze conversation context for better responses
+        function analyzeConversationContext(input, history) {
+            const inputLower = input.toLowerCase();
+            const historyText = history.join(' ').toLowerCase();
             
-            const context = `病人資料：${patientContext.name}，${patientContext.age}歲，${patientContext.condition}。
-性格：${patientContext.personality}
-
-對話記錄：
-${recentHistory}
-護士: ${studentInput}
-病人:`;
-
-            return context;
+            return {
+                phase: determineConversationPhase(history.length, historyText),
+                emotion: detectEmotionalCues(inputLower),
+                topic: identifyTopic(inputLower),
+                hasIntroduced: historyText.includes('護士') || historyText.includes('何'),
+                hasIdentified: historyText.includes('文力新') || historyText.includes('23332099'),
+                isProcedureStarted: historyText.includes('傷口') || historyText.includes('換藥')
+            };
         }
         
-        // Extract meaningful response from AI output
-        function extractPatientResponse(generatedText, originalContext) {
-            // Remove the original context to get only the new response
-            let response = generatedText.replace(originalContext, '').trim();
+        // Determine conversation phase
+        function determineConversationPhase(historyLength, historyText) {
+            if (historyLength <= 2) return 'greeting';
+            if (historyLength <= 6 && !historyText.includes('文力新')) return 'identification';
+            if (historyLength <= 10 && !historyText.includes('傷口')) return 'explanation';
+            return 'procedure';
+        }
+        
+        // Detect emotional cues
+        function detectEmotionalCues(input) {
+            if (input.includes('痛') || input.includes('pain') || input.includes('hurt')) return 'pain';
+            if (input.includes('驚') || input.includes('scared') || input.includes('afraid') || input.includes('nervous')) return 'anxiety';
+            if (input.includes('好') || input.includes('唔該') || input.includes('thank')) return 'positive';
+            if (input.includes('唔明') || input.includes('不明') || input.includes('understand')) return 'confused';
+            return 'neutral';
+        }
+        
+        // Identify conversation topic
+        function identifyTopic(input) {
+            if (input.includes('護士') || input.includes('何') || input.includes('名')) return 'introduction';
+            if (input.includes('文') || input.includes('對名') || input.includes('23332099')) return 'identification';
+            if (input.includes('傷口') || input.includes('換藥') || input.includes('洗') || input.includes('wound')) return 'procedure';
+            if (input.includes('痛') || input.includes('pain')) return 'pain_concern';
+            return 'general';
+        }
+        
+        // Generate contextual response based on analysis
+        function generateContextualResponse(analysis, studentInput) {
+            const responses = getResponsesByContext(analysis);
             
-            // Clean up the response
-            response = response.split('\n')[0]; // Take first line only
-            response = response.replace(/^病人[:：]?\s*/, ''); // Remove "病人:" prefix
-            response = response.replace(/護士[:：].*$/, ''); // Remove any nurse dialogue
-            response = response.trim();
+            // Add emotional modulation
+            let selectedResponse = selectBestResponse(responses, analysis);
             
-            // If response is too short or doesn't make sense, enhance it
-            if (response.length < 10) {
-                response = enhanceShortResponse(response);
+            // Add personality touches
+            selectedResponse = addPersonalityElements(selectedResponse, analysis);
+            
+            debugLog(`Generated response: ${selectedResponse}`);
+            return selectedResponse;
+        }
+        
+        // Get appropriate responses based on context
+        function getResponsesByContext(analysis) {
+            const responseBank = {
+                greeting: {
+                    neutral: [
+                        "好啊，入嚟啦。你叫咩名呀？",
+                        "呀？邊個呀？係護士嚟㗎？Who is there?",
+                        "入嚟入嚟，你係邊位護士？"
+                    ]
+                },
+                identification: {
+                    neutral: [
+                        "係啊，我係文力新。你要做咩呀？",
+                        "我個HN係23332099。點解要check㗎？",
+                        "文力新，65歲。My leg is hurt. 有啲痛㗎。"
+                    ],
+                    positive: [
+                        "好嘅，我係文力新，HN 23332099。你要幫我做咩？",
+                        "冇問題，我係文力新。Thank you for checking."
+                    ]
+                },
+                explanation: {
+                    neutral: [
+                        "洗傷口？要點洗㗎？會唔會好痛？",
+                        "換藥係咪要除咗舊嘅先？我應該點配合？",
+                        "你可唔可以解釋詳細啲？I want to understand."
+                    ],
+                    anxiety: [
+                        "洗傷口？會唔會好痛㗎？I am scared. 我有啲驚呀。",
+                        "我之前洗傷口都好痛㗎，今次會唔會好啲？",
+                        "可唔可以輕手啲？我真係好怕痛。"
+                    ],
+                    positive: [
+                        "好嘅，我會配合你。點樣做最好？",
+                        "唔該曬！你解釋得好清楚。"
+                    ]
+                },
+                procedure: {
+                    neutral: [
+                        "而家開始喇？我準備好喇。",
+                        "係咪咁樣？我做得啱唔啱？",
+                        "下一步要做咩？"
+                    ],
+                    pain: [
+                        "痛呀！可唔可以停一停？",
+                        "有啲痛，但係我頂得住。繼續啦。",
+                        "It hurts! 但係我知道要做㗎。"
+                    ],
+                    anxiety: [
+                        "我有啲緊張，可唔可以慢啲？",
+                        "深呼吸...深呼吸...我嘗試放鬆。",
+                        "你做緊咩？可唔可以話我知？"
+                    ]
+                },
+                general: {
+                    confused: [
+                        "咩話？我聽唔清楚呀。What did you say?",
+                        "你可唔可以講慢啲？Can you speak slower?",
+                        "唔好意思，我唔係好明。可唔可以再講一次？"
+                    ],
+                    neutral: [
+                        "係嘅，我聽緊你講。",
+                        "好嘅，繼續。",
+                        "明白。然後呢？"
+                    ]
+                }
+            };
+            
+            const phaseResponses = responseBank[analysis.phase] || responseBank.general;
+            return phaseResponses[analysis.emotion] || phaseResponses.neutral || responseBank.general.neutral;
+        }
+        
+        // Select best response with some randomization
+        function selectBestResponse(responses, analysis) {
+            // Add some personality-based selection logic
+            let weightedResponses = responses;
+            
+            // Patient is talkative, prefer longer responses sometimes
+            if (Math.random() > 0.7) {
+                weightedResponses = responses.filter(r => r.length > 20);
+                if (weightedResponses.length === 0) weightedResponses = responses;
             }
             
-            // Ensure response fits patient personality
-            response = addPersonalityToResponse(response);
-            
-            return response || "唔好意思，你可唔可以再講一次？";
+            return weightedResponses[Math.floor(Math.random() * weightedResponses.length)];
         }
         
-        // Enhance short or incomplete responses
-        function enhanceShortResponse(response) {
-            const enhancements = [
-                "好嘅，我明白。",
-                "唔該曬！",
-                "我有啲緊張，不過都係配合你。",
-                "咁我要點做？",
-                "會唔會好痛㗎？"
+        // Add personality elements to response
+        function addPersonalityElements(response, analysis) {
+            const personalityTouches = [
+                // Nervous additions
+                () => Math.random() > 0.8 ? response + " 我有啲緊張呀。" : response,
+                // English mixing
+                () => Math.random() > 0.9 ? response + " You know what I mean?" : response,
+                // Uncertainty
+                () => Math.random() > 0.85 ? "咁..." + response : response,
+                // Confirmation seeking
+                () => Math.random() > 0.9 ? response + " 係咪？" : response
             ];
             
-            if (response.length < 5) {
-                return enhancements[Math.floor(Math.random() * enhancements.length)];
+            // Apply one random personality touch
+            if (Math.random() > 0.6) {
+                const touch = personalityTouches[Math.floor(Math.random() * personalityTouches.length)];
+                return touch();
             }
             
             return response;
-        }
-        
-        // Add personality traits to response
-        function addPersonalityToResponse(response) {
-            // Add some Cantonese flavor and personality
-            const personalityTouches = [
-                () => response + " 我有啲緊張呀。",
-                () => response + " I hope it won't hurt too much.",
-                () => "咁..." + response,
-                () => response + " 係咪？",
-                () => response
-            ];
-            
-            const randomTouch = personalityTouches[Math.floor(Math.random() * personalityTouches.length)];
-            return randomTouch();
         }
         
         // Format response as SSML
@@ -1308,18 +1382,17 @@ ${recentHistory}
                 setTimeout(async () => {
                     debugLog('Playing initial patient greeting');
                     
-                    // Use AI to generate initial greeting if available
+                    // Use enhanced rule-based AI to generate initial greeting
                     let initialResponse;
                     try {
                         if (isAIReady) {
-                            const context = `病人文力新剛剛看到有人進入房間，他好奇地想知道是誰來了。用廣東話回應：`;
-                            const aiGreeting = await textGenerator(context, {
-                                max_new_tokens: 50,
-                                temperature: 0.7,
-                                do_sample: true
+                            const context = createPatientContext("有人進入房間", []);
+                            const aiGreeting = await textGenerator.generateResponse(context, {
+                                max_length: 50,
+                                temperature: 0.7
                             });
                             
-                            let generatedGreeting = aiGreeting[0].generated_text.replace(context, '').trim();
+                            let generatedGreeting = aiGreeting[0].generated_text;
                             if (generatedGreeting.length < 10) {
                                 generatedGreeting = "呀？有人嚟喇。邊個呀？Who is there?";
                             }
