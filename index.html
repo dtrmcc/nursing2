@@ -851,6 +851,173 @@
             aiStatus.className = `ai-status ${type}`;
         }
         
+        // Voice optimization and pre-warming
+        let voiceCache = new Map();
+        let isVoicePreWarmed = false;
+        
+        // Pre-warm Azure Speech Service and cache common responses
+        async function preWarmVoiceService() {
+            try {
+                debugLog('Pre-warming Azure Speech Service...');
+                updateStatus('🔥 正在預熱語音服務... Pre-warming voice service...', 'loading');
+                
+                // Common responses to pre-generate and cache
+                const commonResponses = [
+                    {
+                        key: 'greeting_1',
+                        ssml: `<speak version="1.0" xml:lang="zh-HK">
+                            <voice name="${selectedVoice}">
+                                <mstts:express-as style="curious">
+                                    呀？有人嚟喇。邊個呀？
+                                    <lang xml:lang="en-US">Who is there?</lang>
+                                </mstts:express-as>
+                            </voice>
+                        </speak>`
+                    },
+                    {
+                        key: 'identification_1',
+                        ssml: `<speak version="1.0" xml:lang="zh-HK">
+                            <voice name="${selectedVoice}">
+                                係啊，我係文力新。你要做咩呀？
+                                <lang xml:lang="en-US">My leg is hurt.</lang>
+                                有啲痛㗎。
+                            </voice>
+                        </speak>`
+                    },
+                    {
+                        key: 'anxiety_1',
+                        ssml: `<speak version="1.0" xml:lang="zh-HK">
+                            <voice name="${selectedVoice}">
+                                <mstts:express-as style="fearful">
+                                    洗傷口？會唔會好痛㗎？
+                                    <lang xml:lang="en-US">I am scared.</lang>
+                                    我有啲驚呀。
+                                </mstts:express-as>
+                            </voice>
+                        </speak>`
+                    }
+                ];
+                
+                // Pre-generate and cache audio
+                for (const response of commonResponses) {
+                    try {
+                        debugLog(`Pre-generating: ${response.key}`);
+                        const audioBlob = await generateAndCacheAudio(response.ssml, response.key);
+                        if (audioBlob) {
+                            debugLog(`Cached: ${response.key} (${audioBlob.size} bytes)`);
+                        }
+                    } catch (error) {
+                        debugLog(`Failed to cache ${response.key}: ${error.message}`, 'error');
+                    }
+                }
+                
+                isVoicePreWarmed = true;
+                debugLog('Voice service pre-warming completed');
+                updateStatus('✅ 語音服務已優化！Voice service optimized!', 'ready');
+                
+            } catch (error) {
+                debugLog(`Voice pre-warming failed: ${error.message}`, 'error');
+                updateStatus('⚠️ 語音預熱失敗，但系統可正常使用 Voice pre-warming failed, but system usable', 'ready');
+            }
+        }
+        
+        // Generate and cache audio with retry logic
+        async function generateAndCacheAudio(ssml, cacheKey) {
+            try {
+                const response = await fetch(CURRENT_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ssml })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const audioBlob = new Blob(
+                        [Uint8Array.from(atob(data.audio), c => c.charCodeAt(0))], 
+                        { type: 'audio/mpeg' }
+                    );
+                    
+                    // Cache the audio blob
+                    voiceCache.set(cacheKey, {
+                        blob: audioBlob,
+                        url: URL.createObjectURL(audioBlob),
+                        timestamp: Date.now()
+                    });
+                    
+                    return audioBlob;
+                }
+            } catch (error) {
+                debugLog(`Cache generation failed for ${cacheKey}: ${error.message}`, 'error');
+            }
+            return null;
+        }
+        
+        // Play cached audio if available, otherwise generate new
+        async function playCachedOrGenerateAudio(ssml, cacheKey = null, isTest = false) {
+            try {
+                // Try to use cached audio first
+                if (cacheKey && voiceCache.has(cacheKey)) {
+                    const cached = voiceCache.get(cacheKey);
+                    // Cache is valid for 10 minutes
+                    if (Date.now() - cached.timestamp < 600000) {
+                        debugLog(`Using cached audio: ${cacheKey}`);
+                        await playAudioFromBlob(cached.blob, isTest);
+                        return;
+                    } else {
+                        // Clean up expired cache
+                        URL.revokeObjectURL(cached.url);
+                        voiceCache.delete(cacheKey);
+                    }
+                }
+                
+                // Generate new audio
+                await speakPatientResponseAzure(ssml, isTest);
+                
+            } catch (error) {
+                debugLog(`Cached audio playback failed: ${error.message}`, 'error');
+                // Fallback to regular generation
+                await speakPatientResponseAzure(ssml, isTest);
+            }
+        }
+        
+        // Optimized audio playback from blob
+        async function playAudioFromBlob(audioBlob, isTest = false) {
+            const audioUrl = URL.createObjectURL(audioBlob);
+            const audio = new Audio(audioUrl);
+            audio.volume = currentVolume;
+            audio.preload = 'auto';
+            
+            return new Promise((resolve, reject) => {
+                audio.onended = () => {
+                    URL.revokeObjectURL(audioUrl);
+                    if (isTest) {
+                        updateAudioStatus('✅ 緩存音頻播放完成！Cached audio completed!', 'success');
+                    }
+                    resolve();
+                };
+                
+                audio.onerror = (e) => {
+                    URL.revokeObjectURL(audioUrl);
+                    reject(new Error('Audio playback failed'));
+                };
+                
+                // Enhanced playback with multiple attempts
+                const playWithRetry = async () => {
+                    try {
+                        if (audioContext && audioContext.state === 'suspended') {
+                            await audioContext.resume();
+                        }
+                        await audio.play();
+                        debugLog('Cached audio playback started successfully');
+                    } catch (error) {
+                        debugLog(`Cached audio play failed: ${error.message}`, 'error');
+                        reject(error);
+                    }
+                };
+                
+                playWithRetry();
+            });
+        }
         // Audio context initialization for autoplay policy
         function enableAudioContext() {
             if (!audioContext) {
@@ -862,19 +1029,29 @@
                 audioContext.resume().then(() => {
                     debugLog('Audio context resumed');
                     updateAudioStatus('🔊 音頻已啟用 Audio enabled', 'success');
+                    
+                    // Start voice pre-warming after audio is enabled
+                    if (!isVoicePreWarmed) {
+                        setTimeout(() => preWarmVoiceService(), 1000);
+                    }
                 }).catch(error => {
                     debugLog(`Audio context resume failed: ${error.message}`, 'error');
                     updateAudioStatus('❌ 音頻啟用失敗 Audio enable failed', 'error');
                 });
             } else {
                 updateAudioStatus('✅ 音頻已就緒 Audio ready', 'success');
+                
+                // Start voice pre-warming
+                if (!isVoicePreWarmed) {
+                    setTimeout(() => preWarmVoiceService(), 1000);
+                }
             }
         }
         
-        // Test audio function
+        // Test audio function with caching
         async function testAudio() {
             try {
-                debugLog('Testing audio with simple TTS...');
+                debugLog('Testing audio with cached TTS...');
                 updateAudioStatus('🔄 正在測試音頻... Testing audio...', 'warning');
                 
                 const testSSML = `<speak version="1.0" xml:lang="zh-HK">
@@ -885,8 +1062,7 @@
                     </voice>
                 </speak>`;
                 
-                await speakPatientResponseAzure(testSSML, true);
-                updateAudioStatus('✅ 音頻測試成功！Audio test successful!', 'success');
+                await playCachedOrGenerateAudio(testSSML, 'audio_test', true);
                 
             } catch (error) {
                 debugLog(`Audio test failed: ${error.message}`, 'error');
@@ -1378,12 +1554,14 @@
                 sessionStartTime = Date.now();
                 startTimer();
                 
-                // Initial scenario setup with AI-enhanced greeting
+                // Initial scenario setup with optimized cached audio
                 setTimeout(async () => {
                     debugLog('Playing initial patient greeting');
                     
                     // Use enhanced rule-based AI to generate initial greeting
                     let initialResponse;
+                    let cacheKey = 'greeting_1'; // Use cached greeting for faster response
+                    
                     try {
                         if (isAIReady) {
                             const context = createPatientContext("有人進入房間", []);
@@ -1399,11 +1577,12 @@
                             
                             initialResponse = formatResponseAsSSML(generatedGreeting);
                             debugLog(`AI-generated initial greeting: ${generatedGreeting}`);
+                            cacheKey = null; // Don't use cache for custom AI response
                         } else {
                             throw new Error('AI not ready');
                         }
                     } catch (error) {
-                        debugLog(`Using fallback greeting: ${error.message}`);
+                        debugLog(`Using cached greeting: ${error.message}`);
                         initialResponse = `<speak version="1.0" xml:lang="zh-HK">
                             <voice name="${selectedVoice}">
                                 <mstts:express-as style="curious">
@@ -1417,8 +1596,10 @@
                     const responseText = extractTextFromSSML(initialResponse);
                     addMessage('patient', responseText, "Patient notices someone approaching the room - training session begins");
                     conversationHistory.push({role: 'patient', content: responseText});
-                    await speakPatientResponseAzure(initialResponse);
-                }, 3000);
+                    
+                    // Use cached audio for faster playback
+                    await playCachedOrGenerateAudio(initialResponse, cacheKey);
+                }, 2000); // Reduced delay since we have cached audio
                 
                 updateStatus('🎙️ 智能AI訓練進行中... Intelligent AI training in progress', 'recording');
                 startBtn.disabled = true;
