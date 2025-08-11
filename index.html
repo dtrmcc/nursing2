@@ -7,19 +7,39 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 900px;
-            margin: 0 auto;
+            margin: 0;
             padding: 20px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             color: #333;
         }
         
-        .container {
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 20px;
+        }
+        
+        .left-panel {
             background: white;
             border-radius: 20px;
             padding: 30px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .info-card, .settings-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
         
         .header {
@@ -49,6 +69,16 @@
             margin-left: 10px;
         }
         
+        .ai-badge {
+            background: #28a745;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
         .scenario-info {
             background: #f8f9fa;
             padding: 20px;
@@ -63,6 +93,11 @@
             border-radius: 8px;
             margin: 15px 0;
             border-left: 4px solid #27ae60;
+        }
+        
+        .patient-info h4 {
+            margin-top: 0;
+            color: #155724;
         }
         
         .controls {
@@ -93,6 +128,15 @@
             transform: translateY(-2px);
         }
         
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+        }
+        
         .btn-danger {
             background: #e74c3c;
             color: white;
@@ -106,6 +150,11 @@
             background: #bdc3c7;
             cursor: not-allowed;
             transform: none;
+        }
+        
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
         }
         
         .status {
@@ -226,19 +275,62 @@
             100% { transform: rotate(360deg); }
         }
 
-        .voice-settings {
-            background: #e8f4fd;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            border-left: 4px solid #0078d4;
+        .settings-card h4 {
+            margin-top: 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
         }
 
-        .voice-settings select {
-            margin: 5px 10px;
-            padding: 5px;
-            border-radius: 4px;
+        .setting-group {
+            margin: 15px 0;
+        }
+
+        .setting-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #34495e;
+        }
+
+        .setting-group select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 6px;
             border: 1px solid #ddd;
+            font-size: 14px;
+        }
+
+        .audio-status {
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .audio-status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .audio-status.warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .audio-status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .volume-control {
+            margin: 10px 0;
+        }
+
+        .volume-control input[type="range"] {
+            width: 100%;
+            margin: 5px 0;
         }
 
         .debug-section {
@@ -276,143 +368,187 @@
             color: #0c5460;
         }
 
-        .audio-test-section {
+        .ai-status {
             background: #e8f5e8;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            border-left: 4px solid #28a745;
-        }
-
-        .audio-test-section h4 {
-            color: #155724;
-            margin-top: 0;
-        }
-
-        .volume-control {
-            margin: 10px 0;
-        }
-
-        .volume-control input[type="range"] {
-            width: 200px;
-            margin: 0 10px;
-        }
-
-        .audio-status {
             padding: 10px;
             border-radius: 6px;
             margin: 10px 0;
             font-weight: bold;
+            text-align: center;
+            border-left: 4px solid #28a745;
         }
 
-        .audio-status.success {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .audio-status.warning {
+        .ai-status.loading {
             background: #fff3cd;
             color: #856404;
+            border-left-color: #ffc107;
         }
 
-        .audio-status.error {
+        .ai-status.ready {
+            background: #d4edda;
+            color: #155724;
+            border-left-color: #28a745;
+        }
+
+        .ai-status.error {
             background: #f8d7da;
             color: #721c24;
+            border-left-color: #dc3545;
+        }
+
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                max-width: 900px;
+            }
+            
+            .right-panel {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            
+            .info-card, .settings-card {
+                flex: 1;
+                min-width: 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .right-panel {
+                flex-direction: column;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🏥 護理學生傷口護理訓練系統 <span class="azure-badge">Azure AI Powered</span></h1>
-            <h2>Professional Nursing Student Wound Care Training System</h2>
-            <p>Advanced AI-powered patient simulation with realistic Cantonese voices</p>
-        </div>
-        
-        <div class="scenario-info">
-            <h3>📋 訓練場景 Training Scenario</h3>
-            <div class="patient-info">
-                <h4>👨 病人資料 Patient Information:</h4>
-                <p><strong>姓名 Name:</strong> 文力新先生 (Mr. Man Lik Sun)</p>
-                <p><strong>HN Number:</strong> 23332099</p>
-                <p><strong>年齡 Age:</strong> 65歲</p>
-                <p><strong>語言 Language:</strong> 廣東話/英文 (Cantonese/English Mix)</p>
-                <p><strong>病情 Condition:</strong> 腿部傷口需要清洗及換藥 (Leg wound requiring cleaning and dressing)</p>
+    <div class="main-container">
+        <div class="left-panel">
+            <div class="header">
+                <h1>🏥 護理學生傷口護理訓練系統 <span class="azure-badge">Azure AI</span><span class="ai-badge">Transformer.js</span></h1>
+                <h2>Professional Nursing Student Wound Care Training System</h2>
+                <p>Advanced AI-powered patient simulation with intelligent responses and realistic Cantonese voices</p>
             </div>
-            <p><strong>你的角色 Your Role:</strong> XX大學護理學生何同學 (Nursing Student Ho from XX University)</p>
-            <p><strong>任務 Task:</strong> 進行傷口護理程序並與病人保持良好溝通</p>
-            <p><strong>重點 Focus:</strong> 身份確認、程序解釋、病人安撫、專業溝通</p>
-        </div>
+            
+            <div class="scenario-info">
+                <h3>📋 訓練場景 Training Scenario</h3>
+                <p><strong>你的角色 Your Role:</strong> XX大學護理學生何同學 (Nursing Student Ho from XX University)</p>
+                <p><strong>任務 Task:</strong> 進行傷口護理程序並與病人保持良好溝通</p>
+                <p><strong>重點 Focus:</strong> 身份確認、程序解釋、病人安撫、專業溝通</p>
+            </div>
 
-        <div class="audio-test-section">
-            <h4>🔊 音频测试 Audio Test</h4>
-            <div id="audioStatus" class="audio-status warning">
-                等待音频测试... Waiting for audio test...
+            <div id="aiStatus" class="ai-status loading">
+                <span class="loading-spinner"></span> 正在加載AI模型... Loading AI model...
             </div>
-            <div class="volume-control">
-                <label for="volumeSlider">音量 Volume: </label>
-                <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.8">
-                <span id="volumeDisplay">80%</span>
+            
+            <div id="status" class="status loading">
+                <span class="loading-spinner"></span> 正在初始化Azure語音服務... Initializing Azure Speech Services...
             </div>
+            
             <div class="controls">
-                <button onclick="testAudio()" class="btn btn-primary">🎵 测试音频 Test Audio</button>
-                <button onclick="enableAudioContext()" class="btn btn-primary">🔓 启用音频权限 Enable Audio</button>
+                <button id="startBtn" class="btn btn-primary" disabled>🎙️ 開始訓練 Start Training</button>
+                <button id="stopBtn" class="btn btn-danger" disabled>⏹️ 結束訓練 Stop Training</button>
+            </div>
+            
+            <div id="timer" class="timer">00:00</div>
+            
+            <div id="conversation" class="conversation" style="display: none;">
+                <h4>💬 對話記錄 Session Conversation:</h4>
+                <div id="messages"></div>
+            </div>
+            
+            <div id="downloadSection" class="download-section" style="display: none;">
+                <h4>📥 訓練記錄 Session Recording</h4>
+                <p>你的訓練對話已被記錄以供分析 Your training session has been recorded for analysis.</p>
+                <button id="downloadBtn" class="btn btn-primary">下載錄音 Download Recording</button>
+            </div>
+
+            <div id="debugSection" class="debug-section" style="display: none;">
+                <h4>🔧 Debug Information</h4>
+                <div id="debugLogs"></div>
+                <div style="margin-top: 10px;">
+                    <button onclick="clearDebugLogs()" class="btn btn-primary btn-small">Clear Logs</button>
+                    <button onclick="toggleDebug()" class="btn btn-primary btn-small">Hide Debug</button>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button onclick="toggleDebug()" class="btn btn-primary btn-small">🔧 Toggle Debug</button>
             </div>
         </div>
 
-        <div class="voice-settings">
-            <h4>🎙️ Voice & Recognition Settings</h4>
-            <label>Patient Voice: 
-                <select id="voiceSelect">
-                    <option value="zh-HK-HiuMaanNeural">HiuMaan (Female, Elderly)</option>
-                    <option value="zh-HK-WanLungNeural">WanLung (Male, Elderly)</option>
-                    <option value="zh-HK-HiuGaaiNeural">HiuGaai (Female, Young)</option>
-                </select>
-            </label>
-            <label>Speech Recognition: 
-                <select id="recognitionLang">
-                    <option value="zh-HK">廣東話 Cantonese (Hong Kong)</option>
-                    <option value="en-US">English (US)</option>
-                    <option value="zh-CN">普通話 Mandarin</option>
-                </select>
-            </label>
-        </div>
+        <div class="right-panel">
+            <div class="info-card">
+                <h4>👨 病人資料 Patient Information</h4>
+                <div class="patient-info">
+                    <p><strong>姓名 Name:</strong> 文力新先生 (Mr. Man Lik Sun)</p>
+                    <p><strong>HN Number:</strong> 23332099</p>
+                    <p><strong>年齡 Age:</strong> 65歲</p>
+                    <p><strong>語言 Language:</strong> 廣東話/英文 (Cantonese/English Mix)</p>
+                    <p><strong>病情 Condition:</strong> 腿部傷口需要清洗及換藥 (Leg wound requiring cleaning and dressing)</p>
+                    <p><strong>性格特點:</strong> 健談但容易緊張，喜歡詳細解釋</p>
+                </div>
+            </div>
 
-        <div id="debugSection" class="debug-section" style="display: none;">
-            <h4>🔧 Debug Information</h4>
-            <div id="debugLogs"></div>
-            <button onclick="clearDebugLogs()" class="btn btn-primary" style="font-size: 12px; padding: 5px 10px;">Clear Logs</button>
-            <button onclick="toggleDebug()" class="btn btn-primary" style="font-size: 12px; padding: 5px 10px;">Hide Debug</button>
-        </div>
+            <div class="settings-card">
+                <h4>🎙️ 語音設定 Voice Settings</h4>
+                
+                <div class="setting-group">
+                    <label>Patient Voice:</label>
+                    <select id="voiceSelect">
+                        <option value="zh-HK-HiuMaanNeural">HiuMaan (Female, Elderly)</option>
+                        <option value="zh-HK-WanLungNeural">WanLung (Male, Elderly)</option>
+                        <option value="zh-HK-HiuGaaiNeural">HiuGaai (Female, Young)</option>
+                    </select>
+                </div>
 
-        <div class="controls">
-            <button onclick="toggleDebug()" class="btn btn-primary">🔧 Show Debug</button>
-        </div>
-        
-        <div id="status" class="status loading">
-            <span class="loading-spinner"></span> 正在初始化Azure語音服務... Initializing Azure Speech Services...
-        </div>
-        
-        <div class="controls">
-            <button id="startBtn" class="btn btn-primary" disabled>🎙️ 開始訓練 Start Training</button>
-            <button id="stopBtn" class="btn btn-danger" disabled>⏹️ 結束訓練 Stop Training</button>
-        </div>
-        
-        <div id="timer" class="timer">00:00</div>
-        
-        <div id="conversation" class="conversation" style="display: none;">
-            <h4>💬 對話記錄 Session Conversation:</h4>
-            <div id="messages"></div>
-        </div>
-        
-        <div id="downloadSection" class="download-section" style="display: none;">
-            <h4>📥 訓練記錄 Session Recording</h4>
-            <p>你的訓練對話已被記錄以供分析 Your training session has been recorded for analysis.</p>
-            <button id="downloadBtn" class="btn btn-primary">下載錄音 Download Recording</button>
+                <div class="setting-group">
+                    <label>Speech Recognition:</label>
+                    <select id="recognitionLang">
+                        <option value="zh-HK">廣東話 Cantonese (Hong Kong)</option>
+                        <option value="en-US">English (US)</option>
+                        <option value="zh-CN">普通話 Mandarin</option>
+                    </select>
+                </div>
+
+                <h4>🔊 音頻測試 Audio Test</h4>
+                
+                <div id="audioStatus" class="audio-status warning">
+                    等待音頻測試... Waiting for audio test...
+                </div>
+
+                <div class="volume-control">
+                    <label for="volumeSlider">音量 Volume:</label>
+                    <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.8">
+                    <div style="text-align: center; margin-top: 5px;">
+                        <span id="volumeDisplay">80%</span>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                    <button onclick="testAudio()" class="btn btn-success btn-small">🎵 測試音頻 Test Audio</button>
+                    <button onclick="enableAudioContext()" class="btn btn-primary btn-small">🔓 啟用音頻 Enable Audio</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <script type="module">
+        import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2';
+        
+        // Disable local model loading to use CDN
+        env.allowRemoteModels = true;
+        env.allowLocalModels = false;
+        
         // Netlify Function Configuration
         const SPEECH_ENDPOINTS = [
             '/.netlify/functions/speech',
@@ -427,13 +563,219 @@
         let sessionStartTime;
         let timerInterval;
         let isRecording = false;
-        let currentStep = 0;
         let conversationHistory = [];
         let selectedVoice = 'zh-HK-HiuMaanNeural';
         let selectedRecognitionLang = 'zh-HK';
         let debugMode = false;
         let audioContext = null;
         let currentVolume = 0.8;
+        
+        // AI Model variables
+        let textGenerator = null;
+        let isAIReady = false;
+        
+        // Patient personality and context
+        const patientContext = {
+            name: "文力新",
+            age: 65,
+            condition: "腿部傷口需要清洗及換藥",
+            personality: "健談但容易緊張，喜歡詳細解釋，會混合廣東話和英文說話",
+            currentPain: 6,
+            anxiety: 7,
+            previousExperience: "之前有做過傷口護理，但每次都很緊張"
+        };
+        
+        // Initialize AI Model
+        async function initializeAI() {
+            try {
+                debugLog('Initializing Transformer.js model...');
+                updateAIStatus('🤖 正在下載AI模型... Downloading AI model...', 'loading');
+                
+                // Use a smaller, faster model for real-time conversation
+                textGenerator = await pipeline(
+                    'text-generation',
+                    'Xenova/distilgpt2',
+                    {
+                        // quantized: true,
+                        // device: 'webgpu'
+                    }
+                );
+                
+                debugLog('AI model loaded successfully');
+                updateAIStatus('✅ AI模型準備就緒！AI model ready!', 'ready');
+                isAIReady = true;
+                
+                return true;
+            } catch (error) {
+                debugLog(`AI initialization failed: ${error.message}`, 'error');
+                updateAIStatus('❌ AI模型加載失敗 AI model failed to load', 'error');
+                isAIReady = false;
+                throw error;
+            }
+        }
+        
+        // Generate intelligent patient response using AI
+        async function generatePatientResponse(studentInput, conversationHistory) {
+            if (!isAIReady) {
+                debugLog('AI not ready, using fallback response');
+                return generateFallbackResponse(studentInput);
+            }
+            
+            try {
+                debugLog('Generating AI response...');
+                
+                // Create context for the AI
+                const context = createPatientContext(studentInput, conversationHistory);
+                debugLog(`Generated context: ${context}`);
+                
+                // Generate response using the AI model
+                const result = await textGenerator(context, {
+                    max_new_tokens: 100,
+                    temperature: 0.8,
+                    do_sample: true,
+                    top_k: 50,
+                    top_p: 0.9,
+                    repetition_penalty: 1.1
+                });
+                
+                const generatedText = result[0].generated_text;
+                const response = extractPatientResponse(generatedText, context);
+                
+                debugLog(`AI generated response: ${response}`);
+                return formatResponseAsSSML(response);
+                
+            } catch (error) {
+                debugLog(`AI generation failed: ${error.message}`, 'error');
+                return generateFallbackResponse(studentInput);
+            }
+        }
+        
+        // Create context for AI patient response
+        function createPatientContext(studentInput, history) {
+            const recentHistory = history.slice(-6).map(msg => 
+                `${msg.role === 'student' ? '護士' : '病人'}: ${msg.content}`
+            ).join('\n');
+            
+            const context = `病人資料：${patientContext.name}，${patientContext.age}歲，${patientContext.condition}。
+性格：${patientContext.personality}
+
+對話記錄：
+${recentHistory}
+護士: ${studentInput}
+病人:`;
+
+            return context;
+        }
+        
+        // Extract meaningful response from AI output
+        function extractPatientResponse(generatedText, originalContext) {
+            // Remove the original context to get only the new response
+            let response = generatedText.replace(originalContext, '').trim();
+            
+            // Clean up the response
+            response = response.split('\n')[0]; // Take first line only
+            response = response.replace(/^病人[:：]?\s*/, ''); // Remove "病人:" prefix
+            response = response.replace(/護士[:：].*$/, ''); // Remove any nurse dialogue
+            response = response.trim();
+            
+            // If response is too short or doesn't make sense, enhance it
+            if (response.length < 10) {
+                response = enhanceShortResponse(response);
+            }
+            
+            // Ensure response fits patient personality
+            response = addPersonalityToResponse(response);
+            
+            return response || "唔好意思，你可唔可以再講一次？";
+        }
+        
+        // Enhance short or incomplete responses
+        function enhanceShortResponse(response) {
+            const enhancements = [
+                "好嘅，我明白。",
+                "唔該曬！",
+                "我有啲緊張，不過都係配合你。",
+                "咁我要點做？",
+                "會唔會好痛㗎？"
+            ];
+            
+            if (response.length < 5) {
+                return enhancements[Math.floor(Math.random() * enhancements.length)];
+            }
+            
+            return response;
+        }
+        
+        // Add personality traits to response
+        function addPersonalityToResponse(response) {
+            // Add some Cantonese flavor and personality
+            const personalityTouches = [
+                () => response + " 我有啲緊張呀。",
+                () => response + " I hope it won't hurt too much.",
+                () => "咁..." + response,
+                () => response + " 係咪？",
+                () => response
+            ];
+            
+            const randomTouch = personalityTouches[Math.floor(Math.random() * personalityTouches.length)];
+            return randomTouch();
+        }
+        
+        // Format response as SSML
+        function formatResponseAsSSML(response) {
+            return `<speak version="1.0" xml:lang="zh-HK">
+                <voice name="${selectedVoice}">
+                    <mstts:express-as style="chat">
+                        ${response}
+                    </mstts:express-as>
+                </voice>
+            </speak>`;
+        }
+        
+        // Fallback response system
+        function generateFallbackResponse(studentInput) {
+            const input = studentInput.toLowerCase();
+            
+            const responses = {
+                greeting: [
+                    `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}"><mstts:express-as style="cheerful">好啊，入嚟啦。你叫咩名呀？What is your name?</mstts:express-as></voice></speak>`,
+                    `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}"><mstts:express-as style="curious">邊個呀？係護士嚟㗎？Who is there?</mstts:express-as></voice></speak>`
+                ],
+                identification: [
+                    `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}">係啊，我係文力新。你要做咩呀？My leg is hurt. 有啲痛㗎。</voice></speak>`,
+                    `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}">我個HN係23332099。點解要check㗎？</voice></speak>`
+                ],
+                procedure: [
+                    `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}"><mstts:express-as style="fearful">洗傷口？會唔會好痛㗎？I am scared. 我有啲驚呀。</mstts:express-as></voice></speak>`,
+                    `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}">係咪要除咗啲野先？要唔要我郁？</voice></speak>`
+                ],
+                default: [
+                    `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}">咩話？我聽唔清楚呀。What did you say?</voice></speak>`,
+                    `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}">你可唔可以講慢啲？Can you speak slower?</voice></speak>`,
+                    `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}">唔好意思，我唔係好明。Sorry, I don't understand.</voice></speak>`
+                ]
+            };
+            
+            // Simple keyword matching for fallback
+            if (input.includes('護士') || input.includes('何') || input.includes('入嚟')) {
+                return responses.greeting[Math.floor(Math.random() * responses.greeting.length)];
+            } else if (input.includes('文生') || input.includes('對名') || input.includes('文力新') || input.includes('23332099')) {
+                return responses.identification[Math.floor(Math.random() * responses.identification.length)];
+            } else if (input.includes('洗傷口') || input.includes('換藥') || input.includes('唔好郁') || input.includes('procedure')) {
+                return responses.procedure[Math.floor(Math.random() * responses.procedure.length)];
+            } else {
+                return responses.default[Math.floor(Math.random() * responses.default.length)];
+            }
+        }
+        
+        // Update AI status display
+        function updateAIStatus(message, type) {
+            const aiStatus = document.getElementById('aiStatus');
+            aiStatus.innerHTML = type === 'loading' ? 
+                `<span class="loading-spinner"></span> ${message}` : 
+                message;
+            aiStatus.className = `ai-status ${type}`;
+        }
         
         // Audio context initialization for autoplay policy
         function enableAudioContext() {
@@ -445,13 +787,13 @@
             if (audioContext.state === 'suspended') {
                 audioContext.resume().then(() => {
                     debugLog('Audio context resumed');
-                    updateAudioStatus('🔊 音频已启用 Audio enabled', 'success');
+                    updateAudioStatus('🔊 音頻已啟用 Audio enabled', 'success');
                 }).catch(error => {
                     debugLog(`Audio context resume failed: ${error.message}`, 'error');
-                    updateAudioStatus('❌ 音频启用失败 Audio enable failed', 'error');
+                    updateAudioStatus('❌ 音頻啟用失敗 Audio enable failed', 'error');
                 });
             } else {
-                updateAudioStatus('✅ 音频已就绪 Audio ready', 'success');
+                updateAudioStatus('✅ 音頻已就緒 Audio ready', 'success');
             }
         }
         
@@ -459,22 +801,22 @@
         async function testAudio() {
             try {
                 debugLog('Testing audio with simple TTS...');
-                updateAudioStatus('🔄 正在测试音频... Testing audio...', 'warning');
+                updateAudioStatus('🔄 正在測試音頻... Testing audio...', 'warning');
                 
                 const testSSML = `<speak version="1.0" xml:lang="zh-HK">
                     <voice name="${selectedVoice}">
                         <mstts:express-as style="cheerful">
-                            你好！音频测试成功！
+                            你好！音頻測試成功！Hello! Audio test successful!
                         </mstts:express-as>
                     </voice>
                 </speak>`;
                 
                 await speakPatientResponseAzure(testSSML, true);
-                updateAudioStatus('✅ 音频测试成功！Audio test successful!', 'success');
+                updateAudioStatus('✅ 音頻測試成功！Audio test successful!', 'success');
                 
             } catch (error) {
                 debugLog(`Audio test failed: ${error.message}`, 'error');
-                updateAudioStatus('❌ 音频测试失败 Audio test failed', 'error');
+                updateAudioStatus('❌ 音頻測試失敗 Audio test failed', 'error');
             }
         }
         
@@ -517,53 +859,7 @@
             debugMode = !debugMode;
             const debugSection = document.getElementById('debugSection');
             debugSection.style.display = debugMode ? 'block' : 'none';
-            
-            const toggleBtn = document.querySelector('button[onclick="toggleDebug()"]');
-            toggleBtn.textContent = debugMode ? '🔧 Hide Debug' : '🔧 Show Debug';
         }
-        
-        // Realistic nursing procedure
-        const nursingProcedure = [
-            {
-                phase: "introduction",
-                expectedInput: ["我係", "護士學生", "何", "入嚟"],
-                patientResponse: `<speak version="1.0" xml:lang="zh-HK">
-                    <voice name="{voice}">
-                        <mstts:express-as style="cheerful">
-                            好啊，入嚟啦。你叫咩名呀？
-                            <lang xml:lang="en-US">What is your name?</lang>
-                        </mstts:express-as>
-                    </voice>
-                </speak>`,
-                notes: "Student should introduce themselves and ask permission to enter"
-            },
-            {
-                phase: "identification",
-                expectedInput: ["文生", "對名", "文力新", "23332099"],
-                patientResponse: `<speak version="1.0" xml:lang="zh-HK">
-                    <voice name="{voice}">
-                        係啊，我係文力新。你要做咩呀？
-                        <lang xml:lang="en-US">My leg is hurt.</lang>
-                        有啲痛㗎。
-                    </voice>
-                </speak>`,
-                notes: "Patient identification verification completed"
-            },
-            {
-                phase: "explanation",
-                expectedInput: ["洗傷口", "換藥", "唔好郁"],
-                patientResponse: `<speak version="1.0" xml:lang="zh-HK">
-                    <voice name="{voice}">
-                        <mstts:express-as style="fearful">
-                            洗傷口？會唔會好痛㗎？
-                            <lang xml:lang="en-US">I am scared.</lang>
-                            我有啲驚呀。
-                        </mstts:express-as>
-                    </voice>
-                </speak>`,
-                notes: "Student explains wound care procedure"
-            }
-        ];
         
         // DOM elements
         const statusEl = document.getElementById('status');
@@ -595,13 +891,19 @@
         async function init() {
             try {
                 debugLog('Starting initialization...');
-                updateStatus('正在測試Netlify連接... Testing Netlify function connection...', 'loading');
+                updateStatus('正在初始化AI和語音系統... Initializing AI and speech systems...', 'loading');
                 
                 // Enable audio context on first user interaction
                 document.addEventListener('click', enableAudioContext, { once: true });
                 
+                // Initialize AI model first
+                debugLog('Initializing AI model...');
+                await initializeAI();
+                debugLog('AI model initialized successfully');
+                
                 // Test Azure connection
                 debugLog('Testing Azure connection...');
+                updateStatus('正在測試Netlify連接... Testing Netlify function connection...', 'loading');
                 await testAzureConnection();
                 debugLog('Azure connection test successful');
                 
@@ -610,7 +912,7 @@
                 await initSpeechRecognition();
                 debugLog('Speech recognition initialized successfully');
                 
-                updateStatus('🎉 Azure AI系統準備就緒！點擊"测试音频"確認聲音正常！', 'ready');
+                updateStatus('🎉 系統準備就緒！點擊"測試音頻"確認聲音正常！System ready!', 'ready');
                 startBtn.disabled = false;
                 debugLog('Initialization completed successfully');
                 
@@ -717,43 +1019,69 @@
             debugLog('Speech recognition configured successfully');
         }
         
-        // Process student input
-        function processStudentInput(transcript) {
+        // Process student input with AI
+        async function processStudentInput(transcript) {
             debugLog(`Processing student input: ${transcript}`);
-            const lowerTranscript = transcript.toLowerCase();
-            let matchedPhase = null;
-            let response = null;
             
-            for (let i = 0; i < nursingProcedure.length; i++) {
-                const phase = nursingProcedure[i];
-                const hasKeywords = phase.expectedInput.some(keyword => 
-                    lowerTranscript.includes(keyword.toLowerCase())
-                );
+            try {
+                // Generate intelligent response using AI
+                const response = await generatePatientResponse(transcript, conversationHistory);
                 
-                if (hasKeywords) {
-                    matchedPhase = phase;
-                    response = phase.patientResponse.replace('{voice}', selectedVoice);
-                    debugLog(`Matched phase: ${phase.phase}`);
-                    break;
+                // Simulate thinking time
+                setTimeout(async () => {
+                    const responseText = extractTextFromSSML(response);
+                    debugLog(`Patient responding: ${responseText}`);
+                    
+                    // Determine appropriate notes based on conversation context
+                    const notes = generateContextualNotes(transcript, conversationHistory);
+                    
+                    addMessage('patient', responseText, notes);
+                    conversationHistory.push({role: 'patient', content: responseText});
+                    
+                    // Speak the response
+                    await speakPatientResponseAzure(response);
+                }, 1500 + Math.random() * 1000); // Realistic response delay
+                
+            } catch (error) {
+                debugLog(`Error processing student input: ${error.message}`, 'error');
+                // Fallback to simple response
+                const fallbackResponse = generateFallbackResponse(transcript);
+                const responseText = extractTextFromSSML(fallbackResponse);
+                addMessage('patient', responseText, "AI generation failed, using fallback response");
+                conversationHistory.push({role: 'patient', content: responseText});
+                await speakPatientResponseAzure(fallbackResponse);
+            }
+        }
+        
+        // Generate contextual notes based on conversation flow
+        function generateContextualNotes(studentInput, history) {
+            const input = studentInput.toLowerCase();
+            const conversationLength = history.length;
+            
+            if (conversationLength <= 2) {
+                if (input.includes('護士') || input.includes('何') || input.includes('入嚟')) {
+                    return "Student introduction phase - establishing professional relationship";
+                }
+            } else if (conversationLength <= 6) {
+                if (input.includes('文') || input.includes('對名') || input.includes('23332099')) {
+                    return "Patient identification verification - important safety procedure";
+                }
+            } else if (conversationLength <= 10) {
+                if (input.includes('洗') || input.includes('換藥') || input.includes('傷口')) {
+                    return "Procedure explanation phase - building patient confidence";
                 }
             }
             
-            if (!response) {
-                const fallbackResponses = [
-                    `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}">咩話？我聽唔清楚呀。<lang xml:lang="en-US">What did you say?</lang></voice></speak>`,
-                    `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}">你可唔可以講慢啲？<lang xml:lang="en-US">Can you speak slower?</lang></voice></speak>`
-                ];
-                response = fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
-                debugLog('Using fallback response');
+            // Advanced contextual notes
+            if (input.includes('痛') || input.includes('pain')) {
+                return "Patient expressing pain concerns - opportunity for empathy and reassurance";
+            } else if (input.includes('驚') || input.includes('scared') || input.includes('afraid')) {
+                return "Patient showing anxiety - requires calming approach";
+            } else if (input.includes('唔明') || input.includes('understand')) {
+                return "Patient needs clarification - good opportunity to demonstrate clear communication";
             }
             
-            setTimeout(() => {
-                const responseText = extractTextFromSSML(response);
-                debugLog(`Patient responding: ${responseText}`);
-                addMessage('patient', responseText, matchedPhase?.notes);
-                conversationHistory.push({role: 'patient', content: responseText});
-                speakPatientResponseAzure(response);
-            }, 1500 + Math.random() * 1000);
+            return "Ongoing conversation - maintain professional rapport";
         }
         
         // Extract text from SSML
@@ -800,14 +1128,14 @@
                     audio.oncanplay = () => {
                         debugLog('Audio ready to play');
                         if (isTest) {
-                            updateAudioStatus('🎵 音频已加载，准备播放... Audio loaded, ready to play...', 'warning');
+                            updateAudioStatus('🎵 音頻已加載，準備播放... Audio loaded, ready to play...', 'warning');
                         }
                     };
                     
                     audio.onplay = () => {
                         debugLog('Audio playback started');
                         if (isTest) {
-                            updateAudioStatus('▶️ 音频正在播放... Audio playing...', 'warning');
+                            updateAudioStatus('▶️ 音頻正在播放... Audio playing...', 'warning');
                         }
                     };
                     
@@ -815,20 +1143,16 @@
                         debugLog('Audio playback ended');
                         URL.revokeObjectURL(audioUrl);
                         if (isTest) {
-                            updateAudioStatus('✅ 音频播放完成！Audio playback completed!', 'success');
+                            updateAudioStatus('✅ 音頻播放完成！Audio playback completed!', 'success');
                         }
                     };
                     
                     audio.onerror = (e) => {
                         debugLog(`Audio playback error: ${e.message || 'Unknown error'}`, 'error');
                         if (isTest) {
-                            updateAudioStatus('❌ 音频播放失败 Audio playback failed', 'error');
+                            updateAudioStatus('❌ 音頻播放失敗 Audio playback failed', 'error');
                         }
                     };
-                    
-                    audio.onloadstart = () => debugLog('Audio loading started');
-                    audio.onloadeddata = () => debugLog('Audio data loaded');
-                    audio.oncanplaythrough = () => debugLog('Audio can play through');
                     
                     // Multiple play attempts for better browser compatibility
                     const playAudio = async () => {
@@ -858,7 +1182,7 @@
                                 
                                 // Show user instruction for manual play
                                 if (isTest) {
-                                    updateAudioStatus('⚠️ 需要用户交互才能播放音频。请点击页面任意位置后重试。', 'warning');
+                                    updateAudioStatus('⚠️ 需要用戶交互才能播放音頻。請點擊頁面任意位置後重試。', 'warning');
                                 }
                                 
                                 // Try to play on next user interaction
@@ -885,7 +1209,7 @@
                     debugLog(`Error details: ${JSON.stringify(errorData)}`, 'error');
                     
                     if (isTest) {
-                        updateAudioStatus(`❌ TTS 请求失败: ${response.status}`, 'error');
+                        updateAudioStatus(`❌ TTS 請求失敗: ${response.status}`, 'error');
                     }
                 }
             } catch (error) {
@@ -893,7 +1217,7 @@
                 console.error('Speech function error:', error);
                 
                 if (isTest) {
-                    updateAudioStatus(`❌ 音频请求错误: ${error.message}`, 'error');
+                    updateAudioStatus(`❌ 音頻請求錯誤: ${error.message}`, 'error');
                 }
             }
         }
@@ -932,14 +1256,19 @@
             try {
                 debugLog('Starting training session');
                 
+                // Check if AI is ready
+                if (!isAIReady) {
+                    alert('AI模型尚未就緒，請稍等片刻再試！\nAI model not ready yet, please wait and try again!');
+                    return;
+                }
+                
                 // Check audio readiness first
                 if (!audioContext || audioContext.state === 'suspended') {
-                    alert('请先点击"启用音频权限"按钮，确保音频正常工作！\nPlease click "Enable Audio" button first to ensure audio works properly!');
+                    alert('請先點擊"啟用音頻"按鈕，確保音頻正常工作！\nPlease click "Enable Audio" button first to ensure audio works properly!');
                     return;
                 }
                 
                 isRecording = true;
-                currentStep = 0;
                 audioChunks = [];
                 conversationHistory = [];
                 
@@ -975,23 +1304,50 @@
                 sessionStartTime = Date.now();
                 startTimer();
                 
-                // Initial scenario setup with Azure TTS
-                setTimeout(() => {
+                // Initial scenario setup with AI-enhanced greeting
+                setTimeout(async () => {
                     debugLog('Playing initial patient greeting');
-                    const initialSSML = `<speak version="1.0" xml:lang="zh-HK">
-                        <voice name="${selectedVoice}">
-                            <mstts:express-as style="curious">
-                                呀？有人嚟喇。邊個呀？
-                                <lang xml:lang="en-US">Who is there?</lang>
-                            </mstts:express-as>
-                        </voice>
-                    </speak>`;
                     
-                    addMessage('patient', "呀？有人嚟喇。邊個呀？Who is there?", "Patient notices someone approaching the room");
-                    speakPatientResponseAzure(initialSSML);
+                    // Use AI to generate initial greeting if available
+                    let initialResponse;
+                    try {
+                        if (isAIReady) {
+                            const context = `病人文力新剛剛看到有人進入房間，他好奇地想知道是誰來了。用廣東話回應：`;
+                            const aiGreeting = await textGenerator(context, {
+                                max_new_tokens: 50,
+                                temperature: 0.7,
+                                do_sample: true
+                            });
+                            
+                            let generatedGreeting = aiGreeting[0].generated_text.replace(context, '').trim();
+                            if (generatedGreeting.length < 10) {
+                                generatedGreeting = "呀？有人嚟喇。邊個呀？Who is there?";
+                            }
+                            
+                            initialResponse = formatResponseAsSSML(generatedGreeting);
+                            debugLog(`AI-generated initial greeting: ${generatedGreeting}`);
+                        } else {
+                            throw new Error('AI not ready');
+                        }
+                    } catch (error) {
+                        debugLog(`Using fallback greeting: ${error.message}`);
+                        initialResponse = `<speak version="1.0" xml:lang="zh-HK">
+                            <voice name="${selectedVoice}">
+                                <mstts:express-as style="curious">
+                                    呀？有人嚟喇。邊個呀？
+                                    <lang xml:lang="en-US">Who is there?</lang>
+                                </mstts:express-as>
+                            </voice>
+                        </speak>`;
+                    }
+                    
+                    const responseText = extractTextFromSSML(initialResponse);
+                    addMessage('patient', responseText, "Patient notices someone approaching the room - training session begins");
+                    conversationHistory.push({role: 'patient', content: responseText});
+                    await speakPatientResponseAzure(initialResponse);
                 }, 3000);
                 
-                updateStatus('🎙️ 專業錄音進行中... Professional AI training in progress', 'recording');
+                updateStatus('🎙️ 智能AI訓練進行中... Intelligent AI training in progress', 'recording');
                 startBtn.disabled = true;
                 stopBtn.disabled = false;
                 debugLog('Training session started successfully');
@@ -1020,7 +1376,7 @@
             
             stopTimer();
             
-            updateStatus('✅ 專業訓練完成！Professional training completed! Review your session below.', 'ready');
+            updateStatus('✅ 智能訓練完成！Intelligent training completed! Review your session below.', 'ready');
             startBtn.disabled = false;
             stopBtn.disabled = true;
             
@@ -1050,7 +1406,7 @@
             downloadBtn.onclick = function() {
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `azure-nursing-training-${new Date().toISOString().slice(0, 19)}.wav`;
+                a.download = `ai-nursing-training-${new Date().toISOString().slice(0, 19)}.wav`;
                 a.click();
             };
         }
@@ -1064,6 +1420,8 @@
         // Make functions available globally
         window.testAudio = testAudio;
         window.enableAudioContext = enableAudioContext;
+        window.clearDebugLogs = clearDebugLogs;
+        window.toggleDebug = toggleDebug;
         
         // Event listeners
         startBtn.addEventListener('click', startSession);
