@@ -795,12 +795,22 @@
             return response;
         }
         
+        // Escape XML special characters for SSML
+        function escapeXml(text) {
+            return text.replace(/&/g, '&amp;')
+                      .replace(/</g, '&lt;')
+                      .replace(/>/g, '&gt;')
+                      .replace(/"/g, '&quot;')
+                      .replace(/'/g, '&apos;');
+        }
+        
         // Format response as SSML
         function formatResponseAsSSML(response) {
+            const escapedResponse = escapeXml(response);
             return `<speak version="1.0" xml:lang="zh-HK">
                 <voice name="${selectedVoice}">
                     <mstts:express-as style="chat">
-                        ${response}
+                        ${escapedResponse}
                     </mstts:express-as>
                 </voice>
             </speak>`;
@@ -869,6 +879,39 @@
             } else {
                 updateAudioStatus('✅ 音頻已就緒 Audio ready', 'success');
             }
+        }
+        
+        // Test Azure connection endpoints
+        async function testAzureConnection() {
+            for (const endpoint of SPEECH_ENDPOINTS) {
+                try {
+                    debugLog(`Testing endpoint: ${endpoint}`);
+                    const testSSML = `<speak version="1.0" xml:lang="zh-HK">
+                        <voice name="zh-HK-HiuMaanNeural">測試</voice>
+                    </speak>`;
+                    
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ ssml: testSSML })
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.audio) {
+                            CURRENT_ENDPOINT = endpoint;
+                            debugLog(`Using endpoint: ${endpoint}`);
+                            return true;
+                        }
+                    }
+                } catch (error) {
+                    debugLog(`Endpoint ${endpoint} failed: ${error.message}`, 'error');
+                    continue;
+                }
+            }
+            throw new Error('All Azure endpoints failed');
         }
         
         // Test audio function
@@ -981,6 +1024,7 @@
                 await testAzureConnection();
                 debugLog('Azure connection test successful');
                 
+                // Initialize speech recognition
                 updateStatus('正在載入語音識別... Loading speech recognition...', 'loading');
                 debugLog('Initializing speech recognition...');
                 await initSpeechRecognition();
@@ -997,47 +1041,7 @@
             }
         }
         
-        // Test Azure connection
-        async function testAzureConnection() {
-            const testSSML = `<speak version="1.0" xml:lang="zh-HK">
-                <voice name="zh-HK-HiuMaanNeural">測試</voice>
-            </speak>`;
-            
-            debugLog(`Testing connection to: ${CURRENT_ENDPOINT}`);
-            
-            try {
-                const response = await fetch(CURRENT_ENDPOINT, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ ssml: testSSML })
-                });
-                
-                debugLog(`Response status: ${response.status}`);
-                
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    debugLog(`Response error text: ${errorText}`, 'error');
-                    throw new Error(`Netlify function failed: ${response.status} - ${errorText}`);
-                }
-                
-                const responseData = await response.json();
-                debugLog(`Response data keys: ${Object.keys(responseData)}`);
-                
-                if (!responseData.audio) {
-                    throw new Error('No audio data in response');
-                }
-                
-                debugLog('Azure connection test successful - audio data received');
-                
-            } catch (error) {
-                debugLog(`Connection test failed: ${error.message}`, 'error');
-                throw error;
-            }
-        }
-        
-        // Initialize speech recognition
+        // Initialize speech recognition with compatibility check
         async function initSpeechRecognition() {
             if ('webkitSpeechRecognition' in window) {
                 recognition = new webkitSpeechRecognition();
@@ -1046,7 +1050,7 @@
                 recognition = new SpeechRecognition();
                 debugLog('Using SpeechRecognition');
             } else {
-                throw new Error('Speech recognition not supported in this browser');
+                throw new Error('Speech recognition not supported in this browser. Please use Chrome or Edge.');
             }
             
             recognition.continuous = true;
@@ -1075,6 +1079,8 @@
                             debugLog(`Recognition restart failed: ${e.message}`, 'error');
                         }
                     }, 1000);
+                } else if (event.error === 'not-allowed') {
+                    alert('麥克風權限被拒絕。請在瀏覽器設置中允許麥克風訪問。Microphone access denied. Please allow microphone access in browser settings.');
                 }
             };
             
@@ -1355,7 +1361,9 @@
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 debugLog('Microphone access granted');
                 
-                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder = new MediaRecorder(stream, {
+                    mimeType: 'audio/webm;codecs=opus'
+                });
                 
                 mediaRecorder.ondataavailable = function(event) {
                     audioChunks.push(event.data);
@@ -1363,7 +1371,7 @@
                 
                 mediaRecorder.onstop = function() {
                     debugLog('Media recorder stopped, creating download link');
-                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
                     createDownloadLink(audioBlob);
                 };
                 
@@ -1428,7 +1436,12 @@
             } catch (error) {
                 debugLog(`Error starting session: ${error.message}`, 'error');
                 console.error('Error starting session:', error);
-                alert('無法使用麥克風，請檢查權限設定 Error accessing microphone. Please check permissions.');
+                
+                if (error.name === 'NotAllowedError') {
+                    alert('麥克風權限被拒絕。請在瀏覽器設置中允許麥克風訪問。Microphone access denied. Please allow microphone access in browser settings.');
+                } else {
+                    alert('無法使用麥克風，請檢查權限設定 Error accessing microphone. Please check permissions.');
+                }
             }
         }
         
@@ -1479,7 +1492,7 @@
             downloadBtn.onclick = function() {
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `ai-nursing-training-${new Date().toISOString().slice(0, 19)}.wav`;
+                a.download = `ai-nursing-training-${new Date().toISOString().slice(0, 19)}.webm`;
                 a.click();
             };
         }
