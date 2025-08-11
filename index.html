@@ -1,163 +1,4 @@
-.debug-info {
-            background: #d1ecf1;
-            color: #0c5460;
-        }
-
-        .system-message {
-            background: #e2e3e5;
-            border-left: 4px solid #6c757d;
-            margin: 20px 0;
-        }
-
-        .system-text {
-            color: #495057;
-            font-weight: 500;
-        }
-
-        .guidance-prompt {
-            background: #fff3cd;
-            border: 2px solid #ffeaa7;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
-            animation: slideIn 0.3s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .guidance-content h4 {
-            color: #856404;
-            margin-top: 0;
-            margin-bottom: 15px;
-        }
-
-        .guidance-message {
-            background: #ffeaa7;
-            padding: 10px;
-            border-radius: 6px;
-            margin: 10px 0;
-            border-left: 4px solid #fdcb6e;
-        }
-
-        .guidance-suggestion {
-            background: #d1ecf1;
-            padding: 15px;
-            border-radius: 6px;
-            margin: 15px 0;
-            border-left: 4px solid #17a2b8;
-            font-style: italic;
-        }
-
-        .guidance-stats {
-            text-align: center;
-            margin: 10px 0;
-            color: #6c757d;
-        }
-
-        .guidance-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 15px;
-            flex-wrap: wrap;
-        }
-
-        .progress-indicator {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-            border-left: 4px solid #28a745;
-        }
-
-        .progress-header h4 {
-            margin-top: 0;
-            margin-bottom: 15px;
-            color: #155724;
-        }
-
-        .progress-bar {
-            background: #e9ecef;
-            height: 20px;
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 15px 0;
-        }
-
-        .progress-fill {
-            background: linear-gradient(90deg, #28a745, #20c997);
-            height: 100%;
-            border-radius: 10px;
-            transition: width 0.5s ease;
-            position: relative;
-        }
-
-        .progress-fill::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            animation: shimmer 2s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-
-        .progress-details {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .current-phase {
-            font-weight: 600;
-            color: #155724;
-        }
-
-        .needs-help {
-            color: #dc3545;
-            font-weight: bold;
-            animation: pulse 1.5s infinite;
-        }
-
-        .progress-stats {
-            color: #6c757d;
-            font-size: 14px;
-        }
-
-        @media (max-width: 768px) {
-            .guidance-actions {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .guidance-actions .btn {
-                width: 100%;
-                max-width: 250px;
-            }
-            
-            .progress-details {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-        }<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -305,6 +146,15 @@
             background: #c0392b;
         }
         
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+        
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+        
         .btn:disabled {
             background: #bdc3c7;
             cursor: not-allowed;
@@ -386,6 +236,12 @@
             border-left: 4px solid #ff9800;
         }
         
+        .system-message {
+            background: #e2e3e5;
+            border-left: 4px solid #6c757d;
+            margin: 20px 0;
+        }
+        
         .message-header {
             font-weight: bold;
             margin-bottom: 8px;
@@ -398,6 +254,11 @@
         
         .cantonese-text {
             color: #c0392b;
+            font-weight: 500;
+        }
+        
+        .system-text {
+            color: #495057;
             font-weight: 500;
         }
         
@@ -555,6 +416,134 @@
             border-left-color: #dc3545;
         }
 
+        .guidance-prompt {
+            background: #fff3cd;
+            border: 2px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .guidance-content h4 {
+            color: #856404;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .guidance-message {
+            background: #ffeaa7;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border-left: 4px solid #fdcb6e;
+        }
+
+        .guidance-suggestion {
+            background: #d1ecf1;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border-left: 4px solid #17a2b8;
+            font-style: italic;
+        }
+
+        .guidance-stats {
+            text-align: center;
+            margin: 10px 0;
+            color: #6c757d;
+        }
+
+        .guidance-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .progress-indicator {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+
+        .progress-header h4 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #155724;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #28a745, #20c997);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .current-phase {
+            font-weight: 600;
+            color: #155724;
+        }
+
+        .needs-help {
+            color: #dc3545;
+            font-weight: bold;
+            animation: pulse 1.5s infinite;
+        }
+
+        .progress-stats {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
         @media (max-width: 1200px) {
             .main-container {
                 grid-template-columns: 1fr;
@@ -586,6 +575,21 @@
                 width: 100%;
                 max-width: 300px;
             }
+            
+            .guidance-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .guidance-actions .btn {
+                width: 100%;
+                max-width: 250px;
+            }
+            
+            .progress-details {
+                flex-direction: column;
+                align-items: flex-start;
+            }
         }
     </style>
 </head>
@@ -593,7 +597,7 @@
     <div class="main-container">
         <div class="left-panel">
             <div class="header">
-                <h1>🏥 護理學生傷口護理訓練系統 <span class="azure-badge">Azure AI</span><span class="ai-badge">Transformer.js</span></h1>
+                <h1>🏥 護理學生傷口護理訓練系統 <span class="azure-badge">Azure AI</span><span class="ai-badge">Intelligent</span></h1>
                 <h2>Professional Nursing Student Wound Care Training System</h2>
                 <p>Advanced AI-powered patient simulation with intelligent responses and realistic Cantonese voices</p>
             </div>
@@ -606,7 +610,7 @@
             </div>
 
             <div id="aiStatus" class="ai-status loading">
-                <span class="loading-spinner"></span> 正在加載AI模型... Loading AI model...
+                <span class="loading-spinner"></span> 正在初始化智能系統... Initializing intelligent system...
             </div>
             
             <div id="status" class="status loading">
@@ -702,19 +706,6 @@
     </div>
 
     <script type="module">
-        import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2';
-        
-        // Disable local model loading to use CDN
-        env.allowRemoteModels = true;
-        env.allowLocalModels = false;
-        
-        // Netlify Function Configuration
-        const SPEECH_ENDPOINTS = [
-            '/.netlify/functions/speech',
-            '/api/speech'
-        ];
-        let CURRENT_ENDPOINT = SPEECH_ENDPOINTS[0];
-        
         // Global variables
         let mediaRecorder;
         let audioChunks = [];
@@ -732,6 +723,24 @@
         // AI Model variables
         let textGenerator = null;
         let isAIReady = false;
+        
+        // Netlify Function Configuration
+        const SPEECH_ENDPOINTS = [
+            '/.netlify/functions/speech',
+            '/api/speech'
+        ];
+        let CURRENT_ENDPOINT = SPEECH_ENDPOINTS[0];
+        
+        // Patient personality and context
+        const patientContext = {
+            name: "文力新",
+            age: 65,
+            condition: "腿部傷口需要清洗及換藥",
+            personality: "健談但容易緊張，喜歡詳細解釋，會混合廣東話和英文說話",
+            currentPain: 6,
+            anxiety: 7,
+            previousExperience: "之前有做過傷口護理，但每次都很緊張"
+        };
         
         // Conversation flow management and fallback system
         let conversationState = {
@@ -781,216 +790,33 @@
             }
         ];
         
-        // Track conversation progress and failures
-        function trackConversationProgress(studentInput) {
-            const currentPhase = getCurrentPhase();
-            const hasExpectedKeywords = currentPhase.expectedKeywords.some(keyword => 
-                studentInput.toLowerCase().includes(keyword.toLowerCase())
-            );
-            
-            if (hasExpectedKeywords) {
-                // Success - move to next phase
-                conversationState.failureCount = 0;
-                conversationState.needsGuidance = false;
-                
-                if (currentPhase.nextPhase) {
-                    setTimeout(() => {
-                        moveToNextPhase();
-                    }, 3000);
-                }
-                
-                debugLog(`Phase progress: Successfully completed ${currentPhase.name}`);
-            } else {
-                // Failure - increment counter
-                conversationState.failureCount++;
-                conversationState.totalFailures++;
-                conversationState.lastStudentInput = studentInput;
-                
-                debugLog(`Phase failure: ${conversationState.failureCount} failures in ${currentPhase.name}`);
-                
-                // Show guidance after 2 failures
-                if (conversationState.failureCount >= 2) {
-                    conversationState.needsGuidance = true;
-                    showGuidancePrompt();
-                }
-            }
-            
-            updateProgressIndicator();
-        }
+        // Voice optimization and pre-warming
+        let voiceCache = new Map();
+        let isVoicePreWarmed = false;
         
-        // Get current conversation phase
-        function getCurrentPhase() {
-            return conversationPhases.find(p => p.name === conversationState.currentPhase) || conversationPhases[0];
-        }
-        
-        // Move to next conversation phase
-        function moveToNextPhase() {
-            const currentPhase = getCurrentPhase();
-            if (currentPhase.nextPhase) {
-                conversationState.currentPhase = currentPhase.nextPhase;
-                conversationState.failureCount = 0;
-                conversationState.phaseStartTime = Date.now();
-                conversationState.needsGuidance = false;
-                
-                hideGuidancePrompt();
-                updateProgressIndicator();
-                
-                debugLog(`Moved to phase: ${conversationState.currentPhase}`);
-                
-                // Provide contextual patient response for new phase
-                setTimeout(() => {
-                    providePhaseTransitionResponse();
-                }, 1000);
+        // Debug logging function
+        function debugLog(message, type = 'info') {
+            console.log(`[${type.toUpperCase()}] ${message}`);
+            
+            if (debugMode) {
+                const debugLogs = document.getElementById('debugLogs');
+                const logDiv = document.createElement('div');
+                logDiv.className = `debug-log debug-${type}`;
+                logDiv.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+                debugLogs.appendChild(logDiv);
+                debugLogs.scrollTop = debugLogs.scrollHeight;
             }
         }
-        
-        // Show guidance prompt with skip option
-        function showGuidancePrompt() {
-            const currentPhase = getCurrentPhase();
-            
-            // Remove existing guidance if any
-            hideGuidancePrompt();
-            
-            const guidanceDiv = document.createElement('div');
-            guidanceDiv.id = 'guidancePrompt';
-            guidanceDiv.className = 'guidance-prompt';
-            guidanceDiv.innerHTML = `
-                <div class="guidance-content">
-                    <h4>🤔 需要幫助？Training Guidance Needed?</h4>
-                    <div class="guidance-message">
-                        <strong>當前階段 Current Phase:</strong> ${currentPhase.title}
-                    </div>
-                    <div class="guidance-suggestion">
-                        <strong>建議說法 Suggested Approach:</strong><br>
-                        <em>${currentPhase.guidance}</em>
-                    </div>
-                    <div class="guidance-stats">
-                        <small>嘗試次數 Attempts: ${conversationState.failureCount} | 總失敗 Total failures: ${conversationState.totalFailures}</small>
-                    </div>
-                    <div class="guidance-actions">
-                        <button onclick="skipToNextPhase()" class="btn btn-warning btn-small">
-                            ⏭️ 跳到下一階段 Skip to Next Phase
-                        </button>
-                        <button onclick="hideGuidancePrompt()" class="btn btn-primary btn-small">
-                            💪 繼續嘗試 Keep Trying
-                        </button>
-                    </div>
-                </div>
-            `;
-            
-            // Insert after the conversation div
-            const conversationDiv = document.getElementById('conversation');
-            conversationDiv.parentNode.insertBefore(guidanceDiv, conversationDiv.nextSibling);
-            
-            debugLog('Guidance prompt shown');
+
+        function clearDebugLogs() {
+            document.getElementById('debugLogs').innerHTML = '';
         }
-        
-        // Hide guidance prompt
-        function hideGuidancePrompt() {
-            const guidanceDiv = document.getElementById('guidancePrompt');
-            if (guidanceDiv) {
-                guidanceDiv.remove();
-                debugLog('Guidance prompt hidden');
-            }
+
+        function toggleDebug() {
+            debugMode = !debugMode;
+            const debugSection = document.getElementById('debugSection');
+            debugSection.style.display = debugMode ? 'block' : 'none';
         }
-        
-        // Skip to next phase (fallback function)
-        function skipToNextPhase() {
-            const currentPhase = getCurrentPhase();
-            
-            debugLog(`Skipping phase: ${currentPhase.name}`);
-            
-            // Add system message
-            addMessage('system', `⏭️ 跳過階段："${currentPhase.title}" - 繼續下一個程序步驟`, 
-                     `Phase skipped due to difficulty. This is normal in training.`);
-            
-            // Move to next phase
-            if (currentPhase.nextPhase) {
-                moveToNextPhase();
-            } else {
-                // Training completed
-                addMessage('system', '🎉 訓練完成！Training completed! 所有階段都已完成。', 
-                         'All phases completed successfully.');
-            }
-            
-            hideGuidancePrompt();
-        }
-        
-        // Provide contextual response for phase transitions
-        function providePhaseTransitionResponse() {
-            const currentPhase = getCurrentPhase();
-            let transitionResponse = '';
-            
-            switch (currentPhase.name) {
-                case 'identification':
-                    transitionResponse = '好嘅，咁你要做咩呀？你係邊個？';
-                    break;
-                case 'explanation':
-                    transitionResponse = '明白喇。咁你要做咩程序呀？會唔會痛㗎？';
-                    break;
-                case 'procedure':
-                    transitionResponse = '好嘅，我準備好喇。可以開始喇。';
-                    break;
-                case 'completion':
-                    transitionResponse = '做完喇？咁我要注意咩呀？';
-                    break;
-                default:
-                    return; // No transition response needed
-            }
-            
-            const ssml = formatResponseAsSSML(transitionResponse);
-            addMessage('patient', transitionResponse, `Phase transition to: ${currentPhase.title}`);
-            conversationHistory.push({role: 'patient', content: transitionResponse});
-            speakPatientResponseAzure(ssml);
-        }
-        
-        // Update progress indicator
-        function updateProgressIndicator() {
-            let progressDiv = document.getElementById('progressIndicator');
-            
-            if (!progressDiv) {
-                progressDiv = document.createElement('div');
-                progressDiv.id = 'progressIndicator';
-                progressDiv.className = 'progress-indicator';
-                
-                // Insert after timer
-                const timerDiv = document.getElementById('timer');
-                timerDiv.parentNode.insertBefore(progressDiv, timerDiv.nextSibling);
-            }
-            
-            const currentPhase = getCurrentPhase();
-            const currentIndex = conversationPhases.findIndex(p => p.name === conversationState.currentPhase);
-            const totalPhases = conversationPhases.length;
-            const progressPercent = ((currentIndex + 1) / totalPhases) * 100;
-            
-            progressDiv.innerHTML = `
-                <div class="progress-header">
-                    <h4>📋 訓練進度 Training Progress</h4>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: ${progressPercent}%"></div>
-                </div>
-                <div class="progress-details">
-                    <div class="current-phase">
-                        <strong>當前階段:</strong> ${currentPhase.title}
-                        ${conversationState.needsGuidance ? ' <span class="needs-help">⚠️ 需要幫助</span>' : ''}
-                    </div>
-                    <div class="progress-stats">
-                        階段 ${currentIndex + 1} / ${totalPhases} | 
-                        失敗次數: ${conversationState.failureCount}
-                    </div>
-                </div>
-            `;
-        }
-        const patientContext = {
-            name: "文力新",
-            age: 65,
-            condition: "腿部傷口需要清洗及換藥",
-            personality: "健談但容易緊張，喜歡詳細解釋，會混合廣東話和英文說話",
-            currentPain: 6,
-            anxiety: 7,
-            previousExperience: "之前有做過傷口護理，但每次都很緊張"
-        };
         
         // Initialize AI Model (using enhanced rule-based system)
         async function initializeAI() {
@@ -1209,51 +1035,105 @@
             return response;
         }
         
-        // Format response as SSML
-        function formatResponseAsSSML(response) {
-            return `<speak version="1.0" xml:lang="zh-HK">
-                <voice name="${selectedVoice}">
-                    <mstts:express-as style="chat">
-                        ${response}
-                    </mstts:express-as>
-                </voice>
-            </speak>`;
+        // Test audio function
+        async function testAudio() {
+            try {
+                debugLog('Testing audio...');
+                updateAudioStatus('🔄 正在測試音頻... Testing audio...', 'warning');
+                
+                const testSSML = `<speak version="1.0" xml:lang="zh-HK">
+                    <voice name="${selectedVoice}">
+                        <mstts:express-as style="cheerful">
+                            你好！音頻測試成功！Hello! Audio test successful!
+                        </mstts:express-as>
+                    </voice>
+                </speak>`;
+                
+                await speakPatientResponseAzure(testSSML, true);
+                
+            } catch (error) {
+                debugLog(`Audio test failed: ${error.message}`, 'error');
+                updateAudioStatus('❌ 音頻測試失敗 Audio test failed', 'error');
+            }
         }
         
-        // Fallback response system
-        function generateFallbackResponse(studentInput) {
-            const input = studentInput.toLowerCase();
-            
-            const responses = {
-                greeting: [
-                    `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}"><mstts:express-as style="cheerful">好啊，入嚟啦。你叫咩名呀？What is your name?</mstts:express-as></voice></speak>`,
-                    `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}"><mstts:express-as style="curious">邊個呀？係護士嚟㗎？Who is there?</mstts:express-as></voice></speak>`
-                ],
-                identification: [
-                    `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}">係啊，我係文力新。你要做咩呀？My leg is hurt. 有啲痛㗎。</voice></speak>`,
-                    `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}">我個HN係23332099。點解要check㗎？</voice></speak>`
-                ],
-                procedure: [
-                    `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}"><mstts:express-as style="fearful">洗傷口？會唔會好痛㗎？I am scared. 我有啲驚呀。</mstts:express-as></voice></speak>`,
-                    `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}">係咪要除咗啲野先？要唔要我郁？</voice></speak>`
-                ],
-                default: [
-                    `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}">咩話？我聽唔清楚呀。What did you say?</voice></speak>`,
-                    `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}">你可唔可以講慢啲？Can you speak slower?</voice></speak>`,
-                    `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}">唔好意思，我唔係好明。Sorry, I don't understand.</voice></speak>`
-                ]
-            };
-            
-            // Simple keyword matching for fallback
-            if (input.includes('護士') || input.includes('何') || input.includes('入嚟')) {
-                return responses.greeting[Math.floor(Math.random() * responses.greeting.length)];
-            } else if (input.includes('文生') || input.includes('對名') || input.includes('文力新') || input.includes('23332099')) {
-                return responses.identification[Math.floor(Math.random() * responses.identification.length)];
-            } else if (input.includes('洗傷口') || input.includes('換藥') || input.includes('唔好郁') || input.includes('procedure')) {
-                return responses.procedure[Math.floor(Math.random() * responses.procedure.length)];
-            } else {
-                return responses.default[Math.floor(Math.random() * responses.default.length)];
+        // Enhanced Azure TTS
+        async function speakPatientResponseAzure(ssmlText, isTest = false) {
+            try {
+                debugLog('Sending TTS request to Azure via Netlify function');
+                
+                const response = await fetch(CURRENT_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ ssml: ssmlText })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    if (!data.audio) {
+                        throw new Error('No audio data in response');
+                    }
+                    
+                    const audioBlob = new Blob(
+                        [Uint8Array.from(atob(data.audio), c => c.charCodeAt(0))], 
+                        { type: 'audio/mpeg' }
+                    );
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    
+                    const audio = new Audio(audioUrl);
+                    audio.volume = currentVolume;
+                    
+                    audio.onended = () => {
+                        URL.revokeObjectURL(audioUrl);
+                        if (isTest) {
+                            updateAudioStatus('✅ 音頻播放完成！Audio playback completed!', 'success');
+                        }
+                    };
+                    
+                    audio.onerror = () => {
+                        URL.revokeObjectURL(audioUrl);
+                        if (isTest) {
+                            updateAudioStatus('❌ 音頻播放失敗 Audio playback failed', 'error');
+                        }
+                    };
+                    
+                    if (audioContext && audioContext.state === 'suspended') {
+                        await audioContext.resume();
+                    }
+                    
+                    await audio.play();
+                    
+                } else {
+                    let errorDetails = 'Unknown error';
+                    try {
+                        const errorData = await response.json();
+                        errorDetails = errorData.error || errorData.message || JSON.stringify(errorData);
+                    } catch (e) {
+                        errorDetails = await response.text() || `HTTP ${response.status}`;
+                    }
+                    
+                    if (isTest) {
+                        updateAudioStatus(`❌ TTS 請求失敗: ${response.status} - ${errorDetails}`, 'error');
+                    }
+                    throw new Error(`TTS request failed: ${response.status} - ${errorDetails}`);
+                }
+            } catch (error) {
+                debugLog(`TTS function error: ${error.message}`, 'error');
+                if (isTest) {
+                    updateAudioStatus(`❌ 音頻請求錯誤: ${error.message}`, 'error');
+                }
+                throw error;
             }
+        }
+        
+        // Update audio status display
+        function updateAudioStatus(message, type) {
+            const audioStatus = document.getElementById('audioStatus');
+            audioStatus.textContent = message;
+            audioStatus.className = `audio-status ${type}`;
         }
         
         // Update AI status display
@@ -1265,174 +1145,14 @@
             aiStatus.className = `ai-status ${type}`;
         }
         
-        // Voice optimization and pre-warming
-        let voiceCache = new Map();
-        let isVoicePreWarmed = false;
-        
-        // Pre-warm Azure Speech Service and cache common responses
-        async function preWarmVoiceService() {
-            try {
-                debugLog('Pre-warming Azure Speech Service...');
-                updateStatus('🔥 正在預熱語音服務... Pre-warming voice service...', 'loading');
-                
-                // Common responses to pre-generate and cache
-                const commonResponses = [
-                    {
-                        key: 'greeting_1',
-                        ssml: `<speak version="1.0" xml:lang="zh-HK">
-                            <voice name="${selectedVoice}">
-                                <mstts:express-as style="curious">
-                                    呀？有人嚟喇。邊個呀？
-                                    <lang xml:lang="en-US">Who is there?</lang>
-                                </mstts:express-as>
-                            </voice>
-                        </speak>`
-                    },
-                    {
-                        key: 'identification_1',
-                        ssml: `<speak version="1.0" xml:lang="zh-HK">
-                            <voice name="${selectedVoice}">
-                                係啊，我係文力新。你要做咩呀？
-                                <lang xml:lang="en-US">My leg is hurt.</lang>
-                                有啲痛㗎。
-                            </voice>
-                        </speak>`
-                    },
-                    {
-                        key: 'anxiety_1',
-                        ssml: `<speak version="1.0" xml:lang="zh-HK">
-                            <voice name="${selectedVoice}">
-                                <mstts:express-as style="fearful">
-                                    洗傷口？會唔會好痛㗎？
-                                    <lang xml:lang="en-US">I am scared.</lang>
-                                    我有啲驚呀。
-                                </mstts:express-as>
-                            </voice>
-                        </speak>`
-                    }
-                ];
-                
-                // Pre-generate and cache audio
-                for (const response of commonResponses) {
-                    try {
-                        debugLog(`Pre-generating: ${response.key}`);
-                        const audioBlob = await generateAndCacheAudio(response.ssml, response.key);
-                        if (audioBlob) {
-                            debugLog(`Cached: ${response.key} (${audioBlob.size} bytes)`);
-                        }
-                    } catch (error) {
-                        debugLog(`Failed to cache ${response.key}: ${error.message}`, 'error');
-                    }
-                }
-                
-                isVoicePreWarmed = true;
-                debugLog('Voice service pre-warming completed');
-                updateStatus('✅ 語音服務已優化！Voice service optimized!', 'ready');
-                
-            } catch (error) {
-                debugLog(`Voice pre-warming failed: ${error.message}`, 'error');
-                updateStatus('⚠️ 語音預熱失敗，但系統可正常使用 Voice pre-warming failed, but system usable', 'ready');
-            }
+        // Update status display
+        function updateStatus(message, type) {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = message;
+            statusEl.className = `status ${type}`;
         }
         
-        // Generate and cache audio with retry logic
-        async function generateAndCacheAudio(ssml, cacheKey) {
-            try {
-                const response = await fetch(CURRENT_ENDPOINT, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ssml })
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    const audioBlob = new Blob(
-                        [Uint8Array.from(atob(data.audio), c => c.charCodeAt(0))], 
-                        { type: 'audio/mpeg' }
-                    );
-                    
-                    // Cache the audio blob
-                    voiceCache.set(cacheKey, {
-                        blob: audioBlob,
-                        url: URL.createObjectURL(audioBlob),
-                        timestamp: Date.now()
-                    });
-                    
-                    return audioBlob;
-                }
-            } catch (error) {
-                debugLog(`Cache generation failed for ${cacheKey}: ${error.message}`, 'error');
-            }
-            return null;
-        }
-        
-        // Play cached audio if available, otherwise generate new
-        async function playCachedOrGenerateAudio(ssml, cacheKey = null, isTest = false) {
-            try {
-                // Try to use cached audio first
-                if (cacheKey && voiceCache.has(cacheKey)) {
-                    const cached = voiceCache.get(cacheKey);
-                    // Cache is valid for 10 minutes
-                    if (Date.now() - cached.timestamp < 600000) {
-                        debugLog(`Using cached audio: ${cacheKey}`);
-                        await playAudioFromBlob(cached.blob, isTest);
-                        return;
-                    } else {
-                        // Clean up expired cache
-                        URL.revokeObjectURL(cached.url);
-                        voiceCache.delete(cacheKey);
-                    }
-                }
-                
-                // Generate new audio
-                await speakPatientResponseAzure(ssml, isTest);
-                
-            } catch (error) {
-                debugLog(`Cached audio playback failed: ${error.message}`, 'error');
-                // Fallback to regular generation
-                await speakPatientResponseAzure(ssml, isTest);
-            }
-        }
-        
-        // Optimized audio playback from blob
-        async function playAudioFromBlob(audioBlob, isTest = false) {
-            const audioUrl = URL.createObjectURL(audioBlob);
-            const audio = new Audio(audioUrl);
-            audio.volume = currentVolume;
-            audio.preload = 'auto';
-            
-            return new Promise((resolve, reject) => {
-                audio.onended = () => {
-                    URL.revokeObjectURL(audioUrl);
-                    if (isTest) {
-                        updateAudioStatus('✅ 緩存音頻播放完成！Cached audio completed!', 'success');
-                    }
-                    resolve();
-                };
-                
-                audio.onerror = (e) => {
-                    URL.revokeObjectURL(audioUrl);
-                    reject(new Error('Audio playback failed'));
-                };
-                
-                // Enhanced playback with multiple attempts
-                const playWithRetry = async () => {
-                    try {
-                        if (audioContext && audioContext.state === 'suspended') {
-                            await audioContext.resume();
-                        }
-                        await audio.play();
-                        debugLog('Cached audio playback started successfully');
-                    } catch (error) {
-                        debugLog(`Cached audio play failed: ${error.message}`, 'error');
-                        reject(error);
-                    }
-                };
-                
-                playWithRetry();
-            });
-        }
-        // Audio context initialization for autoplay policy
+        // Audio context initialization
         function enableAudioContext() {
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -1443,52 +1163,13 @@
                 audioContext.resume().then(() => {
                     debugLog('Audio context resumed');
                     updateAudioStatus('🔊 音頻已啟用 Audio enabled', 'success');
-                    
-                    // Start voice pre-warming after audio is enabled
-                    if (!isVoicePreWarmed) {
-                        setTimeout(() => preWarmVoiceService(), 1000);
-                    }
                 }).catch(error => {
                     debugLog(`Audio context resume failed: ${error.message}`, 'error');
                     updateAudioStatus('❌ 音頻啟用失敗 Audio enable failed', 'error');
                 });
             } else {
                 updateAudioStatus('✅ 音頻已就緒 Audio ready', 'success');
-                
-                // Start voice pre-warming
-                if (!isVoicePreWarmed) {
-                    setTimeout(() => preWarmVoiceService(), 1000);
-                }
             }
-        }
-        
-        // Test audio function with caching
-        async function testAudio() {
-            try {
-                debugLog('Testing audio with cached TTS...');
-                updateAudioStatus('🔄 正在測試音頻... Testing audio...', 'warning');
-                
-                const testSSML = `<speak version="1.0" xml:lang="zh-HK">
-                    <voice name="${selectedVoice}">
-                        <mstts:express-as style="cheerful">
-                            你好！音頻測試成功！Hello! Audio test successful!
-                        </mstts:express-as>
-                    </voice>
-                </speak>`;
-                
-                await playCachedOrGenerateAudio(testSSML, 'audio_test', true);
-                
-            } catch (error) {
-                debugLog(`Audio test failed: ${error.message}`, 'error');
-                updateAudioStatus('❌ 音頻測試失敗 Audio test failed', 'error');
-            }
-        }
-        
-        // Update audio status display
-        function updateAudioStatus(message, type) {
-            const audioStatus = document.getElementById('audioStatus');
-            audioStatus.textContent = message;
-            audioStatus.className = `audio-status ${type}`;
         }
         
         // Volume control
@@ -1501,82 +1182,18 @@
             debugLog(`Volume set to: ${Math.round(currentVolume * 100)}%`);
         });
         
-        // Debug logging function
-        function debugLog(message, type = 'info') {
-            console.log(`[${type.toUpperCase()}] ${message}`);
-            
-            if (debugMode) {
-                const debugLogs = document.getElementById('debugLogs');
-                const logDiv = document.createElement('div');
-                logDiv.className = `debug-log debug-${type}`;
-                logDiv.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
-                debugLogs.appendChild(logDiv);
-                debugLogs.scrollTop = debugLogs.scrollHeight;
-            }
-        }
-
-        function clearDebugLogs() {
-            document.getElementById('debugLogs').innerHTML = '';
-        }
-
-        function toggleDebug() {
-            debugMode = !debugMode;
-            const debugSection = document.getElementById('debugSection');
-            debugSection.style.display = debugMode ? 'block' : 'none';
-        }
-        
-        // DOM elements
-        const statusEl = document.getElementById('status');
-        const startBtn = document.getElementById('startBtn');
-        const stopBtn = document.getElementById('stopBtn');
-        const timerEl = document.getElementById('timer');
-        const conversationEl = document.getElementById('conversation');
-        const messagesEl = document.getElementById('messages');
-        const downloadSection = document.getElementById('downloadSection');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const voiceSelect = document.getElementById('voiceSelect');
-        const recognitionLangSelect = document.getElementById('recognitionLang');
-        
-        // Voice and language selection
-        voiceSelect.addEventListener('change', (e) => {
-            selectedVoice = e.target.value;
-            debugLog(`Voice changed to: ${selectedVoice}`);
-        });
-        
-        recognitionLangSelect.addEventListener('change', (e) => {
-            selectedRecognitionLang = e.target.value;
-            debugLog(`Recognition language changed to: ${selectedRecognitionLang}`);
-            if (recognition) {
-                recognition.lang = selectedRecognitionLang;
-            }
-        });
-        
         // Initialize the application
         async function init() {
             try {
                 debugLog('Starting initialization...');
-                updateStatus('正在初始化AI和語音系統... Initializing AI and speech systems...', 'loading');
+                updateStatus('正在初始化系統... Initializing system...', 'loading');
                 
-                // Enable audio context on first user interaction
-                document.addEventListener('click', enableAudioContext, { once: true });
-                
-                // Initialize AI model first
-                debugLog('Initializing AI model...');
+                // Initialize AI first
                 await initializeAI();
-                debugLog('AI model initialized successfully');
                 
-                // Test Azure connection
-                debugLog('Testing Azure connection...');
-                updateStatus('正在測試Netlify連接... Testing Netlify function connection...', 'loading');
-                await testAzureConnection();
-                debugLog('Azure connection test successful');
+                updateStatus('🎉 系統準備就緒！System ready!', 'ready');
                 
-                updateStatus('正在載入語音識別... Loading speech recognition...', 'loading');
-                debugLog('Initializing speech recognition...');
-                await initSpeechRecognition();
-                debugLog('Speech recognition initialized successfully');
-                
-                updateStatus('🎉 系統準備就緒！點擊"測試音頻"確認聲音正常！System ready!', 'ready');
+                const startBtn = document.getElementById('startBtn');
                 startBtn.disabled = false;
                 debugLog('Initialization completed successfully');
                 
@@ -1587,616 +1204,14 @@
             }
         }
         
-        // Test Azure connection with better error handling
-        async function testAzureConnection() {
-            const testSSML = `<speak version="1.0" xml:lang="zh-HK">
-                <voice name="zh-HK-HiuMaanNeural">測試</voice>
-            </speak>`;
-            
-            debugLog(`Testing connection to: ${CURRENT_ENDPOINT}`);
-            
-            try {
-                const response = await fetch(CURRENT_ENDPOINT, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ ssml: testSSML })
-                });
-                
-                debugLog(`Response status: ${response.status}`);
-                
-                if (!response.ok) {
-                    let errorDetails = 'Unknown error';
-                    try {
-                        const errorData = await response.json();
-                        errorDetails = errorData.error || errorData.message || JSON.stringify(errorData);
-                    } catch (e) {
-                        const errorText = await response.text();
-                        errorDetails = errorText || `HTTP ${response.status}`;
-                    }
-                    debugLog(`Response error: ${errorDetails}`, 'error');
-                    throw new Error(`Azure connection test failed: ${response.status} - ${errorDetails}`);
-                }
-                
-                const responseData = await response.json();
-                debugLog(`Response data keys: ${Object.keys(responseData)}`);
-                
-                if (!responseData.audio) {
-                    throw new Error('No audio data in response');
-                }
-                
-                debugLog('Azure connection test successful - audio data received');
-                
-            } catch (error) {
-                debugLog(`Connection test failed: ${error.message}`, 'error');
-                throw error;
-            }
-        }
-        
-        // Initialize speech recognition
-        async function initSpeechRecognition() {
-            if ('webkitSpeechRecognition' in window) {
-                recognition = new webkitSpeechRecognition();
-                debugLog('Using webkitSpeechRecognition');
-            } else if ('SpeechRecognition' in window) {
-                recognition = new SpeechRecognition();
-                debugLog('Using SpeechRecognition');
-            } else {
-                throw new Error('Speech recognition not supported in this browser');
-            }
-            
-            recognition.continuous = true;
-            recognition.interimResults = true;
-            recognition.lang = selectedRecognitionLang;
-            
-            recognition.onresult = function(event) {
-                const result = event.results[event.results.length - 1];
-                if (result.isFinal) {
-                    const transcript = result[0].transcript.trim();
-                    debugLog(`Speech recognized: ${transcript}`);
-                    addMessage('student', transcript);
-                    conversationHistory.push({role: 'student', content: transcript});
-                    processStudentInput(transcript);
-                }
-            };
-            
-            recognition.onerror = function(event) {
-                debugLog(`Speech recognition error: ${event.error}`, 'error');
-                if (event.error === 'no-speech' && isRecording) {
-                    setTimeout(() => {
-                        try {
-                            recognition.start();
-                            debugLog('Speech recognition restarted after no-speech');
-                        } catch (e) {
-                            debugLog(`Recognition restart failed: ${e.message}`, 'error');
-                        }
-                    }, 1000);
-                }
-            };
-            
-            recognition.onend = function() {
-                debugLog('Speech recognition ended');
-                if (isRecording) {
-                    try {
-                        recognition.start();
-                        debugLog('Speech recognition restarted');
-                    } catch (e) {
-                        debugLog(`Recognition restart failed: ${e.message}`, 'error');
-                    }
-                }
-            };
-            
-            debugLog('Speech recognition configured successfully');
-        }
-        
-        // Process student input with enhanced tracking
-        async function processStudentInput(transcript) {
-            debugLog(`Processing student input: ${transcript}`);
-            
-            // Track conversation progress and failures
-            trackConversationProgress(transcript);
-            
-            try {
-                // Generate intelligent response using AI
-                const response = await generatePatientResponse(transcript, conversationHistory);
-                
-                // Simulate thinking time
-                setTimeout(async () => {
-                    const responseText = extractTextFromSSML(response);
-                    debugLog(`Patient responding: ${responseText}`);
-                    
-                    // Determine appropriate notes based on conversation context
-                    const notes = generateContextualNotes(transcript, conversationHistory);
-                    
-                    addMessage('patient', responseText, notes);
-                    conversationHistory.push({role: 'patient', content: responseText});
-                    
-                    // Speak the response
-                    await speakPatientResponseAzure(response);
-                }, 1500 + Math.random() * 1000); // Realistic response delay
-                
-            } catch (error) {
-                debugLog(`Error processing student input: ${error.message}`, 'error');
-                // Fallback to simple response
-                const fallbackResponse = generateFallbackResponse(transcript);
-                const responseText = extractTextFromSSML(fallbackResponse);
-                addMessage('patient', responseText, "AI generation failed, using fallback response");
-                conversationHistory.push({role: 'patient', content: responseText});
-                await speakPatientResponseAzure(fallbackResponse);
-            }
-        }
-        
-        // Generate contextual notes based on conversation flow
-        function generateContextualNotes(studentInput, history) {
-            const input = studentInput.toLowerCase();
-            const conversationLength = history.length;
-            
-            if (conversationLength <= 2) {
-                if (input.includes('護士') || input.includes('何') || input.includes('入嚟')) {
-                    return "Student introduction phase - establishing professional relationship";
-                }
-            } else if (conversationLength <= 6) {
-                if (input.includes('文') || input.includes('對名') || input.includes('23332099')) {
-                    return "Patient identification verification - important safety procedure";
-                }
-            } else if (conversationLength <= 10) {
-                if (input.includes('洗') || input.includes('換藥') || input.includes('傷口')) {
-                    return "Procedure explanation phase - building patient confidence";
-                }
-            }
-            
-            // Advanced contextual notes
-            if (input.includes('痛') || input.includes('pain')) {
-                return "Patient expressing pain concerns - opportunity for empathy and reassurance";
-            } else if (input.includes('驚') || input.includes('scared') || input.includes('afraid')) {
-                return "Patient showing anxiety - requires calming approach";
-            } else if (input.includes('唔明') || input.includes('understand')) {
-                return "Patient needs clarification - good opportunity to demonstrate clear communication";
-            }
-            
-            return "Ongoing conversation - maintain professional rapport";
-        }
-        
-        // Extract text from SSML
-        function extractTextFromSSML(ssml) {
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = ssml.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-            return tempDiv.textContent;
-        }
-        
-        // Enhanced Azure TTS with better error handling and validation
-        async function speakPatientResponseAzure(ssmlText, isTest = false) {
-            try {
-                debugLog('Sending TTS request to Azure via Netlify function');
-                debugLog(`SSML length: ${ssmlText.length} characters`);
-                
-                // Validate SSML before sending
-                if (!ssmlText || ssmlText.trim().length === 0) {
-                    throw new Error('Empty SSML text provided');
-                }
-                
-                // Ensure SSML is properly formed
-                if (!ssmlText.includes('<speak')) {
-                    debugLog('Warning: SSML may be malformed', 'error');
-                }
-                
-                const response = await fetch(CURRENT_ENDPOINT, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ ssml: ssmlText })
-                });
-                
-                debugLog(`TTS response status: ${response.status}`);
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    debugLog('TTS response received successfully');
-                    debugLog(`Audio data length: ${data.audio ? data.audio.length : 'undefined'} characters`);
-                    
-                    if (!data.audio) {
-                        throw new Error('No audio data in successful response');
-                    }
-                    
-                    // Enhanced audio playing with better browser compatibility
-                    const audioBlob = new Blob(
-                        [Uint8Array.from(atob(data.audio), c => c.charCodeAt(0))], 
-                        { type: 'audio/mpeg' }
-                    );
-                    const audioUrl = URL.createObjectURL(audioBlob);
-                    
-                    // Create and configure audio element
-                    const audio = new Audio(audioUrl);
-                    audio.volume = currentVolume;
-                    audio.preload = 'auto';
-                    
-                    // Enhanced audio event handlers
-                    audio.oncanplay = () => {
-                        debugLog('Audio ready to play');
-                        if (isTest) {
-                            updateAudioStatus('🎵 音頻已加載，準備播放... Audio loaded, ready to play...', 'warning');
-                        }
-                    };
-                    
-                    audio.onplay = () => {
-                        debugLog('Audio playback started');
-                        if (isTest) {
-                            updateAudioStatus('▶️ 音頻正在播放... Audio playing...', 'warning');
-                        }
-                    };
-                    
-                    audio.onended = () => {
-                        debugLog('Audio playback ended');
-                        URL.revokeObjectURL(audioUrl);
-                        if (isTest) {
-                            updateAudioStatus('✅ 音頻播放完成！Audio playback completed!', 'success');
-                        }
-                    };
-                    
-                    audio.onerror = (e) => {
-                        debugLog(`Audio playback error: ${e.message || 'Unknown error'}`, 'error');
-                        URL.revokeObjectURL(audioUrl);
-                        if (isTest) {
-                            updateAudioStatus('❌ 音頻播放失敗 Audio playback failed', 'error');
-                        }
-                    };
-                    
-                    // Multiple play attempts for better browser compatibility
-                    const playAudio = async () => {
-                        try {
-                            // Ensure audio context is active
-                            if (audioContext && audioContext.state === 'suspended') {
-                                await audioContext.resume();
-                                debugLog('Audio context resumed before playback');
-                            }
-                            
-                            // First attempt
-                            await audio.play();
-                            debugLog('Audio playback started successfully');
-                            
-                        } catch (firstError) {
-                            debugLog(`First play attempt failed: ${firstError.message}`, 'error');
-                            
-                            // Second attempt with user interaction
-                            try {
-                                // Wait a bit and try again
-                                await new Promise(resolve => setTimeout(resolve, 100));
-                                await audio.play();
-                                debugLog('Audio playback started on second attempt');
-                                
-                            } catch (secondError) {
-                                debugLog(`Second play attempt failed: ${secondError.message}`, 'error');
-                                
-                                // Show user instruction for manual play
-                                if (isTest) {
-                                    updateAudioStatus('⚠️ 需要用戶交互才能播放音頻。請點擊頁面任意位置後重試。', 'warning');
-                                }
-                                
-                                // Try to play on next user interaction
-                                const playOnInteraction = () => {
-                                    audio.play().then(() => {
-                                        debugLog('Audio played after user interaction');
-                                        document.removeEventListener('click', playOnInteraction);
-                                    }).catch(e => {
-                                        debugLog(`Play after interaction failed: ${e.message}`, 'error');
-                                    });
-                                };
-                                
-                                document.addEventListener('click', playOnInteraction, { once: true });
-                            }
-                        }
-                    };
-                    
-                    // Start playback
-                    await playAudio();
-                    
-                } else {
-                    // Enhanced error handling for failed requests
-                    let errorDetails = 'Unknown error';
-                    let errorData = null;
-                    
-                    try {
-                        errorData = await response.json();
-                        errorDetails = errorData.error || errorData.message || errorData.details || JSON.stringify(errorData);
-                    } catch (e) {
-                        try {
-                            errorDetails = await response.text();
-                        } catch (e2) {
-                            errorDetails = `HTTP ${response.status} - Unable to read error details`;
-                        }
-                    }
-                    
-                    debugLog(`TTS function failed: ${response.status}`, 'error');
-                    debugLog(`Error details: ${errorDetails}`, 'error');
-                    
-                    if (isTest) {
-                        if (response.status === 400) {
-                            updateAudioStatus(`❌ SSML格式錯誤 SSML format error: ${errorDetails}`, 'error');
-                        } else if (response.status === 401) {
-                            updateAudioStatus(`❌ Azure金鑰無效 Azure key invalid`, 'error');
-                        } else if (response.status === 500) {
-                            updateAudioStatus(`❌ 服務器錯誤 Server error: ${errorDetails}`, 'error');
-                        } else {
-                            updateAudioStatus(`❌ TTS 請求失敗: ${response.status} - ${errorDetails}`, 'error');
-                        }
-                    }
-                    
-                    throw new Error(`TTS request failed: ${response.status} - ${errorDetails}`);
-                }
-            } catch (error) {
-                debugLog(`TTS function error: ${error.message}`, 'error');
-                console.error('Speech function error:', error);
-                
-                if (isTest) {
-                    updateAudioStatus(`❌ 音頻請求錯誤: ${error.message}`, 'error');
-                }
-                
-                throw error;
-            }
-        }
-        
-        // Add message to conversation with system message support
-        function addMessage(speaker, text, notes = null) {
-            const messageDiv = document.createElement('div');
-            
-            if (speaker === 'system') {
-                messageDiv.className = 'message system-message';
-                messageDiv.innerHTML = `
-                    <div class="message-header">
-                        🤖 系統提示 System Message
-                    </div>
-                    <div class="message-content">
-                        <span class="system-text">${text}</span>
-                    </div>
-                    ${notes ? `<div class="procedure-notes">📝 ${notes}</div>` : ''}
-                `;
-            } else {
-                messageDiv.className = `message ${speaker}-message`;
-                
-                const header = document.createElement('div');
-                header.className = 'message-header';
-                header.innerHTML = speaker === 'student' ? 
-                    '👩‍⚕️ 護理學生何同學 Student Ho' : 
-                    '👨 病人文先生 Patient Mr. Man';
-                
-                const content = document.createElement('div');
-                content.className = 'message-content';
-                content.innerHTML = `<span class="cantonese-text">${text}</span>`;
-                
-                messageDiv.appendChild(header);
-                messageDiv.appendChild(content);
-                
-                if (notes && speaker === 'patient') {
-                    const notesDiv = document.createElement('div');
-                    notesDiv.className = 'procedure-notes';
-                    notesDiv.textContent = `📝 ${notes}`;
-                    messageDiv.appendChild(notesDiv);
-                }
-            }
-            
-            messagesEl.appendChild(messageDiv);
-            messagesEl.scrollTop = messagesEl.scrollHeight;
-        }
-        
-        // Start training session with progress tracking
-        async function startSession() {
-            try {
-                debugLog('Starting training session');
-                
-                // Check if AI is ready
-                if (!isAIReady) {
-                    alert('AI模型尚未就緒，請稍等片刻再試！\nAI model not ready yet, please wait and try again!');
-                    return;
-                }
-                
-                // Check audio readiness first
-                if (!audioContext || audioContext.state === 'suspended') {
-                    alert('請先點擊"啟用音頻"按鈕，確保音頻正常工作！\nPlease click "Enable Audio" button first to ensure audio works properly!');
-                    return;
-                }
-                
-                isRecording = true;
-                audioChunks = [];
-                conversationHistory = [];
-                
-                // Reset conversation state
-                conversationState = {
-                    currentPhase: 'greeting',
-                    failureCount: 0,
-                    lastStudentInput: '',
-                    phaseStartTime: Date.now(),
-                    totalFailures: 0,
-                    needsGuidance: false
-                };
-                
-                // Clear previous conversation and guidance
-                messagesEl.innerHTML = '';
-                hideGuidancePrompt();
-                conversationEl.style.display = 'block';
-                
-                // Initialize progress indicator
-                updateProgressIndicator();
-                
-                // Start audio recording
-                debugLog('Requesting microphone access');
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                debugLog('Microphone access granted');
-                
-                mediaRecorder = new MediaRecorder(stream);
-                
-                mediaRecorder.ondataavailable = function(event) {
-                    audioChunks.push(event.data);
-                };
-                
-                mediaRecorder.onstop = function() {
-                    debugLog('Media recorder stopped, creating download link');
-                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-                    createDownloadLink(audioBlob);
-                };
-                
-                mediaRecorder.start();
-                debugLog('Audio recording started');
-                
-                // Start speech recognition
-                debugLog('Starting speech recognition');
-                recognition.start();
-                
-                // Start timer
-                sessionStartTime = Date.now();
-                startTimer();
-                
-                // Initial scenario setup with optimized cached audio
-                setTimeout(async () => {
-                    debugLog('Playing initial patient greeting');
-                    
-                    // Use enhanced rule-based system to generate initial greeting
-                    let initialResponse;
-                    let cacheKey = 'greeting_1'; // Use cached greeting for faster response
-                    
-                    try {
-                        // Generate contextual greeting using rule-based system
-                        const greetingContext = createPatientContext("有人進入房間", []);
-                        const generatedGreeting = generateIntelligentResponse(greetingContext);
-                        
-                        if (generatedGreeting && generatedGreeting.length > 10) {
-                            initialResponse = formatResponseAsSSML(generatedGreeting);
-                            debugLog(`Rule-based generated greeting: ${generatedGreeting}`);
-                            cacheKey = null; // Don't use cache for custom response
-                        } else {
-                            throw new Error('Generated greeting too short');
-                        }
-                    } catch (error) {
-                        debugLog(`Using cached greeting: ${error.message}`);
-                        initialResponse = `<speak version="1.0" xml:lang="zh-HK">
-                            <voice name="${selectedVoice}">
-                                <mstts:express-as style="curious">
-                                    呀？有人嚟喇。邊個呀？
-                                    <lang xml:lang="en-US">Who is there?</lang>
-                                </mstts:express-as>
-                            </voice>
-                        </speak>`;
-                    }
-                    
-                    const responseText = extractTextFromSSML(initialResponse);
-                    addMessage('patient', responseText, "Patient notices someone approaching the room - training session begins");
-                    conversationHistory.push({role: 'patient', content: responseText});
-                    
-                    // Use cached audio for faster playback
-                    await playCachedOrGenerateAudio(initialResponse, cacheKey);
-                }, 2000); // Reduced delay since we have cached audio
-                
-                updateStatus('🎙️ 智能AI訓練進行中... Intelligent AI training in progress', 'recording');
-                startBtn.disabled = true;
-                stopBtn.disabled = false;
-                debugLog('Training session started successfully');
-                
-            } catch (error) {
-                debugLog(`Error starting session: ${error.message}`, 'error');
-                console.error('Error starting session:', error);
-                alert('無法使用麥克風，請檢查權限設定 Error accessing microphone. Please check permissions.');
-            }
-        }
-        
-        // Stop training session with progress summary
-        function stopSession() {
-            debugLog('Stopping training session');
-            isRecording = false;
-            
-            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-                mediaRecorder.stop();
-                debugLog('Media recorder stopped');
-            }
-            
-            if (recognition) {
-                recognition.stop();
-                debugLog('Speech recognition stopped');
-            }
-            
-            stopTimer();
-            hideGuidancePrompt();
-            
-            // Show training summary
-            const currentPhase = getCurrentPhase();
-            const completedPhases = conversationPhases.findIndex(p => p.name === conversationState.currentPhase);
-            
-            addMessage('system', 
-                `🎯 訓練總結 Training Summary:<br>
-                ✅ 完成階段: ${completedPhases + 1}/${conversationPhases.length}<br>
-                📊 總失敗次數: ${conversationState.totalFailures}<br>
-                ⏱️ 當前階段: ${currentPhase.title}<br>
-                💡 建議: ${conversationState.totalFailures > 5 ? '多加練習專業用語和程序步驟' : '表現良好，繼續保持！'}`,
-                'Training session completed with progress tracking'
-            );
-            
-            updateStatus('✅ 智能訓練完成！Intelligent training completed! Review your session below.', 'ready');
-            startBtn.disabled = false;
-            stopBtn.disabled = true;
-            
-            downloadSection.style.display = 'block';
-            debugLog('Training session stopped successfully');
-        }
-        
-        // Timer functions
-        function startTimer() {
-            timerInterval = setInterval(() => {
-                const elapsed = Date.now() - sessionStartTime;
-                const minutes = Math.floor(elapsed / 60000);
-                const seconds = Math.floor((elapsed % 60000) / 1000);
-                timerEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            }, 1000);
-        }
-        
-        function stopTimer() {
-            if (timerInterval) {
-                clearInterval(timerInterval);
-            }
-        }
-        
-        // Create download link for recording
-        function createDownloadLink(audioBlob) {
-            const url = URL.createObjectURL(audioBlob);
-            downloadBtn.onclick = function() {
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `ai-nursing-training-${new Date().toISOString().slice(0, 19)}.wav`;
-                a.click();
-            };
-        }
-        
-        // Update status display
-        function updateStatus(message, type) {
-            statusEl.textContent = message;
-            statusEl.className = `status ${type}`;
-        }
-        
         // Make functions available globally
         window.testAudio = testAudio;
         window.enableAudioContext = enableAudioContext;
         window.clearDebugLogs = clearDebugLogs;
         window.toggleDebug = toggleDebug;
-        window.skipToNextPhase = skipToNextPhase;
-        window.hideGuidancePrompt = hideGuidancePrompt;
-        
-        // Event listeners
-        startBtn.addEventListener('click', startSession);
-        stopBtn.addEventListener('click', stopSession);
-        
-        // Auto-enable audio on any user interaction
-        const enableAudioOnInteraction = () => {
-            enableAudioContext();
-            document.removeEventListener('click', enableAudioOnInteraction);
-            document.removeEventListener('keydown', enableAudioOnInteraction);
-            document.removeEventListener('touchstart', enableAudioOnInteraction);
-        };
-        
-        document.addEventListener('click', enableAudioOnInteraction);
-        document.addEventListener('keydown', enableAudioOnInteraction);
-        document.addEventListener('touchstart', enableAudioOnInteraction);
         
         // Initialize on page load
-        init();
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
