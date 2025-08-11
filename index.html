@@ -1,6 +1,162 @@
 .debug-info {
             background: #d1ecf1;
             color: #0c5460;
+        }
+
+        .system-message {
+            background: #e2e3e5;
+            border-left: 4px solid #6c757d;
+            margin: 20px 0;
+        }
+
+        .system-text {
+            color: #495057;
+            font-weight: 500;
+        }
+
+        .guidance-prompt {
+            background: #fff3cd;
+            border: 2px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .guidance-content h4 {
+            color: #856404;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .guidance-message {
+            background: #ffeaa7;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border-left: 4px solid #fdcb6e;
+        }
+
+        .guidance-suggestion {
+            background: #d1ecf1;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border-left: 4px solid #17a2b8;
+            font-style: italic;
+        }
+
+        .guidance-stats {
+            text-align: center;
+            margin: 10px 0;
+            color: #6c757d;
+        }
+
+        .guidance-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .progress-indicator {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+
+        .progress-header h4 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #155724;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #28a745, #20c997);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .current-phase {
+            font-weight: 600;
+            color: #155724;
+        }
+
+        .needs-help {
+            color: #dc3545;
+            font-weight: bold;
+            animation: pulse 1.5s infinite;
+        }
+
+        .progress-stats {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .guidance-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .guidance-actions .btn {
+                width: 100%;
+                max-width: 250px;
+            }
+            
+            .progress-details {
+                flex-direction: column;
+                align-items: flex-start;
+            }
         }<!DOCTYPE html>
 <html lang="en">
 <head>
