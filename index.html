@@ -1,4 +1,7 @@
-<!DOCTYPE html>
+.debug-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -574,7 +577,255 @@
         let textGenerator = null;
         let isAIReady = false;
         
-        // Patient personality and context
+        // Conversation flow management and fallback system
+        let conversationState = {
+            currentPhase: 'greeting',
+            failureCount: 0,
+            lastStudentInput: '',
+            phaseStartTime: null,
+            totalFailures: 0,
+            needsGuidance: false
+        };
+        
+        const conversationPhases = [
+            {
+                name: 'greeting',
+                title: '問候階段 Greeting Phase',
+                expectedKeywords: ['護士', '何', '入嚟', '你好', 'hello', 'nurse'],
+                guidance: '請自我介紹並說明你是護理學生。例如："你好，我係XX大學護理學生何同學，可唔可以入嚟？"',
+                nextPhase: 'identification'
+            },
+            {
+                name: 'identification',
+                title: '身份確認 Patient Identification',
+                expectedKeywords: ['文力新', '對名', '23332099', 'name', 'confirm', '確認'],
+                guidance: '請確認病人身份。例如："可唔可以確認一下你嘅姓名同HN號碼？"',
+                nextPhase: 'explanation'
+            },
+            {
+                name: 'explanation',
+                title: '程序解釋 Procedure Explanation',
+                expectedKeywords: ['傷口', '洗', '換藥', '程序', 'wound', 'procedure', 'dressing'],
+                guidance: '請解釋傷口護理程序。例如："我需要幫你清洗傷口同換藥，過程中可能會有少少不適。"',
+                nextPhase: 'procedure'
+            },
+            {
+                name: 'procedure',
+                title: '進行程序 Performing Procedure',
+                expectedKeywords: ['開始', '準備', '放鬆', 'start', 'ready', 'relax'],
+                guidance: '請開始進行程序並安撫病人。例如："而家開始清洗，請你放鬆，有咩不適話我知。"',
+                nextPhase: 'completion'
+            },
+            {
+                name: 'completion',
+                title: '完成程序 Completion',
+                expectedKeywords: ['完成', '好', '舒服', 'done', 'finished', 'complete'],
+                guidance: '請確認程序完成並給予後續指導。例如："換藥完成喇，記住保持乾爽。"',
+                nextPhase: null
+            }
+        ];
+        
+        // Track conversation progress and failures
+        function trackConversationProgress(studentInput) {
+            const currentPhase = getCurrentPhase();
+            const hasExpectedKeywords = currentPhase.expectedKeywords.some(keyword => 
+                studentInput.toLowerCase().includes(keyword.toLowerCase())
+            );
+            
+            if (hasExpectedKeywords) {
+                // Success - move to next phase
+                conversationState.failureCount = 0;
+                conversationState.needsGuidance = false;
+                
+                if (currentPhase.nextPhase) {
+                    setTimeout(() => {
+                        moveToNextPhase();
+                    }, 3000);
+                }
+                
+                debugLog(`Phase progress: Successfully completed ${currentPhase.name}`);
+            } else {
+                // Failure - increment counter
+                conversationState.failureCount++;
+                conversationState.totalFailures++;
+                conversationState.lastStudentInput = studentInput;
+                
+                debugLog(`Phase failure: ${conversationState.failureCount} failures in ${currentPhase.name}`);
+                
+                // Show guidance after 2 failures
+                if (conversationState.failureCount >= 2) {
+                    conversationState.needsGuidance = true;
+                    showGuidancePrompt();
+                }
+            }
+            
+            updateProgressIndicator();
+        }
+        
+        // Get current conversation phase
+        function getCurrentPhase() {
+            return conversationPhases.find(p => p.name === conversationState.currentPhase) || conversationPhases[0];
+        }
+        
+        // Move to next conversation phase
+        function moveToNextPhase() {
+            const currentPhase = getCurrentPhase();
+            if (currentPhase.nextPhase) {
+                conversationState.currentPhase = currentPhase.nextPhase;
+                conversationState.failureCount = 0;
+                conversationState.phaseStartTime = Date.now();
+                conversationState.needsGuidance = false;
+                
+                hideGuidancePrompt();
+                updateProgressIndicator();
+                
+                debugLog(`Moved to phase: ${conversationState.currentPhase}`);
+                
+                // Provide contextual patient response for new phase
+                setTimeout(() => {
+                    providePhaseTransitionResponse();
+                }, 1000);
+            }
+        }
+        
+        // Show guidance prompt with skip option
+        function showGuidancePrompt() {
+            const currentPhase = getCurrentPhase();
+            
+            // Remove existing guidance if any
+            hideGuidancePrompt();
+            
+            const guidanceDiv = document.createElement('div');
+            guidanceDiv.id = 'guidancePrompt';
+            guidanceDiv.className = 'guidance-prompt';
+            guidanceDiv.innerHTML = `
+                <div class="guidance-content">
+                    <h4>🤔 需要幫助？Training Guidance Needed?</h4>
+                    <div class="guidance-message">
+                        <strong>當前階段 Current Phase:</strong> ${currentPhase.title}
+                    </div>
+                    <div class="guidance-suggestion">
+                        <strong>建議說法 Suggested Approach:</strong><br>
+                        <em>${currentPhase.guidance}</em>
+                    </div>
+                    <div class="guidance-stats">
+                        <small>嘗試次數 Attempts: ${conversationState.failureCount} | 總失敗 Total failures: ${conversationState.totalFailures}</small>
+                    </div>
+                    <div class="guidance-actions">
+                        <button onclick="skipToNextPhase()" class="btn btn-warning btn-small">
+                            ⏭️ 跳到下一階段 Skip to Next Phase
+                        </button>
+                        <button onclick="hideGuidancePrompt()" class="btn btn-primary btn-small">
+                            💪 繼續嘗試 Keep Trying
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Insert after the conversation div
+            const conversationDiv = document.getElementById('conversation');
+            conversationDiv.parentNode.insertBefore(guidanceDiv, conversationDiv.nextSibling);
+            
+            debugLog('Guidance prompt shown');
+        }
+        
+        // Hide guidance prompt
+        function hideGuidancePrompt() {
+            const guidanceDiv = document.getElementById('guidancePrompt');
+            if (guidanceDiv) {
+                guidanceDiv.remove();
+                debugLog('Guidance prompt hidden');
+            }
+        }
+        
+        // Skip to next phase (fallback function)
+        function skipToNextPhase() {
+            const currentPhase = getCurrentPhase();
+            
+            debugLog(`Skipping phase: ${currentPhase.name}`);
+            
+            // Add system message
+            addMessage('system', `⏭️ 跳過階段："${currentPhase.title}" - 繼續下一個程序步驟`, 
+                     `Phase skipped due to difficulty. This is normal in training.`);
+            
+            // Move to next phase
+            if (currentPhase.nextPhase) {
+                moveToNextPhase();
+            } else {
+                // Training completed
+                addMessage('system', '🎉 訓練完成！Training completed! 所有階段都已完成。', 
+                         'All phases completed successfully.');
+            }
+            
+            hideGuidancePrompt();
+        }
+        
+        // Provide contextual response for phase transitions
+        function providePhaseTransitionResponse() {
+            const currentPhase = getCurrentPhase();
+            let transitionResponse = '';
+            
+            switch (currentPhase.name) {
+                case 'identification':
+                    transitionResponse = '好嘅，咁你要做咩呀？你係邊個？';
+                    break;
+                case 'explanation':
+                    transitionResponse = '明白喇。咁你要做咩程序呀？會唔會痛㗎？';
+                    break;
+                case 'procedure':
+                    transitionResponse = '好嘅，我準備好喇。可以開始喇。';
+                    break;
+                case 'completion':
+                    transitionResponse = '做完喇？咁我要注意咩呀？';
+                    break;
+                default:
+                    return; // No transition response needed
+            }
+            
+            const ssml = formatResponseAsSSML(transitionResponse);
+            addMessage('patient', transitionResponse, `Phase transition to: ${currentPhase.title}`);
+            conversationHistory.push({role: 'patient', content: transitionResponse});
+            speakPatientResponseAzure(ssml);
+        }
+        
+        // Update progress indicator
+        function updateProgressIndicator() {
+            let progressDiv = document.getElementById('progressIndicator');
+            
+            if (!progressDiv) {
+                progressDiv = document.createElement('div');
+                progressDiv.id = 'progressIndicator';
+                progressDiv.className = 'progress-indicator';
+                
+                // Insert after timer
+                const timerDiv = document.getElementById('timer');
+                timerDiv.parentNode.insertBefore(progressDiv, timerDiv.nextSibling);
+            }
+            
+            const currentPhase = getCurrentPhase();
+            const currentIndex = conversationPhases.findIndex(p => p.name === conversationState.currentPhase);
+            const totalPhases = conversationPhases.length;
+            const progressPercent = ((currentIndex + 1) / totalPhases) * 100;
+            
+            progressDiv.innerHTML = `
+                <div class="progress-header">
+                    <h4>📋 訓練進度 Training Progress</h4>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${progressPercent}%"></div>
+                </div>
+                <div class="progress-details">
+                    <div class="current-phase">
+                        <strong>當前階段:</strong> ${currentPhase.title}
+                        ${conversationState.needsGuidance ? ' <span class="needs-help">⚠️ 需要幫助</span>' : ''}
+                    </div>
+                    <div class="progress-stats">
+                        階段 ${currentIndex + 1} / ${totalPhases} | 
+                        失敗次數: ${conversationState.failureCount}
+                    </div>
+                </div>
+            `;
+        }
         const patientContext = {
             name: "文力新",
             age: 65,
@@ -1269,9 +1520,12 @@
             debugLog('Speech recognition configured successfully');
         }
         
-        // Process student input with AI
+        // Process student input with enhanced tracking
         async function processStudentInput(transcript) {
             debugLog(`Processing student input: ${transcript}`);
+            
+            // Track conversation progress and failures
+            trackConversationProgress(transcript);
             
             try {
                 // Generate intelligent response using AI
@@ -1472,36 +1726,50 @@
             }
         }
         
-        // Add message to conversation
+        // Add message to conversation with system message support
         function addMessage(speaker, text, notes = null) {
             const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${speaker}-message`;
             
-            const header = document.createElement('div');
-            header.className = 'message-header';
-            header.innerHTML = speaker === 'student' ? 
-                '👩‍⚕️ 護理學生何同學 Student Ho' : 
-                '👨 病人文先生 Patient Mr. Man';
-            
-            const content = document.createElement('div');
-            content.className = 'message-content';
-            content.innerHTML = `<span class="cantonese-text">${text}</span>`;
-            
-            messageDiv.appendChild(header);
-            messageDiv.appendChild(content);
-            
-            if (notes && speaker === 'patient') {
-                const notesDiv = document.createElement('div');
-                notesDiv.className = 'procedure-notes';
-                notesDiv.textContent = `📝 ${notes}`;
-                messageDiv.appendChild(notesDiv);
+            if (speaker === 'system') {
+                messageDiv.className = 'message system-message';
+                messageDiv.innerHTML = `
+                    <div class="message-header">
+                        🤖 系統提示 System Message
+                    </div>
+                    <div class="message-content">
+                        <span class="system-text">${text}</span>
+                    </div>
+                    ${notes ? `<div class="procedure-notes">📝 ${notes}</div>` : ''}
+                `;
+            } else {
+                messageDiv.className = `message ${speaker}-message`;
+                
+                const header = document.createElement('div');
+                header.className = 'message-header';
+                header.innerHTML = speaker === 'student' ? 
+                    '👩‍⚕️ 護理學生何同學 Student Ho' : 
+                    '👨 病人文先生 Patient Mr. Man';
+                
+                const content = document.createElement('div');
+                content.className = 'message-content';
+                content.innerHTML = `<span class="cantonese-text">${text}</span>`;
+                
+                messageDiv.appendChild(header);
+                messageDiv.appendChild(content);
+                
+                if (notes && speaker === 'patient') {
+                    const notesDiv = document.createElement('div');
+                    notesDiv.className = 'procedure-notes';
+                    notesDiv.textContent = `📝 ${notes}`;
+                    messageDiv.appendChild(notesDiv);
+                }
             }
             
             messagesEl.appendChild(messageDiv);
             messagesEl.scrollTop = messagesEl.scrollHeight;
         }
         
-        // Start training session with audio check
+        // Start training session with progress tracking
         async function startSession() {
             try {
                 debugLog('Starting training session');
@@ -1522,9 +1790,23 @@
                 audioChunks = [];
                 conversationHistory = [];
                 
-                // Clear previous conversation
+                // Reset conversation state
+                conversationState = {
+                    currentPhase: 'greeting',
+                    failureCount: 0,
+                    lastStudentInput: '',
+                    phaseStartTime: Date.now(),
+                    totalFailures: 0,
+                    needsGuidance: false
+                };
+                
+                // Clear previous conversation and guidance
                 messagesEl.innerHTML = '';
+                hideGuidancePrompt();
                 conversationEl.style.display = 'block';
+                
+                // Initialize progress indicator
+                updateProgressIndicator();
                 
                 // Start audio recording
                 debugLog('Requesting microphone access');
@@ -1613,7 +1895,7 @@
             }
         }
         
-        // Stop training session
+        // Stop training session with progress summary
         function stopSession() {
             debugLog('Stopping training session');
             isRecording = false;
@@ -1629,6 +1911,20 @@
             }
             
             stopTimer();
+            hideGuidancePrompt();
+            
+            // Show training summary
+            const currentPhase = getCurrentPhase();
+            const completedPhases = conversationPhases.findIndex(p => p.name === conversationState.currentPhase);
+            
+            addMessage('system', 
+                `🎯 訓練總結 Training Summary:<br>
+                ✅ 完成階段: ${completedPhases + 1}/${conversationPhases.length}<br>
+                📊 總失敗次數: ${conversationState.totalFailures}<br>
+                ⏱️ 當前階段: ${currentPhase.title}<br>
+                💡 建議: ${conversationState.totalFailures > 5 ? '多加練習專業用語和程序步驟' : '表現良好，繼續保持！'}`,
+                'Training session completed with progress tracking'
+            );
             
             updateStatus('✅ 智能訓練完成！Intelligent training completed! Review your session below.', 'ready');
             startBtn.disabled = false;
@@ -1676,6 +1972,8 @@
         window.enableAudioContext = enableAudioContext;
         window.clearDebugLogs = clearDebugLogs;
         window.toggleDebug = toggleDebug;
+        window.skipToNextPhase = skipToNextPhase;
+        window.hideGuidancePrompt = hideGuidancePrompt;
         
         // Event listeners
         startBtn.addEventListener('click', startSession);
