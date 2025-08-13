@@ -1,0 +1,765 @@
+// 运行完整诊断
+        async function runFullDiagnostic() {
+            diagnosticLogs = [];
+            log('开始完整诊断流程');
+            
+            showResult('diagnosticResult', '🚀 正在运行完整诊断...\n请稍等...', 'info');
+
+            try {
+                // 1. 配置检查
+                log('步骤 1: 检查配置');
+                const config = getCurrentConfig();
+                
+                // 2. Netlify函数测试
+                log('步骤 2: 测试Netlify函数');
+                await testNetlifyConfig();
+                await testFunctionStatus();
+                
+                // 3. SSML生成和验证
+                log('步骤 3: SSML 生成和验证');
+                generateSSML();
+                validateSSML();
+                
+                // 4. TTS测试
+                log('步骤 4: TTS 语音合成测试');
+                await testTTS();
+                
+                // 5. 生成诊断报告
+                let report = '📋 完整诊断报告\n';
+                report += '=' * 50 + '\n\n';
+                
+                report += `配置信息:\n`;
+                report += `- Netlify函数: ${config.netlifyEndpoint}\n`;
+                report += `- 预期Region: ${config.region}\n\n`;
+                
+                report += '诊断建议:\n';
+                report += '1. 检查Netlify环境变量是否正确设置:\n';
+                report += '   - AZURE_SPEECH_KEY\n';
+                report += '   - AZURE_REGION\n\n';
+                
+                report += '2. 确认Azure端点配置:\n';
+                report += '   - 在speech.js中使用正确的端点格式\n';
+                report += '   - 检查地区设置是否匹配\n\n';
+                
+                report += '诊断日志:\n';
+                diagnosticLogs.forEach(entry => {
+                    const icon = entry.type === 'error' ? '❌' : entry.type === 'success' ? '✅' : 'ℹ️';
+                    report += `${icon} [${entry.timestamp}] ${entry.message}\n`;
+                });
+                
+                showResult('diagnosticResult', report, 'info');
+                log('完整诊断流程完成');
+                
+            } catch (error) {
+                showResult('diagnosticResult<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azure TTS 诊断测试</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .test-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #3498db;
+        }
+
+        .test-section h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+
+        .form-group {
+            margin: 15px 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #34495e;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background: #3498db;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 10px 10px 0;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        button:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        .result {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .result.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .result.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .endpoint-test {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            align-items: end;
+        }
+
+        .config-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .config-grid {
+                grid-template-columns: 1fr;
+            }
+            .endpoint-test {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .audio-controls {
+            margin: 15px 0;
+        }
+
+        audio {
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-success { background: #28a745; }
+        .status-error { background: #dc3545; }
+        .status-warning { background: #ffc107; }
+        .status-info { background: #17a2b8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Azure TTS 诊断测试工具</h1>
+        
+        <!-- 配置部分 -->
+        <div class="test-section">
+            <h3>📋 Netlify函数配置</h3>
+            <div class="config-grid">
+                <div class="form-group">
+                    <label for="netlifyEndpoint">Netlify函数端点:</label>
+                    <input type="text" id="netlifyEndpoint" value="/.netlify/functions/speech" placeholder="Netlify函数路径">
+                </div>
+                <div class="form-group">
+                    <label for="azureRegion">预期Azure Region:</label>
+                    <select id="azureRegion">
+                        <option value="eastasia">East Asia (eastasia)</option>
+                        <option value="southeastasia">Southeast Asia</option>
+                        <option value="eastus">East US</option>
+                        <option value="westus">West US</option>
+                        <option value="westeurope">West Europe</option>
+                    </select>
+                </div>
+            </div>
+            <p style="color: #666; font-size: 14px;">
+                ℹ️ 此测试页面通过Netlify函数调用Azure TTS，密钥安全存储在服务器端环境变量中
+            </p>
+        </div>
+
+        <!-- 端点测试 -->
+        <div class="test-section">
+            <h3>🌐 Netlify函数测试</h3>
+            <button onclick="testNetlifyFunction()">🔧 测试Netlify函数连接</button>
+            <button onclick="testNetlifyConfig()">⚙️ 检查函数配置</button>
+            <button onclick="testFunctionStatus()">📊 检查函数状态</button>
+            
+            <div id="functionResult" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- SSML测试 -->
+        <div class="test-section">
+            <h3>📝 SSML 格式测试</h3>
+            <div class="form-group">
+                <label for="testText">测试文本:</label>
+                <input type="text" id="testText" value="你好！我係文力新。" placeholder="输入要转换的文本">
+            </div>
+            
+            <div class="form-group">
+                <label for="voiceName">声音选择:</label>
+                <select id="voiceName">
+                    <option value="zh-HK-HiuMaanNeural">zh-HK-HiuMaanNeural (女声)</option>
+                    <option value="zh-HK-WanLungNeural">zh-HK-WanLungNeural (男声)</option>
+                    <option value="zh-HK-HiuGaaiNeural">zh-HK-HiuGaaiNeural (女声年轻)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="ssmlOutput">生成的 SSML:</label>
+                <textarea id="ssmlOutput" rows="6" readonly></textarea>
+            </div>
+            
+            <button onclick="generateSSML()">生成 SSML</button>
+            <button onclick="validateSSML()">验证 SSML</button>
+            <button onclick="testSimpleSSML()">测试最简单的 SSML</button>
+        </div>
+
+        <!-- TTS测试 -->
+        <div class="test-section">
+            <h3>🎵 TTS 语音合成测试</h3>
+            <button onclick="testTTS()">🎯 执行完整 TTS 测试</button>
+            <button onclick="testDifferentFormats()">📊 测试不同音频格式</button>
+            
+            <div class="audio-controls">
+                <audio id="audioPlayer" controls style="display: none;"></audio>
+            </div>
+            
+            <div id="ttsResult" class="result" style="display: none;"></div>
+        </div>
+
+        <!-- 综合诊断 -->
+        <div class="test-section">
+            <h3>🏥 综合诊断</h3>
+            <button onclick="runFullDiagnostic()">🚀 运行完整诊断</button>
+            <button onclick="clearAllResults()">🧹 清除所有结果</button>
+            
+            <div id="diagnosticResult" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let currentNetlifyEndpoint = '';
+        let currentRegion = '';
+        let diagnosticLogs = [];
+
+        // 日志函数
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}`;
+            diagnosticLogs.push({timestamp, message, type});
+            console.log(logEntry);
+        }
+
+        // 显示结果
+        function showResult(elementId, content, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.className = `result ${type}`;
+            element.textContent = content;
+            element.style.display = 'block';
+        }
+
+        // 获取当前配置
+        function getCurrentConfig() {
+            currentNetlifyEndpoint = document.getElementById('netlifyEndpoint').value.trim();
+            currentRegion = document.getElementById('azureRegion').value;
+            
+            if (!currentNetlifyEndpoint) {
+                throw new Error('请输入 Netlify 函数端点');
+            }
+            
+            return { 
+                netlifyEndpoint: currentNetlifyEndpoint, 
+                region: currentRegion 
+            };
+        }
+
+        // 生成SSML
+        function generateSSML() {
+            const text = document.getElementById('testText').value.trim();
+            const voice = document.getElementById('voiceName').value;
+            
+            if (!text) {
+                showResult('ssmlOutput', '请输入测试文本', 'error');
+                return;
+            }
+
+            const ssml = `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-HK">
+    <voice name="${voice}">
+        ${text}
+    </voice>
+</speak>`;
+            
+            document.getElementById('ssmlOutput').value = ssml;
+            log(`生成 SSML: ${voice} - ${text}`);
+        }
+
+        // 验证SSML
+        function validateSSML() {
+            const ssml = document.getElementById('ssmlOutput').value;
+            
+            if (!ssml) {
+                showResult('ssmlOutput', '请先生成 SSML', 'error');
+                return;
+            }
+
+            try {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(ssml, 'text/xml');
+                
+                if (doc.documentElement.nodeName === 'parsererror') {
+                    throw new Error('SSML XML 格式错误');
+                }
+                
+                // 检查必要元素
+                const speak = doc.querySelector('speak');
+                const voice = doc.querySelector('voice');
+                
+                if (!speak) throw new Error('缺少 <speak> 元素');
+                if (!voice) throw new Error('缺少 <voice> 元素');
+                
+                showResult('ssmlOutput', '✅ SSML 格式验证通过！', 'success');
+                log('SSML 验证成功');
+                
+            } catch (error) {
+                showResult('ssmlOutput', `❌ SSML 验证失败: ${error.message}`, 'error');
+                log(`SSML 验证失败: ${error.message}`, 'error');
+            }
+        }
+
+        // 测试最简单的SSML
+        function testSimpleSSML() {
+            const simpleSSML = `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-HK"><voice name="zh-HK-HiuMaanNeural">測試</voice></speak>`;
+            document.getElementById('ssmlOutput').value = simpleSSML;
+            log('加载最简单的 SSML 格式');
+        }
+
+        // 测试Netlify函数连接
+        async function testNetlifyFunction() {
+            try {
+                const config = getCurrentConfig();
+                
+                log(`测试 Netlify 函数: ${config.netlifyEndpoint}`);
+                
+                // 发送简单的测试请求
+                const testSSML = '<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-HK"><voice name="zh-HK-HiuMaanNeural">測試</voice></speak>';
+                
+                const response = await fetch(config.netlifyEndpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ ssml: testSSML })
+                });
+
+                const result = `状态码: ${response.status}
+Content-Type: ${response.headers.get('content-type')}
+函数端点: ${config.netlifyEndpoint}`;
+
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    showResult('functionResult', `✅ Netlify函数连接成功！
+${result}
+响应数据: ${JSON.stringify(data, null, 2)}`, 'success');
+                    log('Netlify函数测试成功');
+                    
+                    // 如果成功且有音频数据，尝试播放
+                    if (data.audio) {
+                        const audioBlob = new Blob(
+                            [Uint8Array.from(atob(data.audio), c => c.charCodeAt(0))],
+                            { type: 'audio/mpeg' }
+                        );
+                        const audioUrl = URL.createObjectURL(audioBlob);
+                        const audioPlayer = document.getElementById('audioPlayer');
+                        audioPlayer.src = audioUrl;
+                        audioPlayer.style.display = 'block';
+                    }
+                    
+                } else {
+                    const errorText = await response.text();
+                    let errorData;
+                    
+                    try {
+                        errorData = JSON.parse(errorText);
+                    } catch {
+                        errorData = errorText;
+                    }
+                    
+                    showResult('functionResult', `❌ Netlify函数调用失败
+${result}
+错误信息: ${JSON.stringify(errorData, null, 2)}`, 'error');
+                    log(`Netlify函数失败: ${response.status}`, 'error');
+                }
+
+            } catch (error) {
+                showResult('functionResult', `❌ 函数连接错误: ${error.message}
+可能的原因:
+1. Netlify函数未部署
+2. 函数路径错误
+3. 网络连接问题
+4. CORS配置问题`, 'error');
+                log(`函数测试错误: ${error.message}`, 'error');
+            }
+        }
+
+        // 检查Netlify函数配置
+        async function testNetlifyConfig() {
+            try {
+                const config = getCurrentConfig();
+                
+                log('检查 Netlify 函数配置');
+                
+                // 尝试 OPTIONS 请求检查 CORS
+                const optionsResponse = await fetch(config.netlifyEndpoint, {
+                    method: 'OPTIONS'
+                });
+                
+                let configInfo = `函数端点: ${config.netlifyEndpoint}\n`;
+                configInfo += `OPTIONS 响应: ${optionsResponse.status}\n`;
+                configInfo += `CORS 头部:\n`;
+                
+                ['Access-Control-Allow-Origin', 'Access-Control-Allow-Methods', 'Access-Control-Allow-Headers'].forEach(header => {
+                    const value = optionsResponse.headers.get(header);
+                    configInfo += `  ${header}: ${value || '未设置'}\n`;
+                });
+                
+                // 尝试 GET 请求看函数是否存在
+                const getResponse = await fetch(config.netlifyEndpoint, {
+                    method: 'GET'
+                });
+                
+                configInfo += `\nGET 请求测试: ${getResponse.status}\n`;
+                
+                if (getResponse.status === 405) {
+                    configInfo += `✅ 函数存在（405 Method Not Allowed 是正常的）\n`;
+                } else if (getResponse.status === 404) {
+                    configInfo += `❌ 函数不存在或路径错误\n`;
+                } else {
+                    configInfo += `ℹ️ 意外响应状态，需要进一步检查\n`;
+                }
+                
+                showResult('functionResult', configInfo, 'info');
+                log('函数配置检查完成');
+                
+            } catch (error) {
+                showResult('functionResult', `❌ 配置检查失败: ${error.message}`, 'error');
+                log(`配置检查错误: ${error.message}`, 'error');
+            }
+        }
+
+        // 检查函数状态
+        async function testFunctionStatus() {
+            try {
+                const config = getCurrentConfig();
+                
+                log('检查函数状态和环境变量');
+                
+                // 发送空请求测试函数响应
+                const response = await fetch(config.netlifyEndpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({}) // 空请求体
+                });
+                
+                const responseText = await response.text();
+                let responseData;
+                
+                try {
+                    responseData = JSON.parse(responseText);
+                } catch {
+                    responseData = responseText;
+                }
+                
+                let statusInfo = `函数状态检查:\n`;
+                statusInfo += `状态码: ${response.status}\n`;
+                statusInfo += `响应: ${JSON.stringify(responseData, null, 2)}\n\n`;
+                
+                // 分析响应判断问题
+                if (response.status === 400) {
+                    if (responseData.error && responseData.error.includes('SSML')) {
+                        statusInfo += `✅ 函数正常工作，等待有效的SSML输入\n`;
+                    } else if (responseData.error && responseData.error.includes('Azure')) {
+                        statusInfo += `⚠️ Azure配置问题: ${responseData.error}\n`;
+                    } else {
+                        statusInfo += `ℹ️ 函数响应400，可能是输入验证\n`;
+                    }
+                } else if (response.status === 500) {
+                    statusInfo += `❌ 服务器内部错误，可能是环境变量或Azure配置问题\n`;
+                } else {
+                    statusInfo += `ℹ️ 状态码 ${response.status}，需要进一步分析\n`;
+                }
+                
+                showResult('functionResult', statusInfo, 'info');
+                log('函数状态检查完成');
+                
+            } catch (error) {
+                showResult('functionResult', `❌ 状态检查失败: ${error.message}`, 'error');
+                log(`状态检查错误: ${error.message}`, 'error');
+            }
+        }
+
+        // 测试TTS
+        async function testTTS() {
+            try {
+                generateSSML(); // 先生成SSML
+                validateSSML(); // 验证SSML
+                
+                const config = getCurrentConfig();
+                const ssml = document.getElementById('ssmlOutput').value;
+                
+                if (!ssml) {
+                    throw new Error('请先生成 SSML');
+                }
+
+                log('开始通过Netlify函数进行TTS测试');
+                showResult('ttsResult', '正在通过Netlify函数进行TTS测试...', 'info');
+
+                const response = await fetch(config.netlifyEndpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ ssml: ssml })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    if (data.audio) {
+                        // 解码并播放音频
+                        const audioBlob = new Blob(
+                            [Uint8Array.from(atob(data.audio), c => c.charCodeAt(0))],
+                            { type: 'audio/mpeg' }
+                        );
+                        const audioUrl = URL.createObjectURL(audioBlob);
+                        const audioPlayer = document.getElementById('audioPlayer');
+                        
+                        audioPlayer.src = audioUrl;
+                        audioPlayer.style.display = 'block';
+                        
+                        showResult('ttsResult', `✅ TTS 测试成功！
+状态码: ${response.status}
+音频大小: ${data.size || audioBlob.size} bytes
+音频类型: ${data.contentType || audioBlob.type}
+
+🎵 音频已生成，点击播放器试听`, 'success');
+                        
+                        log('TTS 测试成功');
+                    } else {
+                        showResult('ttsResult', `⚠️ 函数响应成功但没有音频数据
+响应: ${JSON.stringify(data, null, 2)}`, 'error');
+                    }
+                    
+                } else {
+                    const errorData = await response.json();
+                    showResult('ttsResult', `❌ TTS 测试失败
+状态码: ${response.status}
+错误信息: ${JSON.stringify(errorData, null, 2)}
+
+可能的问题:
+1. Azure密钥未配置或无效
+2. Azure端点配置错误
+3. SSML格式问题
+4. Azure服务配额问题`, 'error');
+                    
+                    log(`TTS 测试失败: ${response.status}`, 'error');
+                }
+
+            } catch (error) {
+                showResult('ttsResult', `❌ TTS 测试错误: ${error.message}`, 'error');
+                log(`TTS 测试错误: ${error.message}`, 'error');
+            }
+        }
+
+        // 测试不同音频格式
+        async function testDifferentFormats() {
+            const config = getCurrentConfig();
+            
+            // 这个需要修改Netlify函数来支持不同格式
+            // 暂时使用标准格式测试
+            const testCases = [
+                { voice: 'zh-HK-HiuMaanNeural', text: '女聲測試' },
+                { voice: 'zh-HK-WanLungNeural', text: '男聲測試' },
+                { voice: 'zh-HK-HiuGaaiNeural', text: '年輕女聲測試' }
+            ];
+
+            let results = '测试不同声音:\n\n';
+
+            for (const testCase of testCases) {
+                try {
+                    const ssml = `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-HK"><voice name="${testCase.voice}">${testCase.text}</voice></speak>`;
+                    
+                    const response = await fetch(config.netlifyEndpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ ssml: ssml })
+                    });
+
+                    results += `声音: ${testCase.voice}\n`;
+                    results += `状态: ${response.status}\n`;
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        results += `✅ 成功 - 大小: ${data.size} bytes\n`;
+                    } else {
+                        const errorData = await response.json();
+                        results += `❌ 失败: ${errorData.error}\n`;
+                    }
+                    
+                } catch (error) {
+                    results += `声音: ${testCase.voice}\n❌ 错误: ${error.message}\n`;
+                }
+                
+                results += '\n';
+            }
+
+            showResult('ttsResult', results, 'info');
+        }
+
+        // 运行完整诊断
+        async function runFullDiagnostic() {
+            diagnosticLogs = [];
+            log('开始完整诊断流程');
+            
+            showResult('diagnosticResult', '🚀 正在运行完整诊断...\n请稍等...', 'info');
+
+            try {
+                // 1. 配置检查
+                log('步骤 1: 检查配置');
+                const config = getCurrentConfig();
+                
+                // 2. Netlify函数测试
+                log('步骤 2: 测试Netlify函数');
+                await testNetlifyConfig();
+                await testFunctionStatus();
+                
+                // 3. SSML生成和验证
+                log('步骤 3: SSML 生成和验证');
+                generateSSML();
+                validateSSML();
+                
+                // 4. TTS测试
+                log('步骤 4: TTS 语音合成测试');
+                await testTTS();
+                
+                // 5. 生成诊断报告
+                let report = '📋 完整诊断报告\n';
+                report += '='.repeat(50) + '\n\n';
+                
+                report += `配置信息:\n`;
+                report += `- Netlify函数: ${config.netlifyEndpoint}\n`;
+                report += `- 预期Region: ${config.region}\n\n`;
+                
+                report += '诊断建议:\n';
+                report += '1. 检查Netlify环境变量是否正确设置:\n';
+                report += '   - AZURE_SPEECH_KEY\n';
+                report += '   - AZURE_REGION\n\n';
+                
+                report += '2. 确认Azure端点配置:\n';
+                report += '   - 在speech.js中使用正确的端点格式\n';
+                report += '   - 检查地区设置是否匹配\n\n';
+                
+                report += '3. 常见问题排查:\n';
+                report += '   - 如果显示404: 函数未部署或路径错误\n';
+                report += '   - 如果显示400: Azure配置或SSML格式问题\n';
+                report += '   - 如果显示500: 服务器内部错误，检查环境变量\n\n';
+                
+                report += '诊断日志:\n';
+                diagnosticLogs.forEach(entry => {
+                    const icon = entry.type === 'error' ? '❌' : entry.type === 'success' ? '✅' : 'ℹ️';
+                    report += `${icon} [${entry.timestamp}] ${entry.message}\n`;
+                });
+                
+                showResult('diagnosticResult', report, 'info');
+                log('完整诊断流程完成');
+                
+            } catch (error) {
+                showResult('diagnosticResult', `❌ 诊断过程中出错: ${error.message}`, 'error');
+                log(`诊断错误: ${error.message}`, 'error');
+            }
+        }
+
+        // 清除所有结果
+        function clearAllResults() {
+            const results = ['functionResult', 'ttsResult', 'diagnosticResult'];
+            results.forEach(id => {
+                const element = document.getElementById(id);
+                element.style.display = 'none';
+            });
+            
+            document.getElementById('audioPlayer').style.display = 'none';
+            diagnosticLogs = [];
+            log('清除所有测试结果');
+        }
+
+        // 页面加载时自动生成SSML
+        window.onload = function() {
+            generateSSML();
+            log('测试页面加载完成');
+        };
+    </script>
+</body>
+</html>
