@@ -875,7 +875,7 @@
         // Format response as SSML
         function formatResponseAsSSML(response) {
             const escapedResponse = escapeXml(response);
-            return `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}"><mstts:express-as style="chat">${escapedResponse}</mstts:express-as></voice></speak>`;
+            return `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-HK"><voice name="${selectedVoice}">${escapedResponse}</voice></speak>`;
         }
 
         // Fallback response system
@@ -884,21 +884,21 @@
 
             const responses = {
                 greeting: [
-                    `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}"><mstts:express-as style="cheerful">好啊，入嚟啦。你叫咩名呀？What is your name?</mstts:express-as></voice></speak>`,
-                    `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}"><mstts:express-as style="curious">邊個呀？係護士嚟㗎？Who is there?</mstts:express-as></voice></speak>`
+                    `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-HK"><voice name="${selectedVoice}">好啊，入嚟啦。你叫咩名呀？What is your name?</voice></speak>`,
+                    `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-HK"><voice name="${selectedVoice}">邊個呀？係護士嚟㗎？Who is there?</voice></speak>`
                 ],
                 identification: [
-                    `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}">係啊，我係文力新。你要做咩呀？My leg is hurt. 有啲痛㗎。</voice></speak>`,
-                    `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}">我個HN係23332099。點解要check㗎？</voice></speak>`
+                    `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-HK"><voice name="${selectedVoice}">係啊，我係文力新。你要做咩呀？My leg is hurt. 有啲痛㗎。</voice></speak>`,
+                    `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-HK"><voice name="${selectedVoice}">我個HN係23332099。點解要check㗎？</voice></speak>`
                 ],
                 procedure: [
-                    `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}"><mstts:express-as style="fearful">洗傷口？會唔會好痛㗎？I am scared. 我有啲驚呀。</mstts:express-as></voice></speak>`,
-                    `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}">係咪要除咗啲野先？要唔要我郁？</voice></speak>`
+                    `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-HK"><voice name="${selectedVoice}">洗傷口？會唔會好痛㗎？I am scared. 我有啲驚呀。</voice></speak>`,
+                    `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-HK"><voice name="${selectedVoice}">係咪要除咗啲野先？要唔要我郁？</voice></speak>`
                 ],
                 default: [
-                    `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}">咩話？我聽唔清楚呀。What did you say?</voice></speak>`,
-                    `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}">你可唔可以講慢啲？Can you speak slower?</voice></speak>`,
-                    `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}">唔好意思，我唔係好明。Sorry, I don't understand.</voice></speak>`
+                    `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-HK"><voice name="${selectedVoice}">咩話？我聽唔清楚呀。What did you say?</voice></speak>`,
+                    `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-HK"><voice name="${selectedVoice}">你可唔可以講慢啲？Can you speak slower?</voice></speak>`,
+                    `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-HK"><voice name="${selectedVoice}">唔好意思，我唔係好明。Sorry, I don't understand.</voice></speak>`
                 ]
             };
 
@@ -1519,12 +1519,9 @@
                         }
                     } catch (error) {
                         debugLog(`Using fallback greeting: ${error.message}`);
-                        initialResponse = `<speak version="1.0" xml:lang="zh-HK">
+                            initialResponse = `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-HK">
                             <voice name="${selectedVoice}">
-                                <mstts:express-as style="curious">
-                                    呀？有人嚟喇。邊個呀？
-                                    <lang xml:lang="en-US">Who is there?</lang>
-                                </mstts:express-as>
+                                呀？有人嚟喇。邊個呀？Who is there?
                             </voice>
                         </speak>`;
                     }
