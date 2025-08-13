@@ -1116,6 +1116,17 @@
 
             debugLog('Speech recognition configured successfully');
         }
+        // Create the missing function
+        function createPatientContext(studentInput, history) {
+            const context = `你是65歲的病人文力新，腿部有傷口需要護理。你性格健談但有點緊張，喜歡詳細解釋，會混合廣東話和英文說話。
+
+                之前的對話：
+                ${history.map(h => `${h.role === 'student' ? '護士' : '病人'}: ${h.content}`).join('\n')}
+                現在護士說：${studentInput}
+                請以病人的身份回應，保持角色一致性，表達可能的疼痛、擔憂或感謝。`;
+
+            return context;
+        }
 
         // Process student input with AI
         async function processStudentInput(transcript) {
@@ -1169,17 +1180,6 @@
                 }, 1500 + Math.random() * 1000);
             }
         }
-        // Create the missing function
-                        function createPatientContext(studentInput, history) {
-                            const context = `你是65歲的病人文力新，腿部有傷口需要護理。你性格健談但有點緊張，喜歡詳細解釋，會混合廣東話和英文說話。
-
-                之前的對話：
-                ${history.map(h => `${h.role === 'student' ? '護士' : '病人'}: ${h.content}`).join('\n')}
-                現在護士說：${studentInput}
-                請以病人的身份回應，保持角色一致性，表達可能的疼痛、擔憂或感謝。`;
-
-                            return context;
-                        }
         // Generate contextual notes based on conversation flow
         function generateContextualNotes(studentInput, history) {
             const input = studentInput.toLowerCase();
