@@ -1344,46 +1344,70 @@
                     // Multiple play attempts for better browser compatibility
                     const playAudio = async () => {
                         try {
-                            // Ensure audio context is active
+                            // 确保音频上下文已激活
                             if (audioContext && audioContext.state === 'suspended') {
                                 await audioContext.resume();
                                 debugLog('Audio context resumed before playback');
                             }
 
-                            // First attempt
-                            await audio.play();
-                            debugLog('Audio playback started successfully');
-
-                        } catch (firstError) {
-                            debugLog(`First play attempt failed: ${firstError.message}`, 'error');
-
-                            // Second attempt with user interaction
-                            try {
-                                // Wait a bit and try again
-                                await new Promise(resolve => setTimeout(resolve, 100));
-                                await audio.play();
-                                debugLog('Audio playback started on second attempt');
-
-                            } catch (secondError) {
-                                debugLog(`Second play attempt failed: ${secondError.message}`, 'error');
-
-                                // Show user instruction for manual play
-                                if (isTest) {
-                                    updateAudioStatus('⚠️ 需要用戶交互才能播放音頻。請點擊頁面任意位置後重試。', 'warning');
-                                }
-
-                                // Try to play on next user interaction
-                                const playOnInteraction = () => {
+                            // 检查是否是用户交互触发的
+                            const isUserInteraction = isTest || document.hasFocus();
+                            
+                            if (!isUserInteraction) {
+                                debugLog('No user interaction detected, queuing audio for next interaction');
+                                
+                                // 存储音频以供后续播放
+                                const playOnNextInteraction = () => {
                                     audio.play().then(() => {
                                         debugLog('Audio played after user interaction');
-                                        document.removeEventListener('click', playOnInteraction);
+                                        document.removeEventListener('click', playOnNextInteraction);
+                                        document.removeEventListener('keydown', playOnNextInteraction);
                                     }).catch(e => {
                                         debugLog(`Play after interaction failed: ${e.message}`, 'error');
                                     });
                                 };
 
-                                document.addEventListener('click', playOnInteraction, { once: true });
+                                document.addEventListener('click', playOnNextInteraction, { once: true });
+                                document.addEventListener('keydown', playOnNextInteraction, { once: true });
+                                
+                                if (isTest) {
+                                    updateAudioStatus('⚠️ 請點擊頁面任意位置播放音頻', 'warning');
+                                }
+                                return;
                             }
+
+                            // 尝试直接播放
+                            await audio.play();
+                            debugLog('Audio playback started successfully');
+
+                        } catch (firstError) {
+                            debugLog(`Play attempt failed: ${firstError.message}`, 'error');
+                            
+                            if (isTest) {
+                                updateAudioStatus('⚠️ 請點擊頁面任意位置啟動音頻播放', 'warning');
+                            }
+
+                            // 等待用户交互后播放
+                            const playOnInteraction = () => {
+                                audio.play().then(() => {
+                                    debugLog('Audio played after user interaction');
+                                    if (isTest) {
+                                        updateAudioStatus('✅ 音頻播放成功！', 'success');
+                                    }
+                                    document.removeEventListener('click', playOnInteraction);
+                                    document.removeEventListener('keydown', playOnInteraction);
+                                    document.removeEventListener('touchstart', playOnInteraction);
+                                }).catch(e => {
+                                    debugLog(`Play after interaction failed: ${e.message}`, 'error');
+                                    if (isTest) {
+                                        updateAudioStatus(`❌ 播放失敗: ${e.message}`, 'error');
+                                    }
+                                });
+                            };
+
+                            document.addEventListener('click', playOnInteraction, { once: true });
+                            document.addEventListener('keydown', playOnInteraction, { once: true });
+                            document.addEventListener('touchstart', playOnInteraction, { once: true });
                         }
                     };
 
@@ -1617,17 +1641,31 @@
         startBtn.addEventListener('click', startSession);
         stopBtn.addEventListener('click', stopSession);
 
-        // Auto-enable audio on any user interaction
-        const enableAudioOnInteraction = () => {
-            enableAudioContext();
-            document.removeEventListener('click', enableAudioOnInteraction);
-            document.removeEventListener('keydown', enableAudioOnInteraction);
-            document.removeEventListener('touchstart', enableAudioOnInteraction);
+        // 更强化的音频初始化
+        let audioContextReady = false;
+
+        const enableAudioOnInteraction = async () => {
+            if (!audioContextReady) {
+                await enableAudioContext();
+                audioContextReady = true;
+                debugLog('Audio context fully activated by user interaction');
+                
+                // 播放一个静音测试音频来完全激活音频系统
+                try {
+                    const silentAudio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQEAAAA=');
+                    silentAudio.volume = 0;
+                    await silentAudio.play();
+                    debugLog('Silent audio test successful');
+                } catch (e) {
+                    debugLog('Silent audio test failed (this is usually OK)');
+                }
+            }
         };
 
-        document.addEventListener('click', enableAudioOnInteraction);
-        document.addEventListener('keydown', enableAudioOnInteraction);
-        document.addEventListener('touchstart', enableAudioOnInteraction);
+        // 监听多种交互事件
+        ['click', 'keydown', 'touchstart', 'mousedown'].forEach(eventType => {
+            document.addEventListener(eventType, enableAudioOnInteraction, { once: true });
+        });
 
         // Initialize on page load
         init();
