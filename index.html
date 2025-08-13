@@ -821,17 +821,34 @@
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '&apos;');
         }
-
+        // Validate SSML before sending
+                function validateSSML(ssml) {
+                    try {
+                        // Basic XML structure check
+                        if (!ssml.includes('<speak') || !ssml.includes('</speak>')) {
+                            return false;
+                        }
+                        
+                        // Check for proper voice tags
+                        if (!ssml.includes('<voice') || !ssml.includes('</voice>')) {
+                            return false;
+                        }
+                        
+                        // Check for balanced tags
+                        const openTags = (ssml.match(/<[^\/][^>]*>/g) || []).length;
+                        const closeTags = (ssml.match(/<\/[^>]*>/g) || []).length;
+                        const selfClosingTags = (ssml.match(/<[^>]*\/>/g) || []).length;
+                        
+                        return openTags === closeTags + selfClosingTags;
+                    } catch (error) {
+                        debugLog(`SSML validation error: ${error.message}`, 'error');
+                        return false;
+                    }
+                }
         // Format response as SSML
         function formatResponseAsSSML(response) {
             const escapedResponse = escapeXml(response);
-            return `<speak version="1.0" xml:lang="zh-HK">
-                <voice name="${selectedVoice}">
-                    <mstts:express-as style="chat">
-                        ${escapedResponse}
-                    </mstts:express-as>
-                </voice>
-            </speak>`;
+            return `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}"><mstts:express-as style="chat">${escapedResponse}</mstts:express-as></voice></speak>`;
         }
 
         // Fallback response system
@@ -904,9 +921,7 @@
             for (const endpoint of SPEECH_ENDPOINTS) {
                 try {
                     debugLog(`Testing endpoint: ${endpoint}`);
-                    const testSSML = `<speak version="1.0" xml:lang="zh-HK">
-                        <voice name="zh-HK-HiuMaanNeural">測試</voice>
-                    </speak>`;
+                    const testSSML = `<speak version="1.0" xml:lang="zh-HK"><voice name="zh-HK-HiuMaanNeural">測試</voice></speak>`;
 
                     const response = await fetch(endpoint, {
                         method: 'POST',
@@ -938,13 +953,7 @@
                 debugLog('Testing audio with simple TTS...');
                 updateAudioStatus('🔄 正在測試音頻... Testing audio...', 'warning');
 
-                const testSSML = `<speak version="1.0" xml:lang="zh-HK">
-                    <voice name="${selectedVoice}">
-                        <mstts:express-as style="cheerful">
-                            你好！音頻測試成功！Hello! Audio test successful!
-                        </mstts:express-as>
-                    </voice>
-                </speak>`;
+                const testSSML = `<speak version="1.0" xml:lang="zh-HK"><voice name="${selectedVoice}"><mstts:express-as style="cheerful">你好！音頻測試成功！</mstts:express-as></voice></speak>`;
 
                 await speakPatientResponseAzure(testSSML, true);
                 updateAudioStatus('✅ 音頻測試成功！Audio test successful!', 'success');

@@ -107,8 +107,7 @@ exports.handler = async (event, context) => {
         'X-Microsoft-OutputFormat': 'audio-16khz-128kbitrate-mono-mp3',
         'User-Agent': 'netlify-function/1.0'
       },
-      body: ssml,
-      timeout: 30000 // 30 second timeout
+      body: ssml
     });
 
     console.log('Azure response status:', azureResponse.status);
