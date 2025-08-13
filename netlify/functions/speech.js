@@ -78,7 +78,14 @@ exports.handler = async (event, context) => {
     // Azure Speech Services 配置
     const AZURE_SPEECH_KEY = process.env.AZURE_SPEECH_KEY;
     const AZURE_REGION = process.env.AZURE_REGION || 'eastasia';
-    const AZURE_TTS_ENDPOINT = `https://${AZURE_REGION}.api.cognitive.microsoft.com/cognitiveservices/v1`;
+   const POSSIBLE_ENDPOINTS = [
+    `https://${AZURE_REGION}.tts.speech.microsoft.com/cognitiveservices/v1`,
+    `https://${AZURE_REGION}.api.cognitive.microsoft.com/cognitiveservices/v1`,
+    `https://${AZURE_REGION}.api.cognitive.microsoft.com/cognitiveservices/tts/v1`,
+    `https://${AZURE_REGION}.cognitiveservices.azure.com/sts/v1.0/issuetoken`
+];
+
+let AZURE_TTS_ENDPOINT = POSSIBLE_ENDPOINTS[0]; // 默认使用第一个
 
     if (!AZURE_SPEECH_KEY) {
       console.error('Azure Speech Key not configured');
