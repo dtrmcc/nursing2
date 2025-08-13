@@ -821,6 +821,33 @@
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '&apos;');
         }
+        // 清理AI生成的响应文本
+        function cleanAIResponse(text) {
+            if (!text) return '';
+            
+            // 移除可能的AI生成格式问题
+            let cleaned = String(text)
+                // 移除多余的引号和换行
+                .replace(/^["'`]+|["'`]+$/g, '')
+                .replace(/\n+/g, ' ')
+                .replace(/\s+/g, ' ')
+                // 移除可能的AI标记
+                .replace(/^(AI|Assistant|Patient|病人)[:：]\s*/i, '')
+                .replace(/^(Response|回应)[:：]\s*/i, '')
+                // 确保结尾有适当的标点
+                .trim();
+            
+            // 如果文本太短或太长，使用fallback
+            if (cleaned.length < 2) {
+                return '好嘅，我明白。';
+            }
+            
+            if (cleaned.length > 200) {
+                cleaned = cleaned.substring(0, 197) + '...';
+            }
+            
+            return cleaned;
+        }
         // Validate SSML before sending
                 function validateSSML(ssml) {
                     try {
