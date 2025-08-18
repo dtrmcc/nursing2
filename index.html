@@ -667,9 +667,10 @@
 
         // Determine conversation phase
         function determineConversationPhase(historyLength, historyText) {
+            // Progress based mainly on conversation length, less strict on content
             if (historyLength <= 2) return 'greeting';
-            if (historyLength <= 6 && !historyText.includes('文力新')) return 'identification';
-            if (historyLength <= 10 && !historyText.includes('傷口')) return 'explanation';
+            if (historyLength <= 4) return 'identification';  // Reduced from 6
+            if (historyLength <= 6) return 'explanation';     // Reduced from 10
             return 'procedure';
         }
 
@@ -684,15 +685,36 @@
 
         // Identify conversation topic
         function identifyTopic(input) {
-            if (input.includes('護士') || input.includes('何') || input.includes('名')) return 'introduction';
-            if (input.includes('文') || input.includes('對名') || input.includes('23332099')) return 'identification';
-            if (input.includes('傷口') || input.includes('換藥') || input.includes('洗') || input.includes('wound')) return 'procedure';
-            if (input.includes('痛') || input.includes('pain')) return 'pain_concern';
+            if (input.includes('護士') || input.includes('何') || input.includes('名') || 
+                input.includes('你好') || input.includes('早') || input.includes('hi') || 
+                input.includes('hello')) return 'introduction';
+            
+            if (input.includes('文') || input.includes('名') || input.includes('233') || 
+                input.includes('病人') || input.includes('先生') || input.includes('check') ||
+                input.includes('確認') || input.includes('身份')) return 'identification';
+            
+            if (input.includes('傷') || input.includes('藥') || input.includes('洗') || 
+                input.includes('wound') || input.includes('做') || input.includes('幫') ||
+                input.includes('今') || input.includes('檢查') || input.includes('清')) return 'procedure';
+            
+            if (input.includes('痛') || input.includes('pain') || input.includes('hurt')) return 'pain_concern';
+            
             return 'general';
         }
 
         // Generate contextual response based on analysis
         function generateContextualResponse(analysis, studentInput) {
+            // Force progression if conversation is stuck
+            if (conversationHistory.length > 4 && analysis.phase === 'greeting') {
+                analysis.phase = 'identification';
+            }
+            if (conversationHistory.length > 8 && analysis.phase === 'identification') {
+                analysis.phase = 'explanation';
+            }
+            if (conversationHistory.length > 12 && analysis.phase === 'explanation') {
+                analysis.phase = 'procedure';
+            }
+
             const responses = getResponsesByContext(analysis);
 
             // Add emotional modulation
@@ -713,8 +735,13 @@
                         "好啊，入嚟啦。你叫咩名呀？",
                         "呀？邊個呀？係護士嚟㗎？Who is there?",
                         "入嚟入嚟，你係邊位護士？"
+                    ],
+                    transition: [
+                        "好啦好啦，你係護士嚟㗎可？我係文力新。",
+                        "入嚟啦！我就係文先生，HN 23332099。"
                     ]
                 },
+    
                 identification: {
                     neutral: [
                         "係啊，我係文力新。你要做咩呀？",
@@ -724,6 +751,10 @@
                     positive: [
                         "好嘅，我係文力新，HN 23332099。你要幫我做咩？",
                         "冇問題，我係文力新。Thank you for checking."
+                    ],
+                    transition: [
+                        "我知道你要洗傷口㗎啦，開始啦。",
+                        "好啦，你要幫我換藥係咪？Let's start."
                     ]
                 },
                 explanation: {
@@ -779,15 +810,24 @@
 
         // Select best response with some randomization
         function selectBestResponse(responses, analysis) {
-            // Add some personality-based selection logic
+        // Check if we should use transition responses to move forward
+            const messageCount = conversationHistory.length;
+            
+            // Force transition after certain message counts
+            if (messageCount > 3 && analysis.phase === 'greeting' && responses.transition) {
+                return responses.transition[Math.floor(Math.random() * responses.transition.length)];
+            }
+            if (messageCount > 7 && analysis.phase === 'identification' && responses.transition) {
+                return responses.transition[Math.floor(Math.random() * responses.transition.length)];
+            }
+            
+            // Original selection logic
             let weightedResponses = responses;
-
-            // Patient is talkative, prefer longer responses sometimes
             if (Math.random() > 0.7) {
                 weightedResponses = responses.filter(r => r.length > 20);
                 if (weightedResponses.length === 0) weightedResponses = responses;
             }
-
+            
             return weightedResponses[Math.floor(Math.random() * weightedResponses.length)];
         }
 
@@ -901,6 +941,16 @@
                     `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-HK"><voice name="${selectedVoice}">唔好意思，我唔係好明。Sorry, I don't understand.</voice></speak>`
                 ]
             };
+            
+            // ADD THIS NEW SECTION - Progress based on message count if stuck
+            if (messageCount <= 2) {
+                return responses.greeting[Math.floor(Math.random() * responses.greeting.length)];
+            } else if (messageCount <= 5) {
+                return responses.identification[Math.floor(Math.random() * responses.identification.length)];
+            } else if (messageCount <= 8) {
+                return responses.procedure[Math.floor(Math.random() * responses.procedure.length)];
+            }
+
 
             // Simple keyword matching for fallback
             if (input.includes('護士') || input.includes('何') || input.includes('入嚟')) {
