@@ -1,0 +1,1725 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>護理學生傷口護理訓練 - Nursing Wound Care Training</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 20px;
+        }
+
+        .left-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .info-card,
+        .settings-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .header h2 {
+            color: #34495e;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .azure-badge {
+            background: #0078d4;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .ai-badge {
+            background: #28a745;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .scenario-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 4px solid #3498db;
+        }
+
+        .patient-info {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #27ae60;
+        }
+
+        .patient-info h4 {
+            margin-top: 0;
+            color: #155724;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .status {
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+
+        .status.loading {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status.ready {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.recording {
+            background: #f8d7da;
+            color: #721c24;
+            animation: pulse 1.5s infinite;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        .timer {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            color: #2c3e50;
+            margin: 20px 0;
+        }
+
+        .conversation {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .message {
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 8px;
+            line-height: 1.5;
+        }
+
+        .student-message {
+            background: #e3f2fd;
+            margin-left: 20px;
+            border-left: 4px solid #2196f3;
+        }
+
+        .patient-message {
+            background: #fff3e0;
+            margin-right: 20px;
+            border-left: 4px solid #ff9800;
+        }
+
+        .message-header {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+
+        .message-content {
+            font-size: 16px;
+        }
+
+        .cantonese-text {
+            color: #c0392b;
+            font-weight: 500;
+        }
+
+        .procedure-notes {
+            background: #f0f8ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 6px;
+            font-style: italic;
+            color: #34495e;
+            border-left: 3px solid #3498db;
+        }
+
+        .download-section {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .settings-card h4 {
+            margin-top: 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .setting-group {
+            margin: 15px 0;
+        }
+
+        .setting-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #34495e;
+        }
+
+        .setting-group select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+        }
+
+        .audio-status {
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .audio-status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .audio-status.warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .audio-status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .volume-control {
+            margin: 10px 0;
+        }
+
+        .volume-control input[type="range"] {
+            width: 100%;
+            margin: 5px 0;
+        }
+
+        .debug-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #dc3545;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .debug-section h4 {
+            color: #dc3545;
+            margin-top: 0;
+        }
+
+        .debug-log {
+            background: #f8f9fa;
+            padding: 5px;
+            margin: 5px 0;
+            border-radius: 4px;
+            color: #6c757d;
+        }
+
+        .debug-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .debug-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .ai-status {
+            background: #e8f5e8;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-weight: bold;
+            text-align: center;
+            border-left: 4px solid #28a745;
+        }
+
+        .ai-status.loading {
+            background: #fff3cd;
+            color: #856404;
+            border-left-color: #ffc107;
+        }
+
+        .ai-status.ready {
+            background: #d4edda;
+            color: #155724;
+            border-left-color: #28a745;
+        }
+
+        .ai-status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left-color: #dc3545;
+        }
+
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                max-width: 900px;
+            }
+
+            .right-panel {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .info-card,
+            .settings-card {
+                flex: 1;
+                min-width: 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .right-panel {
+                flex-direction: column;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main-container">
+        <div class="left-panel">
+            <div class="header">
+                <h1>🏥 護理學生傷口護理訓練系統 <span class="azure-badge">Azure AI</span><span
+                        class="ai-badge">Transformer.js</span></h1>
+                <h2>Professional Nursing Student Wound Care Training System</h2>
+                <p>Advanced AI-powered patient simulation with intelligent responses and realistic Cantonese voices</p>
+            </div>
+
+            <div class="scenario-info">
+                <h3>📋 訓練場景 Training Scenario</h3>
+                <p><strong>你的角色 Your Role:</strong> XX大學護理學生何同學 (Nursing Student Ho from XX University)</p>
+                <p><strong>任務 Task:</strong> 進行傷口護理程序並與病人保持良好溝通</p>
+                <p><strong>重點 Focus:</strong> 身份確認、程序解釋、病人安撫、專業溝通</p>
+            </div>
+
+            <div id="aiStatus" class="ai-status loading">
+                <span class="loading-spinner"></span> 正在加載AI模型... Loading AI model...
+            </div>
+
+            <div id="status" class="status loading">
+                <span class="loading-spinner"></span> 正在初始化Azure語音服務... Initializing Azure Speech Services...
+            </div>
+
+            <div class="controls">
+                <button id="startBtn" class="btn btn-primary" disabled>🎙️ 開始訓練 Start Training</button>
+                <button id="stopBtn" class="btn btn-danger" disabled>⏹️ 結束訓練 Stop Training</button>
+            </div>
+
+            <div id="timer" class="timer">00:00</div>
+
+            <div id="conversation" class="conversation" style="display: none;">
+                <h4>💬 對話記錄 Session Conversation:</h4>
+                <div id="messages"></div>
+            </div>
+
+            <div id="downloadSection" class="download-section" style="display: none;">
+                <h4>📥 訓練記錄 Session Recording</h4>
+                <p>你的訓練對話已被記錄以供分析 Your training session has been recorded for analysis.</p>
+                <button id="downloadBtn" class="btn btn-primary">下載錄音 Download Recording</button>
+            </div>
+
+            <div id="debugSection" class="debug-section" style="display: none;">
+                <h4>🔧 Debug Information</h4>
+                <div id="debugLogs"></div>
+                <div style="margin-top: 10px;">
+                    <button onclick="clearDebugLogs()" class="btn btn-primary btn-small">Clear Logs</button>
+                    <button onclick="toggleDebug()" class="btn btn-primary btn-small">Hide Debug</button>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button onclick="toggleDebug()" class="btn btn-primary btn-small">🔧 Toggle Debug</button>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <div class="info-card">
+                <h4>👨 病人資料 Patient Information</h4>
+                <div class="patient-info">
+                    <p><strong>姓名 Name:</strong> 文力新先生 (Mr. Man Lik Sun)</p>
+                    <p><strong>HN Number:</strong> 23332099</p>
+                    <p><strong>年齡 Age:</strong> 65歲</p>
+                    <p><strong>語言 Language:</strong> 廣東話/英文 (Cantonese/English Mix)</p>
+                    <p><strong>病情 Condition:</strong> 腿部傷口需要清洗及換藥 (Leg wound requiring cleaning and dressing)</p>
+                    <p><strong>性格特點:</strong> 健談但容易緊張，喜歡詳細解釋</p>
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <h4>🎙️ 語音設定 Voice Settings</h4>
+
+                <div class="setting-group">
+                    <label>Patient Voice:</label>
+                    <select id="voiceSelect">
+                        <option value="zh-HK-HiuMaanNeural">HiuMaan (Female, Elderly)</option>
+                        <option value="zh-HK-WanLungNeural">WanLung (Male, Elderly)</option>
+                        <option value="zh-HK-HiuGaaiNeural">HiuGaai (Female, Young)</option>
+                    </select>
+                </div>
+
+                <div class="setting-group">
+                    <label>Speech Recognition:</label>
+                    <select id="recognitionLang">
+                        <option value="zh-HK">廣東話 Cantonese (Hong Kong)</option>
+                        <option value="en-US">English (US)</option>
+                        <option value="zh-CN">普通話 Mandarin</option>
+                    </select>
+                </div>
+
+                <h4>🔊 音頻測試 Audio Test</h4>
+
+                <div id="audioStatus" class="audio-status warning">
+                    等待音頻測試... Waiting for audio test...
+                </div>
+
+                <div class="volume-control">
+                    <label for="volumeSlider">音量 Volume:</label>
+                    <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.8">
+                    <div style="text-align: center; margin-top: 5px;">
+                        <span id="volumeDisplay">80%</span>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                    <button onclick="testAudio()" class="btn btn-success btn-small">🎵 測試音頻 Test Audio</button>
+                    <button onclick="enableAudioContext()" class="btn btn-primary btn-small">🔓 啟用音頻 Enable
+                        Audio</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2';
+
+        // Disable local model loading to use CDN
+        env.allowRemoteModels = true;
+        env.allowLocalModels = false;
+
+        // Netlify Function Configuration
+        const SPEECH_ENDPOINTS = [
+            '/.netlify/functions/speech',
+            '/api/speech'
+        ];
+        let CURRENT_ENDPOINT = SPEECH_ENDPOINTS[0];
+
+        // Global variables
+        let mediaRecorder;
+        let audioChunks = [];
+        let recognition;
+        let sessionStartTime;
+        let timerInterval;
+        let isRecording = false;
+        let conversationHistory = [];
+        let selectedVoice = 'zh-HK-HiuMaanNeural';
+        let selectedRecognitionLang = 'zh-HK';
+        let debugMode = false;
+        let audioContext = null;
+        let currentVolume = 0.8;
+
+        // AI Model variables
+        let textGenerator = null;
+        let isAIReady = false;
+
+        // Patient personality and context
+        const patientContext = {
+            name: "文力新",
+            age: 65,
+            condition: "腿部傷口需要清洗及換藥",
+            personality: "健談但容易緊張，喜歡詳細解釋，會混合廣東話和英文說話",
+            currentPain: 6,
+            anxiety: 7,
+            previousExperience: "之前有做過傷口護理，但每次都很緊張"
+        };
+
+        // Initialize AI Model (using rule-based system for better Chinese support)
+        async function initializeAI() {
+            try {
+                debugLog('Initializing AI conversation system...');
+                updateAIStatus('🤖 正在初始化智能對話系統... Initializing intelligent conversation system...', 'loading');
+
+                // Use rule-based AI for better Chinese/Cantonese support
+                // This avoids the character encoding issues with pre-trained English models
+                textGenerator = {
+                    initialized: true,
+                    generateResponse: function (context, options) {
+                        return Promise.resolve([{
+                            generated_text: generateIntelligentResponse(context)
+                        }]);
+                    }
+                };
+
+                debugLog('AI conversation system loaded successfully');
+                updateAIStatus('✅ 智能對話系統準備就緒！Intelligent conversation system ready!', 'ready');
+                isAIReady = true;
+
+                return true;
+            } catch (error) {
+                debugLog(`AI initialization failed: ${error.message}`, 'error');
+                updateAIStatus('❌ 系統初始化失敗 System initialization failed', 'error');
+                isAIReady = false;
+                throw error;
+            }
+        }
+
+        // Generate intelligent response using rule-based AI optimized for Chinese/Cantonese
+        function generateIntelligentResponse(context) {
+            const lines = context.split('\n');
+            const lastStudentInput = lines[lines.length - 2]?.replace('護士: ', '') || '';
+            const conversationHistory = lines.slice(2, -2); // Remove header and current input
+
+            debugLog(`Generating response for: ${lastStudentInput}`);
+            debugLog(`Conversation length: ${conversationHistory.length}`);
+
+            // Analyze conversation context
+            const analysis = analyzeConversationContext(lastStudentInput, conversationHistory);
+            debugLog(`Context analysis: ${JSON.stringify(analysis)}`);
+
+            // Generate contextual response
+            return generateContextualResponse(analysis, lastStudentInput);
+        }
+
+        // Analyze conversation context for better responses
+        function analyzeConversationContext(input, history) {
+            const inputLower = input.toLowerCase();
+            const historyText = history.join(' ').toLowerCase();
+
+            return {
+                phase: determineConversationPhase(history.length, historyText),
+                emotion: detectEmotionalCues(inputLower),
+                topic: identifyTopic(inputLower),
+                hasIntroduced: historyText.includes('護士') || historyText.includes('何'),
+                hasIdentified: historyText.includes('文力新') || historyText.includes('23332099'),
+                isProcedureStarted: historyText.includes('傷口') || historyText.includes('換藥')
+            };
+        }
+
+        // Determine conversation phase
+        function determineConversationPhase(historyLength, historyText) {
+            // Progress based mainly on conversation length, less strict on content
+            if (historyLength <= 2) return 'greeting';
+            if (historyLength <= 4) return 'identification';  // Reduced from 6
+            if (historyLength <= 6) return 'explanation';     // Reduced from 10
+            return 'procedure';
+        }
+
+        // Detect emotional cues
+        function detectEmotionalCues(input) {
+            if (input.includes('痛') || input.includes('pain') || input.includes('hurt')) return 'pain';
+            if (input.includes('驚') || input.includes('scared') || input.includes('afraid') || input.includes('nervous')) return 'anxiety';
+            if (input.includes('好') || input.includes('唔該') || input.includes('thank')) return 'positive';
+            if (input.includes('唔明') || input.includes('不明') || input.includes('understand')) return 'confused';
+            return 'neutral';
+        }
+
+        // Identify conversation topic
+        function identifyTopic(input) {
+            if (input.includes('護士') || input.includes('何') || input.includes('名') || 
+                input.includes('你好') || input.includes('早') || input.includes('hi') || 
+                input.includes('hello')) return 'introduction';
+            
+            if (input.includes('文') || input.includes('名') || input.includes('233') || 
+                input.includes('病人') || input.includes('先生') || input.includes('check') ||
+                input.includes('確認') || input.includes('身份')) return 'identification';
+            
+            if (input.includes('傷') || input.includes('藥') || input.includes('洗') || 
+                input.includes('wound') || input.includes('做') || input.includes('幫') ||
+                input.includes('今') || input.includes('檢查') || input.includes('清')) return 'procedure';
+            
+            if (input.includes('痛') || input.includes('pain') || input.includes('hurt')) return 'pain_concern';
+            
+            return 'general';
+        }
+
+        // Generate contextual response based on analysis
+        function generateContextualResponse(analysis, studentInput) {
+            // Force progression if conversation is stuck
+            if (conversationHistory.length > 4 && analysis.phase === 'greeting') {
+                analysis.phase = 'identification';
+            }
+            if (conversationHistory.length > 8 && analysis.phase === 'identification') {
+                analysis.phase = 'explanation';
+            }
+            if (conversationHistory.length > 12 && analysis.phase === 'explanation') {
+                analysis.phase = 'procedure';
+            }
+
+            const responses = getResponsesByContext(analysis);
+
+            // Add emotional modulation
+            let selectedResponse = selectBestResponse(responses, analysis);
+
+            // Add personality touches
+            selectedResponse = addPersonalityElements(selectedResponse, analysis);
+
+            debugLog(`Generated response: ${selectedResponse}`);
+            return selectedResponse;
+        }
+
+        // Get appropriate responses based on context
+        function getResponsesByContext(analysis) {
+            const responseBank = {
+                greeting: {
+                    neutral: [
+                        "好啊，入嚟啦。你叫咩名呀？",
+                        "呀？邊個呀？係護士嚟㗎？Who is there?",
+                        "入嚟入嚟，你係邊位護士？"
+                    ],
+                    transition: [
+                        "好啦好啦，你係護士嚟㗎可？我係文力新。",
+                        "入嚟啦！我就係文先生，HN 23332099。"
+                    ]
+                },
+    
+                identification: {
+                    neutral: [
+                        "係啊，我係文力新。你要做咩呀？",
+                        "我個HN係23332099。點解要check㗎？",
+                        "文力新，65歲。My leg is hurt. 有啲痛㗎。"
+                    ],
+                    positive: [
+                        "好嘅，我係文力新，HN 23332099。你要幫我做咩？",
+                        "冇問題，我係文力新。Thank you for checking."
+                    ],
+                    transition: [
+                        "我知道你要洗傷口㗎啦，開始啦。",
+                        "好啦，你要幫我換藥係咪？Let's start."
+                    ]
+                },
+                explanation: {
+                    neutral: [
+                        "洗傷口？要點洗㗎？會唔會好痛？",
+                        "換藥係咪要除咗舊嘅先？我應該點配合？",
+                        "你可唔可以解釋詳細啲？I want to understand."
+                    ],
+                    anxiety: [
+                        "洗傷口？會唔會好痛㗎？I am scared. 我有啲驚呀。",
+                        "我之前洗傷口都好痛㗎，今次會唔會好啲？",
+                        "可唔可以輕手啲？我真係好怕痛。"
+                    ],
+                    positive: [
+                        "好嘅，我會配合你。點樣做最好？",
+                        "唔該曬！你解釋得好清楚。"
+                    ]
+                },
+                procedure: {
+                    neutral: [
+                        "而家開始喇？我準備好喇。",
+                        "係咪咁樣？我做得啱唔啱？",
+                        "下一步要做咩？"
+                    ],
+                    pain: [
+                        "痛呀！可唔可以停一停？",
+                        "有啲痛，但係我頂得住。繼續啦。",
+                        "It hurts! 但係我知道要做㗎。"
+                    ],
+                    anxiety: [
+                        "我有啲緊張，可唔可以慢啲？",
+                        "深呼吸...深呼吸...我嘗試放鬆。",
+                        "你做緊咩？可唔可以話我知？"
+                    ]
+                },
+                general: {
+                    confused: [
+                        "咩話？我聽唔清楚呀。What did you say?",
+                        "你可唔可以講慢啲？Can you speak slower?",
+                        "唔好意思，我唔係好明。可唔可以再講一次？"
+                    ],
+                    neutral: [
+                        "係嘅，我聽緊你講。",
+                        "好嘅，繼續。",
+                        "明白。然後呢？"
+                    ]
+                }
+            };
+
+            const phaseResponses = responseBank[analysis.phase] || responseBank.general;
+            return phaseResponses[analysis.emotion] || phaseResponses.neutral || responseBank.general.neutral;
+        }
+
+        // Select best response with some randomization
+        function selectBestResponse(responses, analysis) {
+        // Check if we should use transition responses to move forward
+            const messageCount = conversationHistory.length;
+            
+            // Force transition after certain message counts
+            if (messageCount > 3 && analysis.phase === 'greeting' && responses.transition) {
+                return responses.transition[Math.floor(Math.random() * responses.transition.length)];
+            }
+            if (messageCount > 7 && analysis.phase === 'identification' && responses.transition) {
+                return responses.transition[Math.floor(Math.random() * responses.transition.length)];
+            }
+            
+            // Original selection logic
+            let weightedResponses = responses;
+            if (Math.random() > 0.7) {
+                weightedResponses = responses.filter(r => r.length > 20);
+                if (weightedResponses.length === 0) weightedResponses = responses;
+            }
+            
+            return weightedResponses[Math.floor(Math.random() * weightedResponses.length)];
+        }
+
+        // Add personality elements to response
+        function addPersonalityElements(response, analysis) {
+            const personalityTouches = [
+                // Nervous additions
+                () => Math.random() > 0.8 ? response + " 我有啲緊張呀。" : response,
+                // English mixing
+                () => Math.random() > 0.9 ? response + " You know what I mean?" : response,
+                // Uncertainty
+                () => Math.random() > 0.85 ? "咁..." + response : response,
+                // Confirmation seeking
+                () => Math.random() > 0.9 ? response + " 係咪？" : response
+            ];
+
+            // Apply one random personality touch
+            if (Math.random() > 0.6) {
+                const touch = personalityTouches[Math.floor(Math.random() * personalityTouches.length)];
+                return touch();
+            }
+
+            return response;
+        }
+
+        // Escape XML special characters for SSML
+        function escapeXml(text) {
+            return text.replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&apos;');
+        }
+        // 清理AI生成的响应文本
+        function cleanAIResponse(text) {
+            if (!text) return '';
+            
+            // 移除可能的AI生成格式问题
+            let cleaned = String(text)
+                // 移除多余的引号和换行
+                .replace(/^["'`]+|["'`]+$/g, '')
+                .replace(/\n+/g, ' ')
+                .replace(/\s+/g, ' ')
+                // 移除可能的AI标记
+                .replace(/^(AI|Assistant|Patient|病人)[:：]\s*/i, '')
+                .replace(/^(Response|回应)[:：]\s*/i, '')
+                // 确保结尾有适当的标点
+                .trim();
+            
+            // 如果文本太短或太长，使用fallback
+            if (cleaned.length < 2) {
+                return '好嘅，我明白。';
+            }
+            
+            if (cleaned.length > 200) {
+                cleaned = cleaned.substring(0, 197) + '...';
+            }
+            
+            return cleaned;
+        }
+        // Validate SSML before sending
+                function validateSSML(ssml) {
+                    try {
+                        // Basic XML structure check
+                        if (!ssml.includes('<speak') || !ssml.includes('</speak>')) {
+                            return false;
+                        }
+                        
+                        // Check for proper voice tags
+                        if (!ssml.includes('<voice') || !ssml.includes('</voice>')) {
+                            return false;
+                        }
+                        
+                        // Check for balanced tags
+                        const openTags = (ssml.match(/<[^\/][^>]*>/g) || []).length;
+                        const closeTags = (ssml.match(/<\/[^>]*>/g) || []).length;
+                        const selfClosingTags = (ssml.match(/<[^>]*\/>/g) || []).length;
+                        
+                        return openTags === closeTags + selfClosingTags;
+                    } catch (error) {
+                        debugLog(`SSML validation error: ${error.message}`, 'error');
+                        return false;
+                    }
+                }
+        // Format response as SSML
+        function formatResponseAsSSML(response) {
+            const escapedResponse = escapeXml(response);
+            return `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-HK"><voice name="${selectedVoice}">${escapedResponse}</voice></speak>`;
+        }
+
+        // Fallback response system
+        function generateFallbackResponse(studentInput) {
+            const input = studentInput.toLowerCase();
+
+            const responses = {
+                greeting: [
+                    `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-HK"><voice name="${selectedVoice}">好啊，入嚟啦。你叫咩名呀？What is your name?</voice></speak>`,
+                    `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-HK"><voice name="${selectedVoice}">邊個呀？係護士嚟㗎？Who is there?</voice></speak>`
+                ],
+                identification: [
+                    `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-HK"><voice name="${selectedVoice}">係啊，我係文力新。你要做咩呀？My leg is hurt. 有啲痛㗎。</voice></speak>`,
+                    `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-HK"><voice name="${selectedVoice}">我個HN係23332099。點解要check㗎？</voice></speak>`
+                ],
+                procedure: [
+                    `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-HK"><voice name="${selectedVoice}">洗傷口？會唔會好痛㗎？I am scared. 我有啲驚呀。</voice></speak>`,
+                    `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-HK"><voice name="${selectedVoice}">係咪要除咗啲野先？要唔要我郁？</voice></speak>`
+                ],
+                default: [
+                    `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-HK"><voice name="${selectedVoice}">咩話？我聽唔清楚呀。What did you say?</voice></speak>`,
+                    `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-HK"><voice name="${selectedVoice}">你可唔可以講慢啲？Can you speak slower?</voice></speak>`,
+                    `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-HK"><voice name="${selectedVoice}">唔好意思，我唔係好明。Sorry, I don't understand.</voice></speak>`
+                ]
+            };
+            
+            // ADD THIS NEW SECTION - Progress based on message count if stuck
+            if (messageCount <= 2) {
+                return responses.greeting[Math.floor(Math.random() * responses.greeting.length)];
+            } else if (messageCount <= 5) {
+                return responses.identification[Math.floor(Math.random() * responses.identification.length)];
+            } else if (messageCount <= 8) {
+                return responses.procedure[Math.floor(Math.random() * responses.procedure.length)];
+            }
+
+
+            // Simple keyword matching for fallback
+            if (input.includes('護士') || input.includes('何') || input.includes('入嚟')) {
+                return responses.greeting[Math.floor(Math.random() * responses.greeting.length)];
+            } else if (input.includes('文生') || input.includes('對名') || input.includes('文力新') || input.includes('23332099')) {
+                return responses.identification[Math.floor(Math.random() * responses.identification.length)];
+            } else if (input.includes('洗傷口') || input.includes('換藥') || input.includes('唔好郁') || input.includes('procedure')) {
+                return responses.procedure[Math.floor(Math.random() * responses.procedure.length)];
+            } else {
+                return responses.default[Math.floor(Math.random() * responses.default.length)];
+            }
+        }
+
+        // Update AI status display
+        function updateAIStatus(message, type) {
+            const aiStatus = document.getElementById('aiStatus');
+            aiStatus.innerHTML = type === 'loading' ?
+                `<span class="loading-spinner"></span> ${message}` :
+                message;
+            aiStatus.className = `ai-status ${type}`;
+        }
+
+        // Audio context initialization for autoplay policy
+            async function enableAudioContext() {
+        try {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                debugLog('Audio context created');
+            }
+
+            debugLog(`Audio context state: ${audioContext.state}`);
+
+            if (audioContext.state === 'suspended') {
+                await audioContext.resume();
+                debugLog('Audio context resumed successfully');
+                updateAudioStatus('🔊 音頻已啟用 Audio enabled', 'success');
+            } else {
+                debugLog('Audio context already running');
+                updateAudioStatus('✅ 音頻已就緒 Audio ready', 'success');
+            }
+
+            // 创建一个静音音频来"激活"音频系统
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+            oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+            
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + 0.001);
+            
+            debugLog('Silent audio test completed');
+
+        } catch (error) {
+            debugLog(`Audio context enable failed: ${error.message}`, 'error');
+            updateAudioStatus(`❌ 音頻啟用失敗: ${error.message}`, 'error');
+        }
+    }
+
+        // Test Azure connection endpoints
+        async function testAzureConnection() {
+            for (const endpoint of SPEECH_ENDPOINTS) {
+                try {
+                    debugLog(`Testing endpoint: ${endpoint}`);
+                    const testSSML = `<speak version="1.0" xml:lang="zh-HK"><voice name="zh-HK-HiuMaanNeural">測試</voice></speak>`;
+
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ ssml: testSSML })
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.audio) {
+                            CURRENT_ENDPOINT = endpoint;
+                            debugLog(`Using endpoint: ${endpoint}`);
+                            return true;
+                        }
+                    }
+                } catch (error) {
+                    debugLog(`Endpoint ${endpoint} failed: ${error.message}`, 'error');
+                    continue;
+                }
+            }
+            throw new Error('All Azure endpoints failed');
+        }
+        // Test Audio
+            async function testAudio() {
+                try {
+                    debugLog('Testing audio with simple TTS...');
+                    updateAudioStatus('🔄 正在測試音頻... Testing audio...', 'warning');
+
+                    // 使用简化的SSML格式，类似测试页面
+                    const testSSML = `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-HK">
+                <voice name="${selectedVoice}">
+                    你好！音頻測試成功！
+                </voice>
+            </speak>`;
+
+                    debugLog(`Testing with SSML: ${testSSML}`);
+                    await speakPatientResponseAzure(testSSML, true);
+
+                } catch (error) {
+                    debugLog(`Audio test failed: ${error.message}`, 'error');
+                    updateAudioStatus(`❌ 音頻測試失敗: ${error.message}`, 'error');
+                }
+            }
+
+        // Update audio status display
+        function updateAudioStatus(message, type) {
+            const audioStatus = document.getElementById('audioStatus');
+            audioStatus.textContent = message;
+            audioStatus.className = `audio-status ${type}`;
+        }
+
+        // Volume control
+        const volumeSlider = document.getElementById('volumeSlider');
+        const volumeDisplay = document.getElementById('volumeDisplay');
+
+        volumeSlider.addEventListener('input', (e) => {
+            currentVolume = parseFloat(e.target.value);
+            volumeDisplay.textContent = Math.round(currentVolume * 100) + '%';
+            debugLog(`Volume set to: ${Math.round(currentVolume * 100)}%`);
+        });
+
+        // Debug logging function
+        function debugLog(message, type = 'info') {
+            console.log(`[${type.toUpperCase()}] ${message}`);
+
+            if (debugMode) {
+                const debugLogs = document.getElementById('debugLogs');
+                const logDiv = document.createElement('div');
+                logDiv.className = `debug-log debug-${type}`;
+                logDiv.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+                debugLogs.appendChild(logDiv);
+                debugLogs.scrollTop = debugLogs.scrollHeight;
+            }
+        }
+
+        function clearDebugLogs() {
+            document.getElementById('debugLogs').innerHTML = '';
+        }
+
+        function toggleDebug() {
+            debugMode = !debugMode;
+            const debugSection = document.getElementById('debugSection');
+            debugSection.style.display = debugMode ? 'block' : 'none';
+        }
+
+        // DOM elements
+        const statusEl = document.getElementById('status');
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const timerEl = document.getElementById('timer');
+        const conversationEl = document.getElementById('conversation');
+        const messagesEl = document.getElementById('messages');
+        const downloadSection = document.getElementById('downloadSection');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const voiceSelect = document.getElementById('voiceSelect');
+        const recognitionLangSelect = document.getElementById('recognitionLang');
+
+        // Voice and language selection
+        voiceSelect.addEventListener('change', (e) => {
+            selectedVoice = e.target.value;
+            debugLog(`Voice changed to: ${selectedVoice}`);
+        });
+
+        recognitionLangSelect.addEventListener('change', (e) => {
+            selectedRecognitionLang = e.target.value;
+            debugLog(`Recognition language changed to: ${selectedRecognitionLang}`);
+            if (recognition) {
+                recognition.lang = selectedRecognitionLang;
+            }
+        });
+
+        // Initialize the application
+        async function init() {
+            try {
+                debugLog('Starting initialization...');
+                updateStatus('正在初始化AI和語音系統... Initializing AI and speech systems...', 'loading');
+
+                // Enable audio context on first user interaction
+                document.addEventListener('click', enableAudioContext, { once: true });
+
+                // Initialize AI model first
+                debugLog('Initializing AI model...');
+                await initializeAI();
+                debugLog('AI model initialized successfully');
+
+                // Test Azure connection
+                debugLog('Testing Azure connection...');
+                updateStatus('正在測試Netlify連接... Testing Netlify function connection...', 'loading');
+                await testAzureConnection();
+                debugLog('Azure connection test successful');
+
+                // Initialize speech recognition
+                updateStatus('正在載入語音識別... Loading speech recognition...', 'loading');
+                debugLog('Initializing speech recognition...');
+                await initSpeechRecognition();
+                debugLog('Speech recognition initialized successfully');
+
+                updateStatus('🎉 系統準備就緒！點擊"測試音頻"確認聲音正常！System ready!', 'ready');
+                startBtn.disabled = false;
+                debugLog('Initialization completed successfully');
+
+            } catch (error) {
+                console.error('Initialization error:', error);
+                debugLog(`Initialization failed: ${error.message}`, 'error');
+                updateStatus(`⚠️ 初始化失敗 Initialization failed: ${error.message}`, 'error');
+            }
+        }
+
+        // Initialize speech recognition with compatibility check
+        async function initSpeechRecognition() {
+            if ('webkitSpeechRecognition' in window) {
+                recognition = new webkitSpeechRecognition();
+                debugLog('Using webkitSpeechRecognition');
+            } else if ('SpeechRecognition' in window) {
+                recognition = new SpeechRecognition();
+                debugLog('Using SpeechRecognition');
+            } else {
+                throw new Error('Speech recognition not supported in this browser. Please use Chrome or Edge.');
+            }
+
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = selectedRecognitionLang;
+
+            recognition.onresult = function (event) {
+                const result = event.results[event.results.length - 1];
+                if (result.isFinal) {
+                    const transcript = result[0].transcript.trim();
+                    debugLog(`Speech recognized: ${transcript}`);
+                    addMessage('student', transcript);
+                    conversationHistory.push({ role: 'student', content: transcript });
+                    processStudentInput(transcript);
+                }
+            };
+
+            recognition.onerror = function (event) {
+                debugLog(`Speech recognition error: ${event.error}`, 'error');
+                if (event.error === 'no-speech' && isRecording) {
+                    setTimeout(() => {
+                        try {
+                            recognition.start();
+                            debugLog('Speech recognition restarted after no-speech');
+                        } catch (e) {
+                            debugLog(`Recognition restart failed: ${e.message}`, 'error');
+                        }
+                    }, 1000);
+                } else if (event.error === 'not-allowed') {
+                    alert('麥克風權限被拒絕。請在瀏覽器設置中允許麥克風訪問。Microphone access denied. Please allow microphone access in browser settings.');
+                }
+            };
+
+            recognition.onend = function () {
+                debugLog('Speech recognition ended');
+                if (isRecording) {
+                    try {
+                        recognition.start();
+                        debugLog('Speech recognition restarted');
+                    } catch (e) {
+                        debugLog(`Recognition restart failed: ${e.message}`, 'error');
+                    }
+                }
+            };
+
+            debugLog('Speech recognition configured successfully');
+        }
+        // Create the missing function
+        function createPatientContext(studentInput, history) {
+            const context = `你是65歲的病人文力新，腿部有傷口需要護理。你性格健談但有點緊張，喜歡詳細解釋，會混合廣東話和英文說話。
+
+                之前的對話：
+                ${history.map(h => `${h.role === 'student' ? '護士' : '病人'}: ${h.content}`).join('\n')}
+                現在護士說：${studentInput}
+                請以病人的身份回應，保持角色一致性，表達可能的疼痛、擔憂或感謝。`;
+
+            return context;
+        }
+
+        // Process student input with AI
+        async function processStudentInput(transcript) {
+            debugLog(`Processing student input: ${transcript}`);
+
+            try {
+                // Create conversation context for AI
+                const context = createPatientContext(transcript, conversationHistory);
+
+                // Generate intelligent response using the rule-based AI
+                let response;
+                if (isAIReady) {
+                    const aiResponse = await textGenerator.generateResponse(context, {
+                        max_length: 100,
+                        temperature: 0.7
+                    });
+
+                    const generatedText = aiResponse[0].generated_text;
+                    debugLog(`AI generated response: ${generatedText}`);
+                    response = formatResponseAsSSML(generatedText);
+                } else {
+                    throw new Error('AI not ready');
+                }
+
+                // Simulate thinking time
+                setTimeout(async () => {
+                    const responseText = extractTextFromSSML(response);
+                    debugLog(`Patient responding: ${responseText}`);
+
+                    // Generate contextual notes
+                    const notes = generateContextualNotes(transcript, conversationHistory);
+
+                    addMessage('patient', responseText, notes);
+                    conversationHistory.push({ role: 'patient', content: responseText });
+
+                    // Speak the response
+                    await speakPatientResponseAzure(response);
+                }, 1500 + Math.random() * 1000);
+
+            } catch (error) {
+                debugLog(`AI generation failed, using fallback: ${error.message}`, 'error');
+
+                // Use fallback response
+                const fallbackResponse = generateFallbackResponse(transcript);
+                const responseText = extractTextFromSSML(fallbackResponse);
+                addMessage('patient', responseText, "Using fallback response system");
+                conversationHistory.push({ role: 'patient', content: responseText });
+
+                setTimeout(async () => {
+                    await speakPatientResponseAzure(fallbackResponse);
+                }, 1500 + Math.random() * 1000);
+            }
+        }
+        // Generate contextual notes based on conversation flow
+        function generateContextualNotes(studentInput, history) {
+            const input = studentInput.toLowerCase();
+            const conversationLength = history.length;
+
+            if (conversationLength <= 2) {
+                if (input.includes('護士') || input.includes('何') || input.includes('入嚟')) {
+                    return "Student introduction phase - establishing professional relationship";
+                }
+            } else if (conversationLength <= 6) {
+                if (input.includes('文') || input.includes('對名') || input.includes('23332099')) {
+                    return "Patient identification verification - important safety procedure";
+                }
+            } else if (conversationLength <= 10) {
+                if (input.includes('洗') || input.includes('換藥') || input.includes('傷口')) {
+                    return "Procedure explanation phase - building patient confidence";
+                }
+            }
+
+            // Advanced contextual notes
+            if (input.includes('痛') || input.includes('pain')) {
+                return "Patient expressing pain concerns - opportunity for empathy and reassurance";
+            } else if (input.includes('驚') || input.includes('scared') || input.includes('afraid')) {
+                return "Patient showing anxiety - requires calming approach";
+            } else if (input.includes('唔明') || input.includes('understand')) {
+                return "Patient needs clarification - good opportunity to demonstrate clear communication";
+            }
+
+            return "Ongoing conversation - maintain professional rapport";
+        }
+
+        // Extract text from SSML
+        function extractTextFromSSML(ssml) {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = ssml.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+            return tempDiv.textContent;
+        }
+
+        // Enhanced Azure TTS with better audio handling
+        async function speakPatientResponseAzure(ssmlText, isTest = false) {
+            try {
+                debugLog('Sending TTS request to Azure via Netlify function');
+                debugLog(`SSML length: ${ssmlText.length} characters`);
+
+                const response = await fetch(CURRENT_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ ssml: ssmlText })
+                });
+
+                debugLog(`TTS response status: ${response.status}`);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    debugLog('TTS response received successfully');
+                    debugLog(`Audio data length: ${data.audio ? data.audio.length : 'undefined'} characters`);
+
+                    // Enhanced audio playing with better browser compatibility
+                    const audioBlob = new Blob(
+                        [Uint8Array.from(atob(data.audio), c => c.charCodeAt(0))],
+                        { type: 'audio/mpeg' }
+                    );
+                    const audioUrl = URL.createObjectURL(audioBlob);
+
+                    // Create and configure audio element
+                    const audio = new Audio(audioUrl);
+                    audio.volume = currentVolume;
+                    audio.preload = 'auto';
+
+                    // Enhanced audio event handlers
+                    audio.oncanplay = () => {
+                        debugLog('Audio ready to play');
+                        if (isTest) {
+                            updateAudioStatus('🎵 音頻已加載，準備播放... Audio loaded, ready to play...', 'warning');
+                        }
+                    };
+
+                    audio.onplay = () => {
+                        debugLog('Audio playback started');
+                        if (isTest) {
+                            updateAudioStatus('▶️ 音頻正在播放... Audio playing...', 'warning');
+                        }
+                    };
+
+                    audio.onended = () => {
+                        debugLog('Audio playback ended');
+                        URL.revokeObjectURL(audioUrl);
+                        if (isTest) {
+                            updateAudioStatus('✅ 音頻播放完成！Audio playback completed!', 'success');
+                        }
+                    };
+
+                    audio.onerror = (e) => {
+                        debugLog(`Audio playback error: ${e.message || 'Unknown error'}`, 'error');
+                        if (isTest) {
+                            updateAudioStatus('❌ 音頻播放失敗 Audio playback failed', 'error');
+                        }
+                    };
+
+                    // Multiple play attempts for better browser compatibility
+                    const playAudio = async () => {
+                        try {
+                            // 确保音频上下文已激活
+                            if (audioContext && audioContext.state === 'suspended') {
+                                await audioContext.resume();
+                                debugLog('Audio context resumed before playback');
+                            }
+
+                            // 检查是否是用户交互触发的
+                            const isUserInteraction = isTest || document.hasFocus();
+                            
+                            if (!isUserInteraction) {
+                                debugLog('No user interaction detected, queuing audio for next interaction');
+                                
+                                // 存储音频以供后续播放
+                                const playOnNextInteraction = () => {
+                                    audio.play().then(() => {
+                                        debugLog('Audio played after user interaction');
+                                        document.removeEventListener('click', playOnNextInteraction);
+                                        document.removeEventListener('keydown', playOnNextInteraction);
+                                    }).catch(e => {
+                                        debugLog(`Play after interaction failed: ${e.message}`, 'error');
+                                    });
+                                };
+
+                                document.addEventListener('click', playOnNextInteraction, { once: true });
+                                document.addEventListener('keydown', playOnNextInteraction, { once: true });
+                                
+                                if (isTest) {
+                                    updateAudioStatus('⚠️ 請點擊頁面任意位置播放音頻', 'warning');
+                                }
+                                return;
+                            }
+
+                            // 尝试直接播放
+                            await audio.play();
+                            debugLog('Audio playback started successfully');
+
+                        } catch (firstError) {
+                            debugLog(`Play attempt failed: ${firstError.message}`, 'error');
+                            
+                            if (isTest) {
+                                updateAudioStatus('⚠️ 請點擊頁面任意位置啟動音頻播放', 'warning');
+                            }
+
+                            // 等待用户交互后播放
+                            const playOnInteraction = () => {
+                                audio.play().then(() => {
+                                    debugLog('Audio played after user interaction');
+                                    if (isTest) {
+                                        updateAudioStatus('✅ 音頻播放成功！', 'success');
+                                    }
+                                    document.removeEventListener('click', playOnInteraction);
+                                    document.removeEventListener('keydown', playOnInteraction);
+                                    document.removeEventListener('touchstart', playOnInteraction);
+                                }).catch(e => {
+                                    debugLog(`Play after interaction failed: ${e.message}`, 'error');
+                                    if (isTest) {
+                                        updateAudioStatus(`❌ 播放失敗: ${e.message}`, 'error');
+                                    }
+                                });
+                            };
+
+                            document.addEventListener('click', playOnInteraction, { once: true });
+                            document.addEventListener('keydown', playOnInteraction, { once: true });
+                            document.addEventListener('touchstart', playOnInteraction, { once: true });
+                        }
+                    };
+
+                    // Start playback
+                    await playAudio();
+
+                } else {
+                    const errorData = await response.json();
+                    debugLog(`TTS function failed: ${response.status}`, 'error');
+                    debugLog(`Error details: ${JSON.stringify(errorData)}`, 'error');
+
+                    if (isTest) {
+                        updateAudioStatus(`❌ TTS 請求失敗: ${response.status}`, 'error');
+                    }
+                }
+            } catch (error) {
+                debugLog(`TTS function error: ${error.message}`, 'error');
+                console.error('Speech function error:', error);
+
+                if (isTest) {
+                    updateAudioStatus(`❌ 音頻請求錯誤: ${error.message}`, 'error');
+                }
+            }
+        }
+
+        // Add message to conversation
+        function addMessage(speaker, text, notes = null) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${speaker}-message`;
+
+            const header = document.createElement('div');
+            header.className = 'message-header';
+            header.innerHTML = speaker === 'student' ?
+                '👩‍⚕️ 護理學生何同學 Student Ho' :
+                '👨 病人文先生 Patient Mr. Man';
+
+            const content = document.createElement('div');
+            content.className = 'message-content';
+            content.innerHTML = `<span class="cantonese-text">${text}</span>`;
+
+            messageDiv.appendChild(header);
+            messageDiv.appendChild(content);
+
+            if (notes && speaker === 'patient') {
+                const notesDiv = document.createElement('div');
+                notesDiv.className = 'procedure-notes';
+                notesDiv.textContent = `📝 ${notes}`;
+                messageDiv.appendChild(notesDiv);
+            }
+
+            messagesEl.appendChild(messageDiv);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+
+        // Start training session with audio check
+        async function startSession() {
+            try {
+                debugLog('Starting training session');
+
+                // Check if AI is ready
+                if (!isAIReady) {
+                    alert('AI模型尚未就緒，請稍等片刻再試！\nAI model not ready yet, please wait and try again!');
+                    return;
+                }
+
+                // Check audio readiness first
+                if (!audioContext || audioContext.state === 'suspended') {
+                    alert('請先點擊"啟用音頻"按鈕，確保音頻正常工作！\nPlease click "Enable Audio" button first to ensure audio works properly!');
+                    return;
+                }
+
+                isRecording = true;
+                audioChunks = [];
+                conversationHistory = [];
+
+                // Clear previous conversation
+                messagesEl.innerHTML = '';
+                conversationEl.style.display = 'block';
+
+                // Start audio recording
+                debugLog('Requesting microphone access');
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                debugLog('Microphone access granted');
+
+                mediaRecorder = new MediaRecorder(stream, {
+                    mimeType: 'audio/webm;codecs=opus'
+                });
+
+                mediaRecorder.ondataavailable = function (event) {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = function () {
+                    debugLog('Media recorder stopped, creating download link');
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    createDownloadLink(audioBlob);
+                };
+
+                mediaRecorder.start();
+                debugLog('Audio recording started');
+
+                // Start speech recognition
+                debugLog('Starting speech recognition');
+                recognition.start();
+
+                // Start timer
+                sessionStartTime = Date.now();
+                startTimer();
+
+                // Initial scenario setup with AI-enhanced greeting
+                setTimeout(async () => {
+                    debugLog('Playing initial patient greeting');
+
+                    // Use enhanced rule-based AI to generate initial greeting
+                    let initialResponse;
+                    try {
+                        if (isAIReady) {
+                            const context = createPatientContext("有人進入房間", []);
+                            const aiGreeting = await textGenerator.generateResponse(context, {
+                                max_length: 50,
+                                temperature: 0.7
+                            });
+
+                            let generatedGreeting = aiGreeting[0].generated_text;
+                            if (generatedGreeting.length < 10) {
+                                generatedGreeting = "呀？有人嚟喇。邊個呀？Who is there?";
+                            }
+
+                            initialResponse = formatResponseAsSSML(generatedGreeting);
+                            debugLog(`AI-generated initial greeting: ${generatedGreeting}`);
+                        } else {
+                            throw new Error('AI not ready');
+                        }
+                    } catch (error) {
+                        debugLog(`Using fallback greeting: ${error.message}`);
+                            initialResponse = `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="zh-HK">
+                            <voice name="${selectedVoice}">
+                                呀？有人嚟喇。邊個呀？Who is there?
+                            </voice>
+                        </speak>`;
+                    }
+
+                    const responseText = extractTextFromSSML(initialResponse);
+                    addMessage('patient', responseText, "Patient notices someone approaching the room - training session begins");
+                    conversationHistory.push({ role: 'patient', content: responseText });
+                    await speakPatientResponseAzure(initialResponse);
+                }, 3000);
+
+                updateStatus('🎙️ 智能AI訓練進行中... Intelligent AI training in progress', 'recording');
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+                debugLog('Training session started successfully');
+
+            } catch (error) {
+                debugLog(`Error starting session: ${error.message}`, 'error');
+                console.error('Error starting session:', error);
+
+                if (error.name === 'NotAllowedError') {
+                    alert('麥克風權限被拒絕。請在瀏覽器設置中允許麥克風訪問。Microphone access denied. Please allow microphone access in browser settings.');
+                } else {
+                    alert('無法使用麥克風，請檢查權限設定 Error accessing microphone. Please check permissions.');
+                }
+            }
+        }
+
+        // Stop training session
+        function stopSession() {
+            debugLog('Stopping training session');
+            isRecording = false;
+
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+                debugLog('Media recorder stopped');
+            }
+
+            if (recognition) {
+                recognition.stop();
+                debugLog('Speech recognition stopped');
+            }
+
+            stopTimer();
+
+            updateStatus('✅ 智能訓練完成！Intelligent training completed! Review your session below.', 'ready');
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+
+            downloadSection.style.display = 'block';
+            debugLog('Training session stopped successfully');
+        }
+
+        // Timer functions
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                const elapsed = Date.now() - sessionStartTime;
+                const minutes = Math.floor(elapsed / 60000);
+                const seconds = Math.floor((elapsed % 60000) / 1000);
+                timerEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+        }
+
+        // Create download link for recording
+        function createDownloadLink(audioBlob) {
+            const url = URL.createObjectURL(audioBlob);
+            downloadBtn.onclick = function () {
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `ai-nursing-training-${new Date().toISOString().slice(0, 19)}.webm`;
+                a.click();
+            };
+        }
+
+        // Update status display
+        function updateStatus(message, type) {
+            statusEl.textContent = message;
+            statusEl.className = `status ${type}`;
+        }
+
+        // Make functions available globally
+        window.testAudio = testAudio;
+        window.enableAudioContext = enableAudioContext;
+        window.clearDebugLogs = clearDebugLogs;
+        window.toggleDebug = toggleDebug;
+
+        // Event listeners
+        startBtn.addEventListener('click', startSession);
+        stopBtn.addEventListener('click', stopSession);
+
+        // 更强化的音频初始化
+        let audioContextReady = false;
+
+        const enableAudioOnInteraction = async () => {
+            if (!audioContextReady) {
+                await enableAudioContext();
+                audioContextReady = true;
+                debugLog('Audio context fully activated by user interaction');
+                
+                // 播放一个静音测试音频来完全激活音频系统
+                try {
+                    const silentAudio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQEAAAA=');
+                    silentAudio.volume = 0;
+                    await silentAudio.play();
+                    debugLog('Silent audio test successful');
+                } catch (e) {
+                    debugLog('Silent audio test failed (this is usually OK)');
+                }
+            }
+        };
+
+        // 监听多种交互事件
+        ['click', 'keydown', 'touchstart', 'mousedown'].forEach(eventType => {
+            document.addEventListener(eventType, enableAudioOnInteraction, { once: true });
+        });
+
+        // Initialize on page load
+        init();
+    </script>
+</body>
+
+</html>
