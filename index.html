@@ -630,130 +630,245 @@
                 // In a real implementation, you would fetch this from a server
                 // For now, we'll use the provided metadata directly
                 audioMetadata = {
-                    "你进来吧，我好痛！.m4a": {
-                        "filename": "你进来吧，我好痛！.m4a",
-                        "text": "你进来吧。我好痛啊！",
-                        "duration": 5.0,
-                        "conversation_phase": "初次接触",
-                        "emotions": {
-                            "primary": "疼痛",
-                            "intensity": 3,
-                            "secondary": ["紧张", "寻求帮助"]
-                        },
-                        "medical_context": {
-                            "pain_level": 6,
-                            "cooperation_level": 6,
-                            "understanding_level": 7
-                        },
-                        "context_tags": {
-                            "suitable_scenarios": ["陌生人进入", "感到疼痛"],
-                            "incompatible_scenarios": ["表达感谢"]
-                        }
+                                "patient_greet_painful.m4a": {
+                    "filename": "patient_greet_painful.m4a",
+                    "text": "好啊，你入黎啦，我真系好痛啊！",
+                    "duration": 5.0,
+                    "conversation_phase": "初次接触",
+                    "emotions": {
+                        "primary": "疼痛",
+                        "intensity": 3,
+                        "secondary": ["紧张", "寻求帮助"]
                     },
-                    "好啊你帮我洗啦.m4a": {
-                        "filename": "好啊你帮我洗啦.m4a",
-                        "text": "好啊，你帮我洗啊。",
-                        "duration": 2.0,
-                        "conversation_phase": "程序解释",
-                        "emotions": {
-                            "primary": "配合",
-                            "intensity": 1,
-                            "secondary": ["配合"]
-                        },
-                        "context_tags": {
-                            "suitable_scenarios": ["开始操作"],
-                            "incompatible_scenarios": ["感到疼痛"]
-                        }
+                    "context_tags": {
+                        "suitable_scenarios": ["陌生人进入", "感到疼痛"],
+                        "incompatible_scenarios": ["表达感谢"]
+                    }
+                },
+                "patient_helpmecleanse.m4a": {
+                    "filename": "patient_helpmecleanse.m4a",
+                    "text": "好啊，你帮我洗啊。",
+                    "duration": 2.0,
+                    "conversation_phase": "程序解释",
+                    "emotions": {
+                        "primary": "配合",
+                        "intensity": 1,
+                        "secondary": ["配合"]
                     },
-                    "好啊.m4a": {
-                        "filename": "好啊.m4a",
-                        "text": "好啊",
-                        "duration": 1.0,
-                        "conversation_phase": "初次接触",
-                        "emotions": {
-                            "primary": "配合",
-                            "intensity": 1,
-                            "secondary": ["配合"]
-                        },
-                        "context_tags": {
-                            "suitable_scenarios": ["陌生人进入", "程序解释中"],
-                            "incompatible_scenarios": ["感到疼痛"]
-                        }
+                    "context_tags": {
+                        "suitable_scenarios": ["开始操作"],
+                        "incompatible_scenarios": ["感到疼痛"]
+                    }
+                },
+                "patient_first_meeting_procedure_okay.m4a": {
+                    "filename": "patient_first_meeting_procedure_okay.m4a",
+                    "text": "好啊",
+                    "duration": 1.0,
+                    "conversation_phase": "初次接触",
+                    "emotions": {
+                        "primary": "配合",
+                        "intensity": 1,
+                        "secondary": ["配合"]
                     },
-                    "我叫陈小丽.m4a": {
-                        "filename": "我叫陈小丽.m4a",
-                        "text": "我叫陈小丽。",
-                        "duration": 2.0,
-                        "conversation_phase": "身份确认",
-                        "emotions": {
-                            "primary": "配合",
-                            "intensity": 1,
-                            "secondary": ["寻求帮助"]
-                        },
-                        "context_tags": {
-                            "suitable_scenarios": ["需要身份确认", "关心后续"],
-                            "incompatible_scenarios": ["操作进行中"]
-                        }
+                    "context_tags": {
+                        "suitable_scenarios": ["陌生人进入", "程序解释中"],
+                        "incompatible_scenarios": ["感到疼痛"]
+                    }
+                },
+                "patient_I'mChenXiaoLi.m4a": {
+                    "filename": "patient_I'mChenXiaoLi.m4a",
+                    "text": "我叫陈小丽。",
+                    "duration": 2.0,
+                    "conversation_phase": "身份确认",
+                    "emotions": {
+                        "primary": "配合",
+                        "intensity": 1,
+                        "secondary": ["寻求帮助"]
                     },
-                    "少少痛（平静）.m4a": {
-                        "filename": "少少痛（平静）.m4a",
-                        "text": "有少少痛啊。",
-                        "duration": 1.0,
-                        "conversation_phase": "程序进行",
-                        "emotions": {
-                            "primary": "疼痛",
-                            "intensity": 1,
-                            "secondary": ["配合", "寻求帮助"]
-                        },
-                        "context_tags": {
-                            "suitable_scenarios": ["操作进行中", "感到疼痛"],
-                            "incompatible_scenarios": ["表达感谢"]
-                        }
+                    "context_tags": {
+                        "suitable_scenarios": ["需要身份确认", "关心后续"],
+                        "incompatible_scenarios": ["操作进行中"]
+                    }
+                },
+                "patient_painful_abit.m4a": {
+                    "filename": "patient_painful_abit.m4a",
+                    "text": "有少少痛啊。",
+                    "duration": 1.0,
+                    "conversation_phase": "程序进行",
+                    "emotions": {
+                        "primary": "疼痛",
+                        "intensity": 1,
+                        "secondary": ["配合", "寻求帮助"]
                     },
-                    "少少痛.m4a": {
-                        "filename": "少少痛.m4a",
-                        "text": "哎呀，我有少少痛啊！",
-                        "duration": 6.0,
-                        "conversation_phase": "程序进行",
-                        "emotions": {
-                            "primary": "疼痛",
-                            "intensity": 3,
-                            "secondary": ["配合"]
-                        },
-                        "context_tags": {
-                            "suitable_scenarios": ["操作进行中", "感到疼痛"],
-                            "incompatible_scenarios": ["表达感谢"]
-                        }
+                    "context_tags": {
+                        "suitable_scenarios": ["操作进行中", "感到疼痛"],
+                        "incompatible_scenarios": ["表达感谢"]
+                    }
+                },
+                "patient_anxious_painful.m4a": {
+                    "filename": "patient_anxious_painful.m4a",
+                    "text": "哎呀，我有少少痛啊！",
+                    "duration": 6.0,
+                    "conversation_phase": "程序进行",
+                    "emotions": {
+                        "primary": "疼痛",
+                        "intensity": 3,
+                        "secondary": ["配合"]
                     },
-                    "沒有特別不舒服，唔該曬！.m4a": {
-                        "filename": "沒有特別不舒服，唔該曬！.m4a",
-                        "text": "哦， okay 吖，冇么特别吾舒服，吾该晒！",
-                        "duration": 4.0,
-                        "conversation_phase": "程序完成",
-                        "emotions": {
-                            "primary": "安心",
-                            "intensity": 2,
-                            "secondary": ["感激", "配合"]
-                        },
-                        "context_tags": {
-                            "suitable_scenarios": ["程序完成", "操作进行中"],
-                            "incompatible_scenarios": ["感到疼痛"]
-                        }
+                    "context_tags": {
+                        "suitable_scenarios": ["操作进行中", "感到疼痛"],
+                        "incompatible_scenarios": ["表达感谢"]
+                    }
+                },
+                "patient_rudeswearing_painful.m4a": {
+                    "filename": "patient_rudeswearing_painful.m4a",
+                    "text": "屌，咁閪痛噶！",
+                    "duration": 2.0,
+                    "conversation_phase": "程序进行",
+                    "emotions": {
+                        "primary": "疼痛",
+                        "intensity": 3,
+                        "secondary": ["紧张", "寻求帮助"]
                     },
-                    "好啊！你洗得真好！.m4a": {
-                        "filename": "好啊！你洗得真好！.m4a",
-                        "text": "好啊，你洗得真好！",
-                        "duration": 2.0,
-                        "conversation_phase": "程序完成",
-                        "emotions": {
-                            "primary": "感激",
-                            "intensity": 2,
-                            "secondary": ["感激", "安心"]
-                        },
-                        "context_tags": {
-                            "suitable_scenarios": ["程序完成", "表达感谢"],
-                            "incompatible_scenarios": ["感到疼痛"]
-                        }
+                    "context_tags": {
+                        "suitable_scenarios": ["操作进行中", "感到疼痛"],
+                        "incompatible_scenarios": ["表达感谢"]
+                    }
+                },
+                "patient_don't_touch_me.m4a": {
+                    "filename": "patient_don't_touch_me.m4a",
+                    "text": "嘩，咁痛噶，唔好再搞我啦！",
+                    "duration": 3.0,
+                    "conversation_phase": "程序进行",
+                    "emotions": {
+                        "primary": "疼痛",
+                        "intensity": 3,
+                        "secondary": ["紧张", "寻求帮助"]
+                    },
+                    "context_tags": {
+                        "suitable_scenarios": ["操作进行中", "感到疼痛"],
+                        "incompatible_scenarios": ["表达感谢"]
+                    }
+                },
+                "patient_angry_to_file_complaints.m4a": {
+                    "filename": "patient_angry_to_file_complaints.m4a",
+                    "text": "我很不滿意，我要向你上司投訴你（護士）！",
+                    "duration": 4.0,
+                    "conversation_phase": "程序完成",
+                    "emotions": {
+                        "primary": "愤怒",
+                        "intensity": 3,
+                        "secondary": ["不满"]
+                    },
+                    "context_tags": {
+                        "suitable_scenarios": ["程序完成", "操作进行中"],
+                        "incompatible_scenarios": ["表达感谢"]
+                    }
+                },
+                "patient_nothingspecial_thanks.m4a": {
+                    "filename": "patient_nothingspecial_thanks.m4a",
+                    "text": "哦， okay 吖，冇么特别吾舒服，吾该晒！",
+                    "duration": 4.0,
+                    "conversation_phase": "程序完成",
+                    "emotions": {
+                        "primary": "安心",
+                        "intensity": 2,
+                        "secondary": ["感激", "配合"]
+                    },
+                    "context_tags": {
+                        "suitable_scenarios": ["程序完成", "操作进行中"],
+                        "incompatible_scenarios": ["感到疼痛"]
+                    }
+                },
+                "patient_complaining_the_pain.m4a": {
+                    "filename": "patient_complaining_the_pain.m4a",
+                    "text": "哗，姑娘，你得唔得轻手D啊，真系好痛啊！",
+                    "duration": 5.0,
+                    "conversation_phase": "程序进行",
+                    "emotions": {
+                        "primary": "疼痛",
+                        "intensity": 3,
+                        "secondary": ["紧张", "疑问"]
+                    },
+                    "context_tags": {
+                        "suitable_scenarios": ["操作进行中", "开始操作"],
+                        "incompatible_scenarios": ["表达感谢"]
+                    }
+                },
+                "patient_personal_attack_on_nurses.m4a": {
+                    "filename": "patient_personal_attack_on_nurses.m4a",
+                    "text": "哎呀，么你咁粗鲁噶，好大力啊！",
+                    "duration": 5.0,
+                    "conversation_phase": "程序进行",
+                    "emotions": {
+                        "primary": "疼痛",
+                        "intensity": 3,
+                        "secondary": ["紧张"]
+                    },
+                    "context_tags": {
+                        "suitable_scenarios": ["操作进行中", "感到疼痛"],
+                        "incompatible_scenarios": ["表达感谢"]
+                    }
+                },
+                "patient_revisit_checkedname.m4a": {
+                    "filename": "patient_revisit_checkedname.m4a",
+                    "text": "是这个编号和姓名.",
+                    "duration": 5.0,
+                    "conversation_phase": "程序完成",
+                    "emotions": {
+                        "primary": "配合",
+                        "intensity": 1,
+                        "secondary": []
+                    },
+                    "context_tags": {
+                        "suitable_scenarios": ["关心后续"],
+                        "incompatible_scenarios": ["需要身份确认"]
+                    }
+                },
+                "patient_discharge.m4a": {
+                    "filename": "patient_discharge.m4a",
+                    "text": "哎呀，哎呀，做么我伤口黄色的？流着出来的是什么？",
+                    "duration": 6.0,
+                    "conversation_phase": "程序进行",
+                    "emotions": {
+                        "primary": "紧张",
+                        "intensity": 3,
+                        "secondary": ["好奇", "困惑"]
+                    },
+                    "context_tags": {
+                        "suitable_scenarios": ["操作进行中", "需要安抚"],
+                        "incompatible_scenarios": ["表达感谢"]
+                    }
+                },
+                "patient_Nothing_unconfortable.m4a": {
+                    "filename": "patient_Nothing_unconfortable.m4a",
+                    "text": "冇啊，冇特别吾舒服。",
+                    "duration": 3.0,
+                    "conversation_phase": "程序完成",
+                    "emotions": {
+                        "primary": "配合",
+                        "intensity": 1,
+                        "secondary": ["配合", "安心"]
+                    },
+                    "context_tags": {
+                        "suitable_scenarios": ["关心后续"],
+                        "incompatible_scenarios": ["感到疼痛"]
+                    }
+                },
+                "patient_wellcleansed.m4a": {
+                    "filename": "patient_wellcleansed.m4a",
+                    "text": "好啊，你洗得真好！",
+                    "duration": 2.0,
+                    "conversation_phase": "程序完成",
+                    "emotions": {
+                        "primary": "感激",
+                        "intensity": 2,
+                        "secondary": ["感激", "安心"]
+                    },
+                    "context_tags": {
+                        "suitable_scenarios": ["程序完成", "表达感谢"],
+                        "incompatible_scenarios": ["感到疼痛"]
+                    }
                     }
                 };
 
@@ -974,14 +1089,14 @@
         // Get fallback audio file
         function getFallbackAudioFile(targetPhase) {
             const fallbackMap = {
-                '初次接触': '你进来吧，我好痛！.m4a',
-                '身份确认': '我叫陈小丽.m4a',
-                '程序解释': '好啊你帮我洗啦.m4a',
-                '程序进行': '少少痛（平静）.m4a',
-                '程序完成': '沒有特別不舒服，唔該曬！.m4a'
+                '初次接触': 'patient_greet_painful.m4a',
+                '身份确认': "patient_I'mChenXiaoLi.m4a",
+                '程序解释': 'patient_helpmecleanse.m4a',
+                '程序进行': 'patient_painful_abit.m4a',
+                '程序完成': 'patient_nothingspecial_thanks.m4a'
             };
 
-            return fallbackMap[targetPhase] || '好啊.m4a';
+            return fallbackMap[targetPhase] || 'patient_first_meeting_procedure_okay.m4a';
         }
 
         // Play audio file
@@ -1412,7 +1527,7 @@
                     debugLog('Playing initial patient greeting from audio files');
 
                     // Use the greeting audio file
-                    const initialAudioFile = '你进来吧，我好痛！.m4a';
+                    const initialAudioFile = 'patient_greet_painful.m4a';
                     const responseText = await playAudioFile(initialAudioFile);
                     
                     addMessage('patient', responseText, `🎵 播放初始音頻: ${initialAudioFile} - 训练开始`);
