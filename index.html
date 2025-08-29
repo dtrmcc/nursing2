@@ -1301,17 +1301,47 @@
             }
         }
 
-        // Test Audio with file system
+        // Test Audio with system beep
         async function testAudio() {
             try {
-                debugLog('Testing audio file system...');
-                updateAudioStatus('🔄 正在測試音頻文件系統... Testing audio file system...', 'warning');
+                debugLog('Testing audio system...');
+                updateAudioStatus('🔄 正在測試音頻系統... Testing audio system...', 'warning');
 
-                // Test with a simple greeting audio
-                const testFileName = '好啊.m4a';
-                const responseText = await playAudioFile(testFileName);
+                // Ensure audio context is ready
+                if (!audioContext) {
+                    await enableAudioContext();
+                }
+
+                if (audioContext.state === 'suspended') {
+                    await audioContext.resume();
+                }
+
+                // Create a test beep sound
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
                 
-                updateAudioStatus('✅ 音頻文件系統測試成功！Audio file system test successful!', 'success');
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                // Configure the beep
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime); // 800Hz tone
+                oscillator.type = 'sine';
+                
+                // Volume envelope for a pleasant beep
+                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(currentVolume * 0.3, audioContext.currentTime + 0.05);
+                gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.3);
+                
+                // Play the beep
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.3);
+                
+                debugLog('Test beep played successfully');
+                
+                // Wait for beep to finish, then show success
+                setTimeout(() => {
+                    updateAudioStatus('✅ 音頻系統測試成功！Audio system test successful! 🔊', 'success');
+                }, 400);
 
             } catch (error) {
                 debugLog(`Audio test failed: ${error.message}`, 'error');
