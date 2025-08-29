@@ -605,6 +605,8 @@
         let selectedResponseMode = 'intelligent';
         let debugMode = false;
         let audioContext = null;
+        let conversationFailureCount = 0;
+        let lastFailedPhase = null;
 
         // AI Model variables
         let textGenerator = null;
@@ -1040,15 +1042,15 @@
         // Check if input matches a scenario
         function matchesScenario(input, scenario) {
             const scenarioMap = {
-                '陌生人进入': ['护士', '何', '入', 'hello', 'hi', '进来'],
-                '感到疼痛': ['痛', 'pain', 'hurt', '不舒服'],
-                '开始操作': ['洗', '开始', '换药', 'start', 'procedure'],
-                '程序解释中': ['解释', '什么', 'what', 'how'],
-                '需要身份确认': ['陈', '名字', '身份', 'name', 'check'],
-                '操作进行中': ['进行', '继续', '现在', 'continue'],
-                '程序完成': ['完成', '结束', 'finish', 'done'],
-                '表达感谢': ['谢谢', '感谢', 'thank', '好'],
-                '关心后续': ['怎么样', '舒服', 'how', 'feel']
+                '陌生人进入': ['护士', '何', '入', 'hello', 'hi', '进来', '你', '我', '好', '同学', '学生'],
+                '感到疼痛': ['痛', 'pain', 'hurt', '不舒服', '难受', '疼'],
+                '开始操作': ['洗', '开始', '换药', 'start', 'procedure', '现在', '帮', '治疗', '处理', '看', '检查'],
+                '程序解释中': ['解释', '什么', 'what', 'how', '为什么', '怎么', '可以', '需要', '要'],
+                '需要身份确认': ['陈', '名字', '身份', 'name', 'check', '叫', '确认', '是', '你'],
+                '操作进行中': ['进行', '继续', '现在', 'continue', '好', '开始', '这样', '慢慢'],
+                '程序完成': ['完成', '结束', 'finish', 'done', '好了', '可以', '怎么样', '感觉'],
+                '表达感谢': ['谢谢', '感谢', 'thank', '好', '很好', '不错', '辛苦'],
+                '关心后续': ['怎么样', '舒服', 'how', 'feel', '还', '现在', '有没有']
             };
 
             const keywords = scenarioMap[scenario] || [];
@@ -1326,43 +1328,95 @@
 
         // Process student input with audio file system
         async function processStudentInput(transcript) {
-            debugLog(`Processing student input: ${transcript}`);
+        debugLog(`Processing student input: ${transcript}`);
 
-            try {
-                // Get matched audio file
-                const selectedAudioFile = matchAudioFile(transcript, conversationHistory);
-                const audioMetadata = audioMetadata[selectedAudioFile];
+        try {
+            // Get matched audio file
+            const selectedAudioFile = matchAudioFile(transcript, conversationHistory);
+            const audioMetadata_file = audioMetadata[selectedAudioFile];
 
-                if (!audioMetadata) {
-                    throw new Error(`Audio metadata not found for: ${selectedAudioFile}`);
-                }
+            if (!audioMetadata_file) {
+                throw new Error(`Audio metadata not found for: ${selectedAudioFile}`);
+            }
 
-                // Simulate thinking time
-                setTimeout(async () => {
-                    debugLog(`Patient responding with audio: ${selectedAudioFile}`);
+            // Reset failure count on successful match
+            conversationFailureCount = 0;
+            lastFailedPhase = null;
 
-                    // Generate contextual notes
-                    const notes = generateContextualNotes(transcript, conversationHistory);
+            // Simulate thinking time
+            setTimeout(async () => {
+                debugLog(`Patient responding with audio: ${selectedAudioFile}`);
 
-                    const responseText = audioMetadata.text;
-                    addMessage('patient', responseText, `🎵 播放: ${selectedAudioFile} | ${notes}`);
-                    conversationHistory.push({ role: 'patient', content: responseText });
+                // Generate contextual notes
+                const notes = generateContextualNotes(transcript, conversationHistory);
 
-                    // Play the actual audio file
-                    await playAudioFile(selectedAudioFile);
+                const responseText = audioMetadata_file.text;
+                addMessage('patient', responseText, `🎵 播放: ${selectedAudioFile} | ${notes}`);
+                conversationHistory.push({ role: 'patient', content: responseText });
 
-                }, 1500 + Math.random() * 1000);
+                // Play the actual audio file
+                await playAudioFile(selectedAudioFile);
 
-            } catch (error) {
-                debugLog(`Audio file system failed, using fallback: ${error.message}`, 'error');
+            }, 1500 + Math.random() * 1000);
 
-                // Use fallback text response
-                const fallbackText = generateRuleBasedResponse(transcript, conversationHistory);
-                addMessage('patient', fallbackText, "Using fallback response system");
-                conversationHistory.push({ role: 'patient', content: fallbackText });
+        } catch (error) {
+            debugLog(`Audio file system failed: ${error.message}`, 'error');
+            
+            conversationFailureCount++;
+            const currentPhase = determineConversationPhase(conversationHistory.length, transcript.toLowerCase(), conversationHistory);
+            
+            if (conversationFailureCount === 1) {
+                // 第一次失敗：給文字提示
+                const textHint = getTextHintForPhase(currentPhase, transcript);
+                addMessage('patient', textHint, "💬 文字提示 - 系統建議回應方向");
+                conversationHistory.push({ role: 'patient', content: textHint });
+                lastFailedPhase = currentPhase;
+                
+            } else if (conversationFailureCount >= 2 && lastFailedPhase === currentPhase) {
+                // 第二次失敗且在同一階段：強制進入下一階段
+                debugLog('Forcing progression to next conversation phase');
+                const nextPhaseResponse = forceNextPhaseProgression(currentPhase);
+                addMessage('patient', nextPhaseResponse, "⏭️ 自動進入下一階段");
+                conversationHistory.push({ role: 'patient', content: nextPhaseResponse });
+                
+                // Reset counters
+                conversationFailureCount = 0;
+                lastFailedPhase = null;
             }
         }
+    }
+        // 獲取階段文字提示
+        function getTextHintForPhase(phase, studentInput) {
+            const hints = {
+                '初次接触': '你好，我是護理學生。請問你是陳小丽女士嗎？',
+                '身份确认': '好的，我需要確認一下你的身份信息。請問你的全名是什麼？',
+                '程序解释': '現在我要幫你清洗傷口和換藥。這個過程可能會有一點不舒服，但我會盡量輕柔。',
+                '程序进行': '我現在開始清洗傷口了。如果感到疼痛請告訴我。',
+                '程序完成': '好的，傷口處理完成了。你現在感覺怎麼樣？'
+            };
+            
+            return hints[phase] || '請繼續與病人溝通，注意她的感受和需要。';
+        }
 
+        // 強制進入下一階段
+        function forceNextPhaseProgression(currentPhase) {
+            const progressionMap = {
+                '初次接触': 'patient_first_meeting_procedure_okay.m4a',
+                '身份确认': "patient_I'mChenXiaoLi.m4a", 
+                '程序解释': 'patient_helpmecleanse.m4a',
+                '程序进行': 'patient_painful_abit.m4a',
+                '程序完成': 'patient_nothingspecial_thanks.m4a'
+            };
+            
+            const audioFile = progressionMap[currentPhase];
+            if (audioFile && audioMetadata[audioFile]) {
+                return audioMetadata[audioFile].text;
+            }
+            
+            // 默認回應
+            return '好啊，我們繼續吧。';
+        }
+        
         // Generate contextual notes
         function generateContextualNotes(studentInput, history) {
             const input = studentInput.toLowerCase();
