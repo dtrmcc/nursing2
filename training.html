@@ -419,6 +419,41 @@
             text-align: center;
             border-left: 4px solid #ff9800;
         }
+        .finished-speaking-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            margin: 10px auto;
+            display: block;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .finished-speaking-btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .finished-speaking-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .speaking-indicator {
+            background: #fff3cd;
+            color: #856404;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            text-align: center;
+            font-weight: bold;
+            border-left: 4px solid #ffc107;
+        }
 
         @media (max-width: 1200px) {
             .main-container {
@@ -1424,6 +1459,11 @@
 
                 // Play the actual audio file
                 await playAudioFile(selectedAudioFile);
+                
+                // After playing audio, show speaking indicator for next turn
+                setTimeout(() => {
+                    showSpeakingIndicator();
+                }, 2000);
 
             }, 1500 + Math.random() * 1000);
 
@@ -1537,9 +1577,9 @@
                 if (result.isFinal) {
                     const transcript = result[0].transcript.trim();
                     debugLog(`Speech recognized: ${transcript}`);
-                    addMessage('student', transcript);
-                    conversationHistory.push({ role: 'student', content: transcript });
-                    processStudentInput(transcript);
+                    // Store the transcript but don't process it yet
+                    window.currentTranscript = transcript;
+                    showFinishedSpeakingButton(transcript);
                 }
             };
 
@@ -1560,16 +1600,17 @@
             };
 
             recognition.onend = function () {
-                debugLog('Speech recognition ended');
-                if (isRecording) {
-                    try {
-                        recognition.start();
-                        debugLog('Speech recognition restarted');
-                    } catch (e) {
-                        debugLog(`Recognition restart failed: ${e.message}`, 'error');
-                    }
+            debugLog('Speech recognition ended');
+            if (isRecording && !window.currentTranscript) {
+                // Only restart if we haven't captured a transcript yet
+                try {
+                    recognition.start();
+                    debugLog('Speech recognition restarted');
+                } catch (e) {
+                    debugLog(`Recognition restart failed: ${e.message}`, 'error');
                 }
-            };
+            }
+};
 
             debugLog('Speech recognition configured successfully');
         }
@@ -1583,6 +1624,62 @@
             請以病人的身份回應，保持角色一致性，表達可能的疼痛、擔憂或感謝。`;
 
             return context;
+        }
+
+        // Show finished speaking button
+        function showFinishedSpeakingButton(transcript) {
+            // Remove any existing button
+            const existingBtn = document.querySelector('.finished-speaking-btn');
+            if (existingBtn) {
+                existingBtn.remove();
+            }
+
+            // Remove speaking indicator
+            const speakingIndicator = document.querySelector('.speaking-indicator');
+            if (speakingIndicator) {
+                speakingIndicator.remove();
+            }
+
+            // Add the transcript message first
+            addMessage('student', transcript);
+            conversationHistory.push({ role: 'student', content: transcript });
+
+            // Create and add the finished speaking button
+            const buttonContainer = document.createElement('div');
+            buttonContainer.style.textAlign = 'center';
+            buttonContainer.style.margin = '15px 0';
+            
+            const finishedBtn = document.createElement('button');
+            finishedBtn.className = 'finished-speaking-btn';
+            finishedBtn.textContent = '✅ 我說完了 Finished Speaking';
+            finishedBtn.onclick = () => {
+                finishedBtn.disabled = true;
+                finishedBtn.textContent = '處理中... Processing...';
+                processStudentInput(transcript);
+                setTimeout(() => {
+                    buttonContainer.remove();
+                }, 1000);
+            };
+
+            buttonContainer.appendChild(finishedBtn);
+            document.getElementById('messages').appendChild(buttonContainer);
+            document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+        }
+
+        // Show speaking indicator
+        function showSpeakingIndicator() {
+            // Remove any existing indicator
+            const existing = document.querySelector('.speaking-indicator');
+            if (existing) {
+                existing.remove();
+            }
+
+            const indicator = document.createElement('div');
+            indicator.className = 'speaking-indicator';
+            indicator.innerHTML = '🎙️ 正在聆聽您說話... Listening to you speak...';
+            
+            document.getElementById('messages').appendChild(indicator);
+            document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
         }
 
         // Start training session
@@ -1654,6 +1751,9 @@
                     
                     addMessage('patient', responseText, `🎵 播放初始音頻: ${initialAudioFile} - 训练开始`);
                     conversationHistory.push({ role: 'patient', content: responseText });
+
+                    // Show speaking indicator for the first time
+                    showSpeakingIndicator();
 
                 }, 3000);
 
