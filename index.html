@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>護理學生傷口護理訓練系統 - Nursing Training System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+        }
+
+        .welcome-container {
+            max-width: 800px;
+            background: white;
+            border-radius: 25px;
+            padding: 50px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            margin: 20px;
+        }
+
+        .logo {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .title {
+            color: #2c3e50;
+            font-size: 36px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #34495e;
+            font-size: 22px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .description {
+            color: #7f8c8d;
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .feature {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid #3498db;
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .feature h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .feature p {
+            color: #34495e;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .start-button {
+            background: linear-gradient(45deg, #3498db, #2ecc71);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 20px;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 30px;
+            box-shadow: 0 10px 30px rgba(52, 152, 219, 0.3);
+        }
+
+        .start-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(52, 152, 219, 0.4);
+        }
+
+        .start-button:active {
+            transform: translateY(-1px);
+        }
+
+        .badges {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .badge-ai {
+            background: #e8f5e8;
+            color: #27ae60;
+            border: 2px solid #27ae60;
+        }
+
+        .badge-audio {
+            background: #fff3e0;
+            color: #f39c12;
+            border: 2px solid #f39c12;
+        }
+
+        .badge-interactive {
+            background: #e8f4f8;
+            color: #3498db;
+            border: 2px solid #3498db;
+        }
+
+        .workflow {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+
+        .workflow h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .workflow-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .workflow-step {
+            flex: 1;
+            text-align: center;
+            min-width: 150px;
+        }
+
+        .step-number {
+            background: #3498db;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin: 0 auto 10px;
+        }
+
+        .step-arrow {
+            color: #3498db;
+            font-size: 24px;
+            margin: 0 10px;
+        }
+
+        @media (max-width: 768px) {
+            .welcome-container {
+                padding: 30px;
+                margin: 10px;
+            }
+
+            .title {
+                font-size: 28px;
+            }
+
+            .subtitle {
+                font-size: 18px;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .workflow-steps {
+                flex-direction: column;
+            }
+
+            .step-arrow {
+                transform: rotate(90deg);
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="welcome-container">
+        <div class="logo">🏥</div>
+        
+        <h1 class="title">護理學生傷口護理訓練系統</h1>
+        <h2 class="subtitle">Nursing Student Wound Care Training System</h2>
+        
+        <div class="badges">
+            <span class="badge badge-ai">🤖 AI-Powered</span>
+            <span class="badge badge-audio">🎵 Audio Files</span>
+            <span class="badge badge-interactive">💬 Interactive</span>
+        </div>
+
+        <p class="description">
+            專為護理學生設計的智能傷口護理訓練系統，採用真實的廣東話病人對話，提供沉浸式學習體驗。
+            <br><br>
+            <strong>An intelligent wound care training system designed for nursing students, featuring realistic Cantonese patient dialogues for immersive learning experiences.</strong>
+        </p>
+
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">🎓</div>
+                <h3>專業知識測驗</h3>
+                <p>Knowledge Assessment</p>
+                <p>完成護理程序基礎知識測驗，確保理論基礎扎實</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">🎭</div>
+                <h3>真實病人模擬</h3>
+                <p>Realistic Patient Simulation</p>
+                <p>與虛擬病人陳小丽女士進行真實對話練習</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">🗣️</div>
+                <h3>語音互動訓練</h3>
+                <p>Voice Interaction Training</p>
+                <p>使用語音識別技術進行自然對話練習</p>
+            </div>
+        </div>
+
+        <div class="workflow">
+            <h3>📋 訓練流程 Training Workflow</h3>
+            <div class="workflow-steps">
+                <div class="workflow-step">
+                    <div class="step-number">1</div>
+                    <strong>知識測驗</strong><br>
+                    <small>Knowledge Quiz</small>
+                </div>
+                <div class="step-arrow">➤</div>
+                <div class="workflow-step">
+                    <div class="step-number">2</div>
+                    <strong>語音訓練</strong><br>
+                    <small>Voice Training</small>
+                </div>
+                <div class="step-arrow">➤</div>
+                <div class="workflow-step">
+                    <div class="step-number">3</div>
+                    <strong>完成評估</strong><br>
+                    <small>Assessment</small>
+                </div>
+            </div>
+        </div>
+
+        <a href="pretest.html" class="start-button">
+            🚀 開始訓練 Start Training
+        </a>
+
+        <div style="margin-top: 40px; padding-top: 30px; border-top: 2px solid #ecf0f1;">
+            <p style="color: #7f8c8d; font-size: 14px;">
+                ⚡ 系統要求：Chrome/Edge 瀏覽器，麥克風權限<br>
+                <strong>System Requirements: Chrome/Edge browser, microphone access</strong>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Check if user has already completed pretest recently
+        document.addEventListener('DOMContentLoaded', function() {
+            const pretestCompleted = sessionStorage.getItem('pretestCompleted');
+            
+            if (pretestCompleted) {
+                // Show option to go directly to training or retake pretest
+                const startButton = document.querySelector('.start-button');
+                startButton.innerHTML = '🎓 繼續訓練 Continue Training';
+                startButton.href = 'training.html';
+                
+                // Add option to retake pretest
+                const retakeButton = document.createElement('a');
+                retakeButton.href = 'pretest.html';
+                retakeButton.className = 'start-button';
+                retakeButton.style.background = 'linear-gradient(45deg, #95a5a6, #7f8c8d)';
+                retakeButton.style.marginLeft = '20px';
+                retakeButton.innerHTML = '🔄 重新測驗 Retake Quiz';
+                
+                startButton.parentNode.insertBefore(retakeButton, startButton.nextSibling);
+            }
+        });
+    </script>
+</body>
+</html>
