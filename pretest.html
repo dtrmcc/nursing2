@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>護理程序知識測驗 - Nursing Knowledge Pretest</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 32px;
+        }
+
+        .header h2 {
+            color: #34495e;
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .instruction-box {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 5px solid #27ae60;
+        }
+
+        .instruction-box h3 {
+            color: #155724;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .instruction-box ul {
+            color: #155724;
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .instruction-box li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .quiz-question {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border-left: 5px solid #3498db;
+        }
+
+        .quiz-question h4 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .question-number {
+            background: #3498db;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-right: 15px;
+            display: inline-block;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .quiz-options {
+            margin: 20px 0;
+        }
+
+        .quiz-option {
+            display: flex;
+            align-items: flex-start;
+            margin: 12px 0;
+            padding: 12px 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .quiz-option:hover {
+            background-color: #e8f4f8;
+            border-color: #3498db;
+        }
+
+        .quiz-option input[type="checkbox"] {
+            margin-right: 12px;
+            margin-top: 4px;
+            transform: scale(1.3);
+            cursor: pointer;
+        }
+
+        .quiz-option label {
+            cursor: pointer;
+            flex: 1;
+            line-height: 1.5;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+
+        .quiz-option.selected {
+            background-color: #d4edda;
+            border-color: #27ae60;
+        }
+
+        .progress-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .progress-bar-container {
+            background: #ecf0f1;
+            height: 12px;
+            border-radius: 6px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            height: 100%;
+            transition: width 0.4s ease;
+            border-radius: 6px;
+        }
+
+        .progress-text {
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            min-width: 150px;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+        }
+
+        .btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .results {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-align: center;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .results.success {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #27ae60;
+        }
+
+        .results.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #e74c3c;
+        }
+
+        .results h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .wrong-answers {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: left;
+        }
+
+        .wrong-answers h4 {
+            color: #721c24;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .wrong-answers ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .countdown {
+            font-size: 24px;
+            font-weight: bold;
+            color: #27ae60;
+            margin: 15px 0;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hint-text {
+            font-size: 14px;
+            color: #7f8c8d;
+            font-style: italic;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .btn {
+                width: 100%;
+                margin: 5px 0;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 護理程序知識測驗</h1>
+            <h2>Nursing Procedure Knowledge Pretest</h2>
+            <p>完成此測驗以進入實際訓練系統<br>Complete this pretest to access the practical training system</p>
+        </div>
+
+        <div class="instruction-box">
+            <h3>📋 測驗說明 Test Instructions</h3>
+            <ul>
+                <li>本測驗共有 3 題，測試您對護理程序的基本知識</li>
+                <li>每題可能有單選或多選答案，請仔細閱讀題目要求</li>
+                <li>必須全部答對才能進入實際訓練</li>
+                <li>答錯可以重新作答，沒有次數限制</li>
+                <li><strong>This test has 3 questions testing basic nursing procedure knowledge</strong></li>
+                <li><strong>Each question may have single or multiple correct answers</strong></li>
+            </ul>
+        </div>
+
+        <div class="progress-section">
+            <div class="progress-text">測驗進度 Progress: <span id="progressText">0/3 題已完成</span></div>
+            <div class="progress-bar-container">
+                <div id="progressBar" class="progress-bar" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Question 1 -->
+        <div class="quiz-question">
+            <h4>
+                <span class="question-number">Q1</span>
+                Before entering the wound dressing, what do you need to perform?<br>
+                <span style="color: #e74c3c; font-weight: bold;">(Select multiple answers - 選擇多個答案)</span>
+            </h4>
+            <div class="quiz-options">
+                <div class="quiz-option">
+                    <input type="checkbox" id="q1a" name="q1" value="A">
+                    <label for="q1a">A. Hand hygiene</label>
+                </div>
+                <div class="quiz-option">
+                    <input type="checkbox" id="q1b" name="q1" value="B">
+                    <label for="q1b">B. Assessment (confirm if the patient needs it or not)</label>
+                </div>
+                <div class="quiz-option">
+                    <input type="checkbox" id="q1c" name="q1" value="C">
+                    <label for="q1c">C. Identify the patient</label>
+                </div>
+                <div class="quiz-option">
+                    <input type="checkbox" id="q1d" name="q1" value="D">
+                    <label for="q1d">D. Check the doctor's prescription</label>
+                </div>
+                <div class="quiz-option">
+                    <input type="checkbox" id="q1e" name="q1" value="E">
+                    <label for="q1e">E. Assess the patient's general conditions by checking vital signs</label>
+                </div>
+            </div>
+            <div class="hint-text">💡 Think about what needs to be done before any patient procedure</div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="quiz-question">
+            <h4>
+                <span class="question-number">Q2</span>
+                When checking the general conditions, what will you NOT pay attention to?<br>
+                <span style="color: #e74c3c; font-weight: bold;">(Select one answer - 選擇一個答案)</span>
+            </h4>
+            <div class="quiz-options">
+                <div class="quiz-option">
+                    <input type="checkbox" id="q2a" name="q2" value="A">
+                    <label for="q2a">A. The patient's weight</label>
+                </div>
+                <div class="quiz-option">
+                    <input type="checkbox" id="q2b" name="q2" value="B">
+                    <label for="q2b">B. The patient's temperature</label>
+                </div>
+                <div class="quiz-option">
+                    <input type="checkbox" id="q2c" name="q2" value="C">
+                    <label for="q2c">C. The patient's BP (Blood Pressure)</label>
+                </div>
+                <div class="quiz-option">
+                    <input type="checkbox" id="q2d" name="q2" value="D">
+                    <label for="q2d">D. The patient's name</label>
+                </div>
+                <div class="quiz-option">
+                    <input type="checkbox" id="q2e" name="q2" value="E">
+                    <label for="q2e">E. The patient's pulse</label>
+                </div>
+                <div class="quiz-option">
+                    <input type="checkbox" id="q2f" name="q2" value="F">
+                    <label for="q2f">F. The NEWS chart</label>
+                </div>
+                <div class="quiz-option">
+                    <input type="checkbox" id="q2g" name="q2" value="G">
+                    <label for="q2g">G. Whether all papers are about the same patient in the folder</label>
+                </div>
+            </div>
+            <div class="hint-text">💡 Consider what is NOT typically part of vital signs assessment</div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="quiz-question">
+            <h4>
+                <span class="question-number">Q3</span>
+                Before approaching the patient for assessment, what do you NOT need to do?<br>
+                <span style="color: #e74c3c; font-weight: bold;">(Select one answer - 選擇一個答案)</span>
+            </h4>
+            <div class="quiz-options">
+                <div class="quiz-option">
+                    <input type="checkbox" id="q3a" name="q3" value="A">
+                    <label for="q3a">A. Knock at the door</label>
+                </div>
+                <div class="quiz-option">
+                    <input type="checkbox" id="q3b" name="q3" value="B">
+                    <label for="q3b">B. Take the clinic tray</label>
+                </div>
+                <div class="quiz-option">
+                    <input type="checkbox" id="q3c" name="q3" value="C">
+                    <label for="q3c">C. Bring hand gloves and hand rub</label>
+                </div>
+                <div class="quiz-option">
+                    <input type="checkbox" id="q3d" name="q3" value="D">
+                    <label for="q3d">D. Take the trolley</label>
+                </div>
+            </div>
+            <div class="hint-text">💡 Think about what equipment is needed for initial assessment vs. actual procedure</div>
+        </div>
+
+        <div class="controls">
+            <button id="submitBtn" class="btn btn-primary" disabled>
+                🎓 提交測驗 Submit Test
+            </button>
+            <button id="resetBtn" class="btn btn-secondary">
+                🔄 重新作答 Reset
+            </button>
+        </div>
+
+        <div id="results" class="results" style="display: none;"></div>
+    </div>
+
+    <script>
+        // Quiz configuration
+        const correctAnswers = {
+            q1: ['B', 'D', 'E'], // Multiple correct answers
+            q2: ['A'], // Single correct answer  
+            q3: ['D']  // Single correct answer
+        };
+
+        let allQuestionsAnswered = false;
+
+        // Initialize quiz
+        function initQuiz() {
+            console.log('Initializing quiz...');
+            
+            // Add event listeners
+            document.getElementById('submitBtn').addEventListener('click', submitQuiz);
+            document.getElementById('resetBtn').addEventListener('click', resetQuiz);
+            
+            // Add change listeners for all checkboxes
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', handleCheckboxChange);
+            });
+            
+            // Setup single-answer constraints for Q2 and Q3
+            setupSingleAnswerConstraints();
+            
+            console.log('Quiz initialized successfully');
+        }
+
+        // Handle checkbox changes
+        function handleCheckboxChange(event) {
+            const checkbox = event.target;
+            const option = checkbox.closest('.quiz-option');
+            
+            // Update visual state
+            if (checkbox.checked) {
+                option.classList.add('selected');
+            } else {
+                option.classList.remove('selected');
+            }
+            
+            // Update progress and submit button state
+            updateProgress();
+            updateSubmitButton();
+        }
+
+        // Setup constraints for single-answer questions
+        function setupSingleAnswerConstraints() {
+            const q2Checkboxes = document.querySelectorAll('input[name="q2"]');
+            const q3Checkboxes = document.querySelectorAll('input[name="q3"]');
+            
+            [q2Checkboxes, q3Checkboxes].forEach(group => {
+                group.forEach(checkbox => {
+                    checkbox.addEventListener('change', function() {
+                        if (this.checked) {
+                            group.forEach(otherCheckbox => {
+                                if (otherCheckbox !== this) {
+                                    otherCheckbox.checked = false;
+                                    otherCheckbox.closest('.quiz-option').classList.remove('selected');
+                                }
+                            });
+                        }
+                    });
+                });
+            });
+        }
+
+        // Update progress bar
+        function updateProgress() {
+            const totalQuestions = 3;
+            let answeredQuestions = 0;
+            
+            // Check each question
+            for (let i = 1; i <= totalQuestions; i++) {
+                const questionInputs = document.querySelectorAll(`input[name="q${i}"]:checked`);
+                if (questionInputs.length > 0) {
+                    answeredQuestions++;
+                }
+            }
+            
+            const progress = (answeredQuestions / totalQuestions) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('progressText').textContent = `${answeredQuestions}/3 題已完成`;
+            
+            allQuestionsAnswered = answeredQuestions === totalQuestions;
+        }
+
+        // Update submit button state
+        function updateSubmitButton() {
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = !allQuestionsAnswered;
+            
+            if (allQuestionsAnswered) {
+                submitBtn.textContent = '🎓 提交測驗 Submit Test';
+                submitBtn.classList.remove('btn-primary');
+                submitBtn.classList.add('btn-success');
+            } else {
+                submitBtn.textContent = '請完成所有題目 Complete all questions';
+                submitBtn.classList.remove('btn-success');
+                submitBtn.classList.add('btn-primary');
+            }
+        }
+
+        // Submit quiz
+        function submitQuiz() {
+            if (!allQuestionsAnswered) {
+                alert('請完成所有題目後再提交！\nPlease complete all questions before submitting!');
+                return;
+            }
+
+            console.log('Submitting quiz...');
+            
+            const results = {};
+            let totalCorrect = 0;
+            let totalQuestions = Object.keys(correctAnswers).length;
+            const wrongAnswers = [];
+            
+            // Check each question
+            for (const [question, correct] of Object.entries(correctAnswers)) {
+                const selected = Array.from(document.querySelectorAll(`input[name="${question}"]:checked`))
+                    .map(input => input.value);
+                
+                const isCorrect = selected.length === correct.length &&
+                    selected.every(answer => correct.includes(answer)) &&
+                    correct.every(answer => selected.includes(answer));
+                
+                results[question] = {
+                    selected: selected,
+                    correct: correct,
+                    isCorrect: isCorrect
+                };
+                
+                if (isCorrect) {
+                    totalCorrect++;
+                } else {
+                    wrongAnswers.push({
+                        question: question.replace('q', 'Q'),
+                        correct: correct.join(', '),
+                        selected: selected.join(', ') || '(未選擇 Not selected)'
+                    });
+                }
+                
+                console.log(`${question}: Selected [${selected.join(', ')}], Correct [${correct.join(', ')}], Result: ${isCorrect}`);
+            }
+            
+            const allCorrect = totalCorrect === totalQuestions;
+            displayResults(allCorrect, totalCorrect, totalQuestions, wrongAnswers);
+            
+            if (allCorrect) {
+                setTimeout(() => {
+                    proceedToTraining();
+                }, 3000);
+            }
+        }
+
+        // Display quiz results
+        function displayResults(allCorrect, correct, total, wrongAnswers) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.style.display = 'block';
+            
+            if (allCorrect) {
+                resultsDiv.className = 'results success';
+                resultsDiv.innerHTML = `
+                    <h3>🎉 恭喜！測驗通過！</h3>
+                    <p>Congratulations! You passed the pretest!</p>
+                    <div class="countdown">
+                        成績：${correct}/${total} (100%)<br>
+                        <span id="countdownText">3 秒後自動進入訓練系統...</span>
+                    </div>
+                    <p><small>Automatically entering training system in 3 seconds...</small></p>
+                `;
+                
+                // Start countdown
+                let countdown = 3;
+                const countdownInterval = setInterval(() => {
+                    countdown--;
+                    const countdownElement = document.getElementById('countdownText');
+                    if (countdownElement) {
+                        countdownElement.textContent = `${countdown} 秒後自動進入訓練系統...`;
+                    }
+                    if (countdown <= 0) {
+                        clearInterval(countdownInterval);
+                    }
+                }, 1000);
+                
+            } else {
+                resultsDiv.className = 'results error';
+                let wrongAnswersHtml = '';
+                
+                if (wrongAnswers.length > 0) {
+                    wrongAnswersHtml = `
+                        <div class="wrong-answers">
+                            <h4>錯誤題目詳情 Incorrect Answers:</h4>
+                            <ul>
+                                ${wrongAnswers.map(wa => 
+                                    `<li>${wa.question}: 正確答案 ${wa.correct} | 您的答案 Your answer: ${wa.selected}</li>`
+                                ).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+                
+                resultsDiv.innerHTML = `
+                    <h3>❌ 測驗未通過</h3>
+                    <p>Test not passed - Please review and try again</p>
+                    <p>成績：${correct}/${total} (${Math.round(correct/total*100)}%)</p>
+                    <p>需要全部答對才能進入訓練系統</p>
+                    <p><small>All questions must be correct to access the training system</small></p>
+                    ${wrongAnswersHtml}
+                `;
+            }
+            
+            // Scroll to results
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Reset quiz
+        function resetQuiz() {
+            console.log('Resetting quiz...');
+            
+            // Uncheck all checkboxes and remove visual states
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+                checkbox.closest('.quiz-option').classList.remove('selected');
+            });
+            
+            // Hide results
+            document.getElementById('results').style.display = 'none';
+            
+            // Reset progress
+            document.getElementById('progressBar').style.width = '0%';
+            document.getElementById('progressText').textContent = '0/3 題已完成';
+            
+            // Reset button state
+            allQuestionsAnswered = false;
+            updateSubmitButton();
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            console.log('Quiz reset completed');
+        }
+
+        // Proceed to training system
+        function proceedToTraining() {
+            console.log('Proceeding to training system...');
+            
+            // Show loading state
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = `
+                <h3><span class="loading-spinner"></span>正在載入訓練系統...</h3>
+                <p>Loading training system...</p>
+            `;
+            
+            // Store completion status
+            sessionStorage.setItem('pretestCompleted', 'true');
+            sessionStorage.setItem('pretestCompletedTime', new Date().toISOString());
+            
+            // Redirect to training page
+            setTimeout(() => {
+                window.location.href = 'training.html';
+            }, 1500);
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Page loaded, initializing quiz...');
+            initQuiz();
+        });
+
+        // Prevent form submission on Enter key
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                if (allQuestionsAnswered) {
+                    submitQuiz();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

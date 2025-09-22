@@ -1,0 +1,1888 @@
+</html><!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>護理學生傷口護理訓練 - Nursing Wound Care Training (Audio Files Version)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 20px;
+        }
+
+        .left-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .info-card,
+        .settings-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .header h2 {
+            color: #34495e;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .audio-files-badge {
+            background: #e74c3c;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .ai-badge {
+            background: #28a745;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .scenario-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 4px solid #3498db;
+        }
+
+        .patient-info {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #27ae60;
+        }
+
+        .patient-info h4 {
+            margin-top: 0;
+            color: #155724;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .status {
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+
+        .status.loading {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status.ready {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.recording {
+            background: #f8d7da;
+            color: #721c24;
+            animation: pulse 1.5s infinite;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        .timer {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            color: #2c3e50;
+            margin: 20px 0;
+        }
+
+        .conversation {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .message {
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 8px;
+            line-height: 1.5;
+        }
+
+        .student-message {
+            background: #e3f2fd;
+            margin-left: 20px;
+            border-left: 4px solid #2196f3;
+        }
+
+        .patient-message {
+            background: #fff3e0;
+            margin-right: 20px;
+            border-left: 4px solid #ff9800;
+        }
+
+        .message-header {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+
+        .message-content {
+            font-size: 16px;
+        }
+
+        .cantonese-text {
+            color: #c0392b;
+            font-weight: 500;
+        }
+
+        .procedure-notes {
+            background: #f0f8ff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 6px;
+            font-style: italic;
+            color: #34495e;
+            border-left: 3px solid #3498db;
+        }
+
+        .download-section {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .settings-card h4 {
+            margin-top: 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .setting-group {
+            margin: 15px 0;
+        }
+
+        .setting-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #34495e;
+        }
+
+        .setting-group select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+        }
+
+        .audio-status {
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .audio-status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .audio-status.warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .audio-status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .volume-control {
+            margin: 10px 0;
+        }
+
+        .volume-control input[type="range"] {
+            width: 100%;
+            margin: 5px 0;
+        }
+
+        .debug-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #dc3545;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .debug-section h4 {
+            color: #dc3545;
+            margin-top: 0;
+        }
+
+        .debug-log {
+            background: #f8f9fa;
+            padding: 5px;
+            margin: 5px 0;
+            border-radius: 4px;
+            color: #6c757d;
+        }
+
+        .debug-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .debug-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .ai-status {
+            background: #e8f5e8;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-weight: bold;
+            text-align: center;
+            border-left: 4px solid #28a745;
+        }
+
+        .ai-status.loading {
+            background: #fff3cd;
+            color: #856404;
+            border-left-color: #ffc107;
+        }
+
+        .ai-status.ready {
+            background: #d4edda;
+            color: #155724;
+            border-left-color: #28a745;
+        }
+
+        .ai-status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left-color: #dc3545;
+        }
+
+        .audio-files-status {
+            background: #fff3e0;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-weight: bold;
+            text-align: center;
+            border-left: 4px solid #ff9800;
+        }
+
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                max-width: 900px;
+            }
+
+            .right-panel {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .info-card,
+            .settings-card {
+                flex: 1;
+                min-width: 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .right-panel {
+                flex-direction: column;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main-container">
+        <div class="left-panel">
+            <div class="header">
+                <h1>🏥 護理學生傷口護理訓練系統 <span class="audio-files-badge">Audio Files</span><span
+                        class="ai-badge">Transformer.js</span></h1>
+                <h2>Professional Nursing Student Wound Care Training System</h2>
+                <p>Advanced AI-powered patient simulation with pre-recorded realistic Cantonese voices</p>
+            </div>
+
+            <div class="scenario-info">
+                <h3>📋 訓練場景 Training Scenario</h3>
+                <p><strong>你的角色 Your Role:</strong> XX大學護理學生何同學 (Nursing Student Ho from XX University)</p>
+                <p><strong>任務 Task:</strong> 進行傷口護理程序並與病人保持良好溝通</p>
+                <p><strong>重點 Focus:</strong> 身份確認、程序解釋、病人安撫、專業溝通</p>
+            </div>
+
+            <div id="aiStatus" class="ai-status loading">
+                <span class="loading-spinner"></span> 正在加載AI模型和音頻文件... Loading AI model and audio files...
+            </div>
+
+            <div id="audioFilesStatus" class="audio-files-status">
+                🎵 等待音頻文件系統初始化... Waiting for audio files system initialization...
+            </div>
+
+            <div id="status" class="status loading">
+                <span class="loading-spinner"></span> 正在初始化智能匹配系統... Initializing intelligent audio matching system...
+            </div>
+
+            <div class="controls">
+                <button id="startBtn" class="btn btn-primary" disabled>🎙️ 開始訓練 Start Training</button>
+                <button id="stopBtn" class="btn btn-danger" disabled>⏹️ 結束訓練 Stop Training</button>
+            </div>
+
+            <div id="timer" class="timer">00:00</div>
+
+            <div id="conversation" class="conversation" style="display: none;">
+                <h4>💬 對話記錄 Session Conversation:</h4>
+                <div id="messages"></div>
+            </div>
+
+            <div id="downloadSection" class="download-section" style="display: none;">
+                <h4>📥 訓練記錄 Session Recording</h4>
+                <p>你的訓練對話已被記錄以供分析 Your training session has been recorded for analysis.</p>
+                <button id="downloadBtn" class="btn btn-primary">下載錄音 Download Recording</button>
+            </div>
+
+            <div id="debugSection" class="debug-section" style="display: none;">
+                <h4>🔧 Debug Information</h4>
+                <div id="debugLogs"></div>
+                <div style="margin-top: 10px;">
+                    <button onclick="clearDebugLogs()" class="btn btn-primary btn-small">Clear Logs</button>
+                    <button onclick="toggleDebug()" class="btn btn-primary btn-small">Hide Debug</button>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button onclick="toggleDebug()" class="btn btn-primary btn-small">🔧 Toggle Debug</button>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <div class="info-card">
+                <h4>👨 病人資料 Patient Information</h4>
+                <div class="patient-info">
+                    <p><strong>姓名 Name:</strong> 陈小丽女士 (Ms. Chan Siu Lai)</p>
+                    <p><strong>年齡 Age:</strong> 65歲</p>
+                    <p><strong>語言 Language:</strong> 廣東話/英文 (Cantonese/English Mix)</p>
+                    <p><strong>病情 Condition:</strong> 腿部傷口需要清洗及換藥 (Leg wound requiring cleaning and dressing)</p>
+                    <p><strong>性格特點:</strong> 健談但容易緊張，會配合治療但有疼痛反應</p>
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <h4>🎵 音頻文件設定 Audio Files Settings</h4>
+
+                <div class="setting-group">
+                    <label>Audio Response Mode:</label>
+                    <select id="responseMode">
+                        <option value="intelligent">智能匹配 Intelligent Matching</option>
+                        <option value="sequential">順序播放 Sequential Play</option>
+                        <option value="random">隨機選擇 Random Selection</option>
+                    </select>
+                </div>
+
+                <div class="setting-group">
+                    <label>Speech Recognition:</label>
+                    <select id="recognitionLang">
+                        <option value="zh-HK">廣東話 Cantonese (Hong Kong)</option>
+                        <option value="en-US">English (US)</option>
+                        <option value="zh-CN">普通話 Mandarin</option>
+                    </select>
+                </div>
+
+                <h4>🔊 音頻測試 Audio Test</h4>
+
+                <div id="audioStatus" class="audio-status warning">
+                    等待音頻測試... Waiting for audio test...
+                </div>
+
+                <div class="volume-control">
+                    <label for="volumeSlider">音量 Volume:</label>
+                    <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.8">
+                    <div style="text-align: center; margin-top: 5px;">
+                        <span id="volumeDisplay">80%</span>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                    <button onclick="testAudio()" class="btn btn-success btn-small">🎵 測試音頻 Test Audio</button>
+                    <button onclick="enableAudioContext()" class="btn btn-primary btn-small">🔓 啟用音頻 Enable
+                        Audio</button>
+                </div>
+
+                <div id="audioFilesInfo" class="setting-group" style="margin-top: 15px;">
+                    <label>Available Audio Files:</label>
+                    <div id="audioFilesList" style="font-size: 12px; color: #666; max-height: 100px; overflow-y: auto;">
+                        Loading...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2';
+
+        // Disable local model loading to use CDN
+        env.allowRemoteModels = true;
+        env.allowLocalModels = false;
+
+        // Check if pretest is completed
+        function checkPretestCompletion() {
+            const pretestCompleted = sessionStorage.getItem('pretestCompleted');
+            const completedTime = sessionStorage.getItem('pretestCompletedTime');
+            
+            if (!pretestCompleted) {
+                // Redirect to pretest
+                alert('请先完成知识测验！\nPlease complete the knowledge pretest first!');
+                window.location.href = 'pretest.html';
+                return false;
+            }
+            
+            // Check if completion was within last 24 hours (optional)
+            if (completedTime) {
+                const completedDate = new Date(completedTime);
+                const now = new Date();
+                const hoursSinceCompletion = (now - completedDate) / (1000 * 60 * 60);
+                
+                if (hoursSinceCompletion > 24) {
+                    // Optionally expire the pretest completion after 24 hours
+                    sessionStorage.removeItem('pretestCompleted');
+                    sessionStorage.removeItem('pretestCompletedTime');
+                    alert('知识测验已过期，请重新完成！\nKnowledge pretest has expired, please complete it again!');
+                    window.location.href = 'pretest.html';
+                    return false;
+                }
+            }
+            
+            console.log('Pretest completed, proceeding with training system...');
+            return true;
+        }
+
+        // Check pretest completion before initializing
+        if (!checkPretestCompletion()) {
+            // Stop execution if pretest not completed
+            throw new Error('Pretest not completed');
+        }
+
+        // Audio Files System Configuration
+        let audioMetadata = {};
+        let audioFilesLoaded = false;
+        let audioFilesList = [];
+        let currentVolume = 0.8;
+
+        // Global variables
+        let mediaRecorder;
+        let audioChunks = [];
+        let recognition;
+        let sessionStartTime;
+        let timerInterval;
+        let isRecording = false;
+        let conversationHistory = [];
+        let selectedRecognitionLang = 'zh-HK';
+        let selectedResponseMode = 'intelligent';
+        let debugMode = false;
+        let audioContext = null;
+        let conversationFailureCount = 0;
+        let lastFailedPhase = null;
+
+        // AI Model variables
+        let textGenerator = null;
+        let isAIReady = false;
+
+        // Patient personality and context
+        const patientContext = {
+            name: "陈小丽",
+            age: 65,
+            condition: "腿部傷口需要清洗及換藥",
+            personality: "健談但容易緊張，會配合治療但有疼痛反應，會混合廣東話說話",
+            currentPain: 6,
+            anxiety: 7,
+            previousExperience: "之前有做過傷口護理，但每次都很緊張"
+        };
+
+        // Load audio metadata from the provided JSON
+        async function loadAudioMetadata() {
+            try {
+                debugLog('Loading audio metadata...');
+                updateAudioFilesStatus('🔄 正在載入音頻元數據... Loading audio metadata...');
+
+                // In a real implementation, you would fetch this from a server
+                // For now, we'll use the provided metadata directly
+                audioMetadata = {
+                                "patient_greet_painful.m4a": {
+                    "filename": "patient_greet_painful.m4a",
+                    "text": "好啊，你入黎啦，我真系好痛啊！",
+                    "duration": 5.0,
+                    "conversation_phase": "初次接触",
+                    "emotions": {
+                        "primary": "疼痛",
+                        "intensity": 3,
+                        "secondary": ["紧张", "寻求帮助"]
+                    },
+                    "context_tags": {
+                        "suitable_scenarios": ["陌生人进入", "感到疼痛"],
+                        "incompatible_scenarios": ["表达感谢"]
+                    }
+                },
+                "patient_helpmecleanse.m4a": {
+                    "filename": "patient_helpmecleanse.m4a",
+                    "text": "好啊，你帮我洗啊。",
+                    "duration": 2.0,
+                    "conversation_phase": "程序解释",
+                    "emotions": {
+                        "primary": "配合",
+                        "intensity": 1,
+                        "secondary": ["配合"]
+                    },
+                    "context_tags": {
+                        "suitable_scenarios": ["开始操作"],
+                        "incompatible_scenarios": ["感到疼痛"]
+                    }
+                },
+                "patient_first_meeting_procedure_okay.m4a": {
+                    "filename": "patient_first_meeting_procedure_okay.m4a",
+                    "text": "好啊",
+                    "duration": 1.0,
+                    "conversation_phase": "初次接触",
+                    "emotions": {
+                        "primary": "配合",
+                        "intensity": 1,
+                        "secondary": ["配合"]
+                    },
+                    "context_tags": {
+                        "suitable_scenarios": ["陌生人进入", "程序解释中"],
+                        "incompatible_scenarios": ["感到疼痛"]
+                    }
+                },
+                "patient_I'mChenXiaoLi.m4a": {
+                    "filename": "patient_I'mChenXiaoLi.m4a",
+                    "text": "我叫陈小丽。",
+                    "duration": 2.0,
+                    "conversation_phase": "身份确认",
+                    "emotions": {
+                        "primary": "配合",
+                        "intensity": 1,
+                        "secondary": ["寻求帮助"]
+                    },
+                    "context_tags": {
+                        "suitable_scenarios": ["需要身份确认", "关心后续"],
+                        "incompatible_scenarios": ["操作进行中"]
+                    }
+                },
+                "patient_painful_abit.m4a": {
+                    "filename": "patient_painful_abit.m4a",
+                    "text": "有少少痛啊。",
+                    "duration": 1.0,
+                    "conversation_phase": "程序进行",
+                    "emotions": {
+                        "primary": "疼痛",
+                        "intensity": 1,
+                        "secondary": ["配合", "寻求帮助"]
+                    },
+                    "context_tags": {
+                        "suitable_scenarios": ["操作进行中", "感到疼痛"],
+                        "incompatible_scenarios": ["表达感谢"]
+                    }
+                },
+                "patient_anxious_painful.m4a": {
+                    "filename": "patient_anxious_painful.m4a",
+                    "text": "哎呀，我有少少痛啊！",
+                    "duration": 6.0,
+                    "conversation_phase": "程序进行",
+                    "emotions": {
+                        "primary": "疼痛",
+                        "intensity": 3,
+                        "secondary": ["配合"]
+                    },
+                    "context_tags": {
+                        "suitable_scenarios": ["操作进行中", "感到疼痛"],
+                        "incompatible_scenarios": ["表达感谢"]
+                    }
+                },
+                "patient_rudeswearing_painful.m4a": {
+                    "filename": "patient_rudeswearing_painful.m4a",
+                    "text": "屌，咁閪痛噶！",
+                    "duration": 2.0,
+                    "conversation_phase": "程序进行",
+                    "emotions": {
+                        "primary": "疼痛",
+                        "intensity": 3,
+                        "secondary": ["紧张", "寻求帮助"]
+                    },
+                    "context_tags": {
+                        "suitable_scenarios": ["操作进行中", "感到疼痛"],
+                        "incompatible_scenarios": ["表达感谢"]
+                    }
+                },
+                "patient_don't_touch_me.m4a": {
+                    "filename": "patient_don't_touch_me.m4a",
+                    "text": "嘩，咁痛噶，唔好再搞我啦！",
+                    "duration": 3.0,
+                    "conversation_phase": "程序进行",
+                    "emotions": {
+                        "primary": "疼痛",
+                        "intensity": 3,
+                        "secondary": ["紧张", "寻求帮助"]
+                    },
+                    "context_tags": {
+                        "suitable_scenarios": ["操作进行中", "感到疼痛"],
+                        "incompatible_scenarios": ["表达感谢"]
+                    }
+                },
+                "patient_angry_to_file_complaints.m4a": {
+                    "filename": "patient_angry_to_file_complaints.m4a",
+                    "text": "我很不滿意，我要向你上司投訴你（護士）！",
+                    "duration": 4.0,
+                    "conversation_phase": "程序完成",
+                    "emotions": {
+                        "primary": "愤怒",
+                        "intensity": 3,
+                        "secondary": ["不满"]
+                    },
+                    "context_tags": {
+                        "suitable_scenarios": ["程序完成", "操作进行中"],
+                        "incompatible_scenarios": ["表达感谢"]
+                    }
+                },
+                "patient_nothingspecial_thanks.m4a": {
+                    "filename": "patient_nothingspecial_thanks.m4a",
+                    "text": "哦， okay 吖，冇么特别吾舒服，吾该晒！",
+                    "duration": 4.0,
+                    "conversation_phase": "程序完成",
+                    "emotions": {
+                        "primary": "安心",
+                        "intensity": 2,
+                        "secondary": ["感激", "配合"]
+                    },
+                    "context_tags": {
+                        "suitable_scenarios": ["程序完成", "操作进行中"],
+                        "incompatible_scenarios": ["感到疼痛"]
+                    }
+                },
+                "patient_complaining_the_pain.m4a": {
+                    "filename": "patient_complaining_the_pain.m4a",
+                    "text": "哗，姑娘，你得唔得轻手D啊，真系好痛啊！",
+                    "duration": 5.0,
+                    "conversation_phase": "程序进行",
+                    "emotions": {
+                        "primary": "疼痛",
+                        "intensity": 3,
+                        "secondary": ["紧张", "疑问"]
+                    },
+                    "context_tags": {
+                        "suitable_scenarios": ["操作进行中", "开始操作"],
+                        "incompatible_scenarios": ["表达感谢"]
+                    }
+                },
+                "patient_personal_attack_on_nurses.m4a": {
+                    "filename": "patient_personal_attack_on_nurses.m4a",
+                    "text": "哎呀，么你咁粗鲁噶，好大力啊！",
+                    "duration": 5.0,
+                    "conversation_phase": "程序进行",
+                    "emotions": {
+                        "primary": "疼痛",
+                        "intensity": 3,
+                        "secondary": ["紧张"]
+                    },
+                    "context_tags": {
+                        "suitable_scenarios": ["操作进行中", "感到疼痛"],
+                        "incompatible_scenarios": ["表达感谢"]
+                    }
+                },
+                "patient_revisit_checkedname.m4a": {
+                    "filename": "patient_revisit_checkedname.m4a",
+                    "text": "是这个编号和姓名.",
+                    "duration": 5.0,
+                    "conversation_phase": "程序完成",
+                    "emotions": {
+                        "primary": "配合",
+                        "intensity": 1,
+                        "secondary": []
+                    },
+                    "context_tags": {
+                        "suitable_scenarios": ["关心后续"],
+                        "incompatible_scenarios": ["需要身份确认"]
+                    }
+                },
+                "patient_discharge.m4a": {
+                    "filename": "patient_discharge.m4a",
+                    "text": "哎呀，哎呀，做么我伤口黄色的？流着出来的是什么？",
+                    "duration": 6.0,
+                    "conversation_phase": "程序进行",
+                    "emotions": {
+                        "primary": "紧张",
+                        "intensity": 3,
+                        "secondary": ["好奇", "困惑"]
+                    },
+                    "context_tags": {
+                        "suitable_scenarios": ["操作进行中", "需要安抚"],
+                        "incompatible_scenarios": ["表达感谢"]
+                    }
+                },
+                "patient_Nothing_unconfortable.m4a": {
+                    "filename": "patient_Nothing_unconfortable.m4a",
+                    "text": "冇啊，冇特别吾舒服。",
+                    "duration": 3.0,
+                    "conversation_phase": "程序完成",
+                    "emotions": {
+                        "primary": "配合",
+                        "intensity": 1,
+                        "secondary": ["配合", "安心"]
+                    },
+                    "context_tags": {
+                        "suitable_scenarios": ["关心后续"],
+                        "incompatible_scenarios": ["感到疼痛"]
+                    }
+                },
+                "patient_wellcleansed.m4a": {
+                    "filename": "patient_wellcleansed.m4a",
+                    "text": "好啊，你洗得真好！",
+                    "duration": 2.0,
+                    "conversation_phase": "程序完成",
+                    "emotions": {
+                        "primary": "感激",
+                        "intensity": 2,
+                        "secondary": ["感激", "安心"]
+                    },
+                    "context_tags": {
+                        "suitable_scenarios": ["程序完成", "表达感谢"],
+                        "incompatible_scenarios": ["感到疼痛"]
+                    }
+                    }
+                };
+
+                audioFilesList = Object.keys(audioMetadata);
+                audioFilesLoaded = true;
+
+                debugLog(`Loaded ${audioFilesList.length} audio files`);
+                updateAudioFilesStatus(`✅ 音頻系統就緒！已載入 ${audioFilesList.length} 個音頻文件`);
+                
+                // Update audio files list in UI
+                updateAudioFilesList();
+                
+                return true;
+            } catch (error) {
+                debugLog(`Failed to load audio metadata: ${error.message}`, 'error');
+                updateAudioFilesStatus('❌ 音頻元數據載入失敗');
+                throw error;
+            }
+        }
+
+        // Update audio files list display
+        function updateAudioFilesList() {
+            const listElement = document.getElementById('audioFilesList');
+            if (audioFilesLoaded) {
+                listElement.innerHTML = audioFilesList.map(filename => {
+                    const metadata = audioMetadata[filename];
+                    return `<div style="margin: 2px 0; padding: 2px; background: #f0f0f0; border-radius: 3px;">
+                        <strong>${metadata.text}</strong><br>
+                        <small>${metadata.conversation_phase} | ${metadata.emotions.primary}</small>
+                    </div>`;
+                }).join('');
+            } else {
+                listElement.innerHTML = 'Loading...';
+            }
+        }
+
+        // Initialize AI Model (using rule-based system for better Chinese support)
+        async function initializeAI() {
+            try {
+                debugLog('Initializing AI conversation system...');
+                updateAIStatus('🤖 正在初始化智能對話系統... Initializing intelligent conversation system...', 'loading');
+
+                // Use rule-based AI for better Chinese/Cantonese support
+                textGenerator = {
+                    initialized: true,
+                    generateResponse: function (context, options) {
+                        return Promise.resolve([{
+                            generated_text: generateIntelligentResponse(context)
+                        }]);
+                    }
+                };
+
+                debugLog('AI conversation system loaded successfully');
+                updateAIStatus('✅ 智能對話系統準備就緒！Intelligent conversation system ready!', 'ready');
+                isAIReady = true;
+
+                return true;
+            } catch (error) {
+                debugLog(`AI initialization failed: ${error.message}`, 'error');
+                updateAIStatus('❌ 系統初始化失敗 System initialization failed', 'error');
+                isAIReady = false;
+                throw error;
+            }
+        }
+
+        // Intelligent audio file matching system
+        function matchAudioFile(studentInput, conversationHistory) {
+            debugLog(`Matching audio for input: "${studentInput}"`);
+            debugLog(`Conversation length: ${conversationHistory.length}`);
+
+            const input = studentInput.toLowerCase();
+            const messageCount = conversationHistory.length;
+
+            // Determine conversation phase based on message count and content
+            let targetPhase = determineConversationPhase(messageCount, input, conversationHistory);
+            debugLog(`Target conversation phase: ${targetPhase}`);
+
+            // Get suitable audio files for current context
+            const candidates = getSuitableAudioFiles(targetPhase, input);
+            debugLog(`Found ${candidates.length} candidate audio files`);
+
+            if (candidates.length === 0) {
+                debugLog('No suitable audio files found, using fallback');
+                return getFallbackAudioFile(targetPhase);
+            }
+
+            // Select best match based on context
+            const selectedFile = selectBestAudioMatch(candidates, input, conversationHistory);
+            debugLog(`Selected audio file: ${selectedFile}`);
+
+            return selectedFile;
+        }
+
+        // Determine conversation phase
+        function determineConversationPhase(messageCount, input, history) {
+            const historyText = history.map(h => h.content).join(' ').toLowerCase();
+
+            // Force progression based on message count
+            if (messageCount <= 2) {
+                if (input.includes('护士') || input.includes('何') || input.includes('入') || input.includes('hello') || input.includes('hi')) {
+                    return '初次接触';
+                }
+                return '初次接触';
+            } else if (messageCount <= 5) {
+                if (input.includes('陈') || input.includes('名') || input.includes('身份') || input.includes('确认') || input.includes('check')) {
+                    return '身份确认';
+                }
+                if (historyText.includes('陈') || historyText.includes('身份')) {
+                    return '程序解释';
+                }
+                return '身份确认';
+            } else if (messageCount <= 8) {
+                if (input.includes('洗') || input.includes('伤口') || input.includes('换药') || input.includes('开始') || input.includes('procedure')) {
+                    return '程序解释';
+                }
+                return '程序解释';
+            } else {
+                if (input.includes('完成') || input.includes('结束') || input.includes('谢谢') || input.includes('thank')) {
+                    return '程序完成';
+                }
+                return '程序进行';
+            }
+        }
+
+        // Get suitable audio files for current phase and input
+        function getSuitableAudioFiles(targetPhase, input) {
+            const candidates = [];
+
+            for (const [filename, metadata] of Object.entries(audioMetadata)) {
+                // Check if phase matches
+                if (metadata.conversation_phase === targetPhase) {
+                    candidates.push({ filename, metadata, score: 10 });
+                    continue;
+                }
+
+                // Check suitable scenarios
+                const scenarios = metadata.context_tags?.suitable_scenarios || [];
+                let scenarioMatch = false;
+
+                for (const scenario of scenarios) {
+                    if (matchesScenario(input, scenario)) {
+                        candidates.push({ filename, metadata, score: 8 });
+                        scenarioMatch = true;
+                        break;
+                    }
+                }
+
+                if (scenarioMatch) continue;
+
+                // Check incompatible scenarios (negative scoring)
+                const incompatibleScenarios = metadata.context_tags?.incompatible_scenarios || [];
+                let isIncompatible = false;
+
+                for (const incompatible of incompatibleScenarios) {
+                    if (matchesScenario(input, incompatible)) {
+                        isIncompatible = true;
+                        break;
+                    }
+                }
+
+                if (!isIncompatible) {
+                    candidates.push({ filename, metadata, score: 3 });
+                }
+            }
+
+            return candidates.sort((a, b) => b.score - a.score);
+        }
+
+        // Check if input matches a scenario
+        function matchesScenario(input, scenario) {
+            const scenarioMap = {
+                '陌生人进入': ['护士', '何', '入', 'hello', 'hi', '进来', '你', '我', '好', '同学', '学生'],
+                '感到疼痛': ['痛', 'pain', 'hurt', '不舒服', '难受', '疼'],
+                '开始操作': ['洗', '开始', '换药', 'start', 'procedure', '现在', '帮', '治疗', '处理', '看', '检查'],
+                '程序解释中': ['解释', '什么', 'what', 'how', '为什么', '怎么', '可以', '需要', '要'],
+                '需要身份确认': ['陈', '名字', '身份', 'name', 'check', '叫', '确认', '是', '你'],
+                '操作进行中': ['进行', '继续', '现在', 'continue', '好', '开始', '这样', '慢慢'],
+                '程序完成': ['完成', '结束', 'finish', 'done', '好了', '可以', '怎么样', '感觉'],
+                '表达感谢': ['谢谢', '感谢', 'thank', '好', '很好', '不错', '辛苦'],
+                '关心后续': ['怎么样', '舒服', 'how', 'feel', '还', '现在', '有没有']
+            };
+
+            const keywords = scenarioMap[scenario] || [];
+            return keywords.some(keyword => input.includes(keyword));
+        }
+
+        // Select best audio match
+        function selectBestAudioMatch(candidates, input, history) {
+            if (candidates.length === 0) return null;
+
+            // Filter by emotion if input suggests pain
+            if (input.includes('痛') || input.includes('pain')) {
+                const painCandidates = candidates.filter(c => 
+                    c.metadata.emotions.primary === '疼痛' || 
+                    c.metadata.emotions.secondary?.includes('疼痛')
+                );
+                if (painCandidates.length > 0) {
+                    return painCandidates[Math.floor(Math.random() * painCandidates.length)].filename;
+                }
+            }
+
+            // Filter by cooperation level
+            if (input.includes('好') || input.includes('ok') || input.includes('可以')) {
+                const cooperativeCandidates = candidates.filter(c => 
+                    c.metadata.emotions.primary === '配合' || 
+                    c.metadata.emotions.secondary?.includes('配合')
+                );
+                if (cooperativeCandidates.length > 0) {
+                    return cooperativeCandidates[Math.floor(Math.random() * cooperativeCandidates.length)].filename;
+                }
+            }
+
+            // Default: select from top candidates with some randomness
+            const topCandidates = candidates.slice(0, Math.min(3, candidates.length));
+            return topCandidates[Math.floor(Math.random() * topCandidates.length)].filename;
+        }
+
+        // Get fallback audio file
+        function getFallbackAudioFile(targetPhase) {
+            const fallbackMap = {
+                '初次接触': 'patient_greet_painful.m4a',
+                '身份确认': "patient_I'mChenXiaoLi.m4a",
+                '程序解释': 'patient_helpmecleanse.m4a',
+                '程序进行': 'patient_painful_abit.m4a',
+                '程序完成': 'patient_nothingspecial_thanks.m4a'
+            };
+
+            return fallbackMap[targetPhase] || 'patient_first_meeting_procedure_okay.m4a';
+        }
+
+        // Play audio file
+        async function playAudioFile(filename) {
+            try {
+                debugLog(`Playing audio file: ${filename}`);
+                
+                // In a real implementation, you would load the actual audio file
+                // For now, we'll simulate by creating a text-to-speech placeholder
+                const metadata = audioMetadata[filename];
+                if (!metadata) {
+                    throw new Error(`Audio metadata not found for: ${filename}`);
+                }
+
+                // Create audio element (in real implementation, this would be the actual .m4a file)
+                const audio = new Audio();
+                
+                // For demo purposes, we'll use a data URL or you could host the files
+                audio.src = `./audio/${filename}`;
+                
+                // Since we don't have the actual files, we'll create a mock audio
+                // In production, you would uncomment the line above and comment out the mock below
+                
+                // MOCK IMPLEMENTATION - Remove this in production
+                //const mockAudioData = createMockAudio(metadata.text, metadata.duration);
+                //audio.src = mockAudioData;
+                
+                audio.volume = currentVolume;
+                audio.preload = 'auto';
+
+                // Audio event handlers
+                audio.oncanplay = () => {
+                    debugLog(`Audio ${filename} ready to play`);
+                };
+
+                audio.onplay = () => {
+                    debugLog(`Audio ${filename} started playing`);
+                };
+
+                audio.onended = () => {
+                    debugLog(`Audio ${filename} finished playing`);
+                };
+
+                audio.onerror = (e) => {
+                    debugLog(`Audio ${filename} playback error: ${e.message || 'Unknown error'}`, 'error');
+                };
+
+                // Play audio with user interaction handling
+                await playAudioWithInteractionHandling(audio, filename);
+
+                return metadata.text; // Return the text for display
+
+            } catch (error) {
+                debugLog(`Failed to play audio file ${filename}: ${error.message}`, 'error');
+                throw error;
+            }
+        }
+
+        // Handle audio playback with browser interaction requirements
+        async function playAudioWithInteractionHandling(audio, filename) {
+            try {
+                // Ensure audio context is active
+                if (audioContext && audioContext.state === 'suspended') {
+                    await audioContext.resume();
+                    debugLog('Audio context resumed for playback');
+                }
+
+                // Try to play directly
+                await audio.play();
+                debugLog(`Audio ${filename} played successfully`);
+
+            } catch (error) {
+                debugLog(`Direct audio play failed: ${error.message}`, 'error');
+                
+                // Queue for next user interaction
+                const playOnInteraction = () => {
+                    audio.play().then(() => {
+                        debugLog(`Audio ${filename} played after user interaction`);
+                        document.removeEventListener('click', playOnInteraction);
+                        document.removeEventListener('keydown', playOnInteraction);
+                        document.removeEventListener('touchstart', playOnInteraction);
+                    }).catch(e => {
+                        debugLog(`Play after interaction failed: ${e.message}`, 'error');
+                    });
+                };
+
+                document.addEventListener('click', playOnInteraction, { once: true });
+                document.addEventListener('keydown', playOnInteraction, { once: true });
+                document.addEventListener('touchstart', playOnInteraction, { once: true });
+            }
+        }
+
+        // Create mock audio data (remove in production)
+        function createMockAudio(text, duration) {
+            // Create a simple data URL for testing
+            // In production, replace with actual file loading
+            return 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQEAAAA=';
+        }
+
+        // Generate intelligent response using rule-based AI
+        function generateIntelligentResponse(context) {
+            const lines = context.split('\n');
+            const lastStudentInput = lines[lines.length - 2]?.replace('護士: ', '') || '';
+            const conversationHistory = lines.slice(2, -2);
+
+            debugLog(`Generating response for: ${lastStudentInput}`);
+            debugLog(`Conversation length: ${conversationHistory.length}`);
+
+            // Use audio file matching system
+            const selectedAudioFile = matchAudioFile(lastStudentInput, conversationHistory.map(line => ({
+                role: line.includes('護士:') ? 'student' : 'patient',
+                content: line.replace(/^(護士|病人): /, '')
+            })));
+
+            // Get text from selected audio file
+            const audioMetadata = audioMetadata[selectedAudioFile];
+            if (audioMetadata) {
+                return audioMetadata.text;
+            }
+
+            // Fallback to original rule-based system
+            return generateRuleBasedResponse(lastStudentInput, conversationHistory);
+        }
+
+        // Fallback rule-based response
+        function generateRuleBasedResponse(studentInput, history) {
+            const input = studentInput.toLowerCase();
+            const messageCount = history.length;
+
+            // Simple rule-based responses as fallback
+            if (messageCount <= 2) {
+                return "你进来吧。我好痛啊！";
+            } else if (messageCount <= 5) {
+                if (input.includes('护士') || input.includes('何')) {
+                    return "我叫陈小丽。";
+                }
+                return "好啊";
+            } else if (messageCount <= 8) {
+                return "好啊，你帮我洗啊。";
+            } else {
+                if (input.includes('痛') || input.includes('pain')) {
+                    return "有少少痛啊。";
+                }
+                return "哦， okay 吖，冇么特别吾舒服，吾该晒！";
+            }
+        }
+
+        // Update AI status display
+        function updateAIStatus(message, type) {
+            const aiStatus = document.getElementById('aiStatus');
+            aiStatus.innerHTML = type === 'loading' ?
+                `<span class="loading-spinner"></span> ${message}` :
+                message;
+            aiStatus.className = `ai-status ${type}`;
+        }
+
+        // Update audio files status display
+        function updateAudioFilesStatus(message) {
+            const audioFilesStatus = document.getElementById('audioFilesStatus');
+            audioFilesStatus.textContent = message;
+        }
+
+        // Audio context initialization
+        async function enableAudioContext() {
+            try {
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    debugLog('Audio context created');
+                }
+
+                debugLog(`Audio context state: ${audioContext.state}`);
+
+                if (audioContext.state === 'suspended') {
+                    await audioContext.resume();
+                    debugLog('Audio context resumed successfully');
+                    updateAudioStatus('🔊 音頻已啟用 Audio enabled', 'success');
+                } else {
+                    debugLog('Audio context already running');
+                    updateAudioStatus('✅ 音頻已就緒 Audio ready', 'success');
+                }
+
+                // Create silent test
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.001);
+                
+                debugLog('Silent audio test completed');
+
+            } catch (error) {
+                debugLog(`Audio context enable failed: ${error.message}`, 'error');
+                updateAudioStatus(`❌ 音頻啟用失敗: ${error.message}`, 'error');
+            }
+        }
+
+        // Test Audio with system beep
+        async function testAudio() {
+            try {
+                debugLog('Testing audio system...');
+                updateAudioStatus('🔄 正在測試音頻系統... Testing audio system...', 'warning');
+
+                // Ensure audio context is ready
+                if (!audioContext) {
+                    await enableAudioContext();
+                }
+
+                if (audioContext.state === 'suspended') {
+                    await audioContext.resume();
+                }
+
+                // Create a test beep sound
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                // Configure the beep
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime); // 800Hz tone
+                oscillator.type = 'sine';
+                
+                // Volume envelope for a pleasant beep
+                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(currentVolume * 0.3, audioContext.currentTime + 0.05);
+                gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.3);
+                
+                // Play the beep
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.3);
+                
+                debugLog('Test beep played successfully');
+                
+                // Wait for beep to finish, then show success
+                setTimeout(() => {
+                    updateAudioStatus('✅ 音頻系統測試成功！Audio system test successful! 🔊', 'success');
+                }, 400);
+
+            } catch (error) {
+                debugLog(`Audio test failed: ${error.message}`, 'error');
+                updateAudioStatus(`❌ 音頻測試失敗: ${error.message}`, 'error');
+            }
+        }
+
+        // Update audio status display
+        function updateAudioStatus(message, type) {
+            const audioStatus = document.getElementById('audioStatus');
+            audioStatus.textContent = message;
+            audioStatus.className = `audio-status ${type}`;
+        }
+
+        // Process student input with audio file system
+        async function processStudentInput(transcript) {
+        debugLog(`Processing student input: ${transcript}`);
+
+        try {
+            // Get matched audio file
+            const selectedAudioFile = matchAudioFile(transcript, conversationHistory);
+            const audioMetadata_file = audioMetadata[selectedAudioFile];
+
+            if (!audioMetadata_file) {
+                throw new Error(`Audio metadata not found for: ${selectedAudioFile}`);
+            }
+
+            // Reset failure count on successful match
+            conversationFailureCount = 0;
+            lastFailedPhase = null;
+
+            // Simulate thinking time
+            setTimeout(async () => {
+                debugLog(`Patient responding with audio: ${selectedAudioFile}`);
+
+                // Generate contextual notes
+                const notes = generateContextualNotes(transcript, conversationHistory);
+
+                const responseText = audioMetadata_file.text;
+                addMessage('patient', responseText, `🎵 播放: ${selectedAudioFile} | ${notes}`);
+                conversationHistory.push({ role: 'patient', content: responseText });
+
+                // Play the actual audio file
+                await playAudioFile(selectedAudioFile);
+
+            }, 1500 + Math.random() * 1000);
+
+        } catch (error) {
+            debugLog(`Audio file system failed: ${error.message}`, 'error');
+            
+            conversationFailureCount++;
+            const currentPhase = determineConversationPhase(conversationHistory.length, transcript.toLowerCase(), conversationHistory);
+            
+            if (conversationFailureCount === 1) {
+                // 第一次失敗：給文字提示
+                const textHint = getTextHintForPhase(currentPhase, transcript);
+                addMessage('patient', textHint, "💬 文字提示 - 系統建議回應方向");
+                conversationHistory.push({ role: 'patient', content: textHint });
+                lastFailedPhase = currentPhase;
+                
+            } else if (conversationFailureCount >= 2 && lastFailedPhase === currentPhase) {
+                // 第二次失敗且在同一階段：強制進入下一階段
+                debugLog('Forcing progression to next conversation phase');
+                const nextPhaseResponse = forceNextPhaseProgression(currentPhase);
+                addMessage('patient', nextPhaseResponse, "⏭️ 自動進入下一階段");
+                conversationHistory.push({ role: 'patient', content: nextPhaseResponse });
+                
+                // Reset counters
+                conversationFailureCount = 0;
+                lastFailedPhase = null;
+            }
+        }
+    }
+        // 獲取階段文字提示
+        function getTextHintForPhase(phase, studentInput) {
+            const hints = {
+                '初次接触': '你好，我是護理學生。請問你是陳小丽女士嗎？',
+                '身份确认': '好的，我需要確認一下你的身份信息。請問你的全名是什麼？',
+                '程序解释': '現在我要幫你清洗傷口和換藥。這個過程可能會有一點不舒服，但我會盡量輕柔。',
+                '程序进行': '我現在開始清洗傷口了。如果感到疼痛請告訴我。',
+                '程序完成': '好的，傷口處理完成了。你現在感覺怎麼樣？'
+            };
+            
+            return hints[phase] || '請繼續與病人溝通，注意她的感受和需要。';
+        }
+
+        // 強制進入下一階段
+        function forceNextPhaseProgression(currentPhase) {
+            const progressionMap = {
+                '初次接触': 'patient_first_meeting_procedure_okay.m4a',
+                '身份确认': "patient_I'mChenXiaoLi.m4a", 
+                '程序解释': 'patient_helpmecleanse.m4a',
+                '程序进行': 'patient_painful_abit.m4a',
+                '程序完成': 'patient_nothingspecial_thanks.m4a'
+            };
+            
+            const audioFile = progressionMap[currentPhase];
+            if (audioFile && audioMetadata[audioFile]) {
+                return audioMetadata[audioFile].text;
+            }
+            
+            // 默認回應
+            return '好啊，我們繼續吧。';
+        }
+        
+        // Generate contextual notes
+        function generateContextualNotes(studentInput, history) {
+            const input = studentInput.toLowerCase();
+            const conversationLength = history.length;
+
+            if (conversationLength <= 2) {
+                if (input.includes('护士') || input.includes('何') || input.includes('入')) {
+                    return "初次接触阶段 - 建立专业关系";
+                }
+            } else if (conversationLength <= 6) {
+                if (input.includes('陈') || input.includes('身份') || input.includes('名')) {
+                    return "病人身份确认验证 - 重要安全程序";
+                }
+            } else if (conversationLength <= 10) {
+                if (input.includes('洗') || input.includes('换药') || input.includes('伤口')) {
+                    return "程序解释阶段 - 建立病人信心";
+                }
+            }
+
+            if (input.includes('痛') || input.includes('pain')) {
+                return "病人表达疼痛担忧 - 需要共情和安抚";
+            } else if (input.includes('紧张') || input.includes('scared')) {
+                return "病人显示焦虑 - 需要镇静方法";
+            }
+
+            return "对话进行中 - 保持专业融洽关系";
+        }
+
+        // Rest of the code remains the same as the original...
+        // Initialize speech recognition, start/stop session, etc.
+
+        // Initialize speech recognition
+        async function initSpeechRecognition() {
+            if ('webkitSpeechRecognition' in window) {
+                recognition = new webkitSpeechRecognition();
+                debugLog('Using webkitSpeechRecognition');
+            } else if ('SpeechRecognition' in window) {
+                recognition = new SpeechRecognition();
+                debugLog('Using SpeechRecognition');
+            } else {
+                throw new Error('Speech recognition not supported in this browser. Please use Chrome or Edge.');
+            }
+
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = selectedRecognitionLang;
+
+            recognition.onresult = function (event) {
+                const result = event.results[event.results.length - 1];
+                if (result.isFinal) {
+                    const transcript = result[0].transcript.trim();
+                    debugLog(`Speech recognized: ${transcript}`);
+                    addMessage('student', transcript);
+                    conversationHistory.push({ role: 'student', content: transcript });
+                    processStudentInput(transcript);
+                }
+            };
+
+            recognition.onerror = function (event) {
+                debugLog(`Speech recognition error: ${event.error}`, 'error');
+                if (event.error === 'no-speech' && isRecording) {
+                    setTimeout(() => {
+                        try {
+                            recognition.start();
+                            debugLog('Speech recognition restarted after no-speech');
+                        } catch (e) {
+                            debugLog(`Recognition restart failed: ${e.message}`, 'error');
+                        }
+                    }, 1000);
+                } else if (event.error === 'not-allowed') {
+                    alert('麥克風權限被拒絕。請在瀏覽器設置中允許麥克風訪問。Microphone access denied. Please allow microphone access in browser settings.');
+                }
+            };
+
+            recognition.onend = function () {
+                debugLog('Speech recognition ended');
+                if (isRecording) {
+                    try {
+                        recognition.start();
+                        debugLog('Speech recognition restarted');
+                    } catch (e) {
+                        debugLog(`Recognition restart failed: ${e.message}`, 'error');
+                    }
+                }
+            };
+
+            debugLog('Speech recognition configured successfully');
+        }
+        // Create conversation context for AI
+        function createPatientContext(studentInput, history) {
+            const context = `你是65歲的病人陈小丽，腿部有傷口需要護理。你性格健談但有點緊張，會配合治療但有疼痛反應，會混合廣東話說話。
+
+            之前的對話：
+            ${history.map(h => `${h.role === 'student' ? '護士' : '病人'}: ${h.content}`).join('\n')}
+            現在護士說：${studentInput}
+            請以病人的身份回應，保持角色一致性，表達可能的疼痛、擔憂或感謝。`;
+
+            return context;
+        }
+
+        // Start training session
+        async function startSession() {
+            try {
+                debugLog('Starting training session with audio files system');
+
+                // Check if systems are ready
+                if (!isAIReady) {
+                    alert('AI模型尚未就緒，請稍等片刻再試！\nAI model not ready yet, please wait and try again!');
+                    return;
+                }
+
+                if (!audioFilesLoaded) {
+                    alert('音頻文件系統尚未就緒，請稍等片刻再試！\nAudio files system not ready yet, please wait and try again!');
+                    return;
+                }
+
+                if (!audioContext || audioContext.state === 'suspended') {
+                    alert('請先點擊"啟用音頻"按鈕，確保音頻正常工作！\nPlease click "Enable Audio" button first to ensure audio works properly!');
+                    return;
+                }
+
+                isRecording = true;
+                audioChunks = [];
+                conversationHistory = [];
+
+                // Clear previous conversation
+                document.getElementById('messages').innerHTML = '';
+                document.getElementById('conversation').style.display = 'block';
+
+                // Start audio recording
+                debugLog('Requesting microphone access');
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                debugLog('Microphone access granted');
+
+                mediaRecorder = new MediaRecorder(stream, {
+                    mimeType: 'audio/webm;codecs=opus'
+                });
+
+                mediaRecorder.ondataavailable = function (event) {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = function () {
+                    debugLog('Media recorder stopped, creating download link');
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    createDownloadLink(audioBlob);
+                };
+
+                mediaRecorder.start();
+                debugLog('Audio recording started');
+
+                // Start speech recognition
+                debugLog('Starting speech recognition');
+                recognition.start();
+
+                // Start timer
+                sessionStartTime = Date.now();
+                startTimer();
+
+                // Initial scenario setup with audio files
+                setTimeout(async () => {
+                    debugLog('Playing initial patient greeting from audio files');
+
+                    // Use the greeting audio file
+                    const initialAudioFile = 'patient_greet_painful.m4a';
+                    const responseText = await playAudioFile(initialAudioFile);
+                    
+                    addMessage('patient', responseText, `🎵 播放初始音頻: ${initialAudioFile} - 训练开始`);
+                    conversationHistory.push({ role: 'patient', content: responseText });
+
+                }, 3000);
+
+                updateStatus('🎙️ 音頻文件智能訓練進行中... Audio files intelligent training in progress', 'recording');
+                document.getElementById('startBtn').disabled = true;
+                document.getElementById('stopBtn').disabled = false;
+                debugLog('Training session started successfully with audio files system');
+
+            } catch (error) {
+                debugLog(`Error starting session: ${error.message}`, 'error');
+                console.error('Error starting session:', error);
+
+                if (error.name === 'NotAllowedError') {
+                    alert('麥克風權限被拒絕。請在瀏覽器設置中允許麥克風訪問。Microphone access denied. Please allow microphone access in browser settings.');
+                } else {
+                    alert('無法使用麥克風，請檢查權限設定 Error accessing microphone. Please check permissions.');
+                }
+            }
+        }
+
+        // Stop training session
+        function stopSession() {
+            debugLog('Stopping training session');
+            isRecording = false;
+
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+                debugLog('Media recorder stopped');
+            }
+
+            if (recognition) {
+                recognition.stop();
+                debugLog('Speech recognition stopped');
+            }
+
+            stopTimer();
+
+            updateStatus('✅ 音頻文件智能訓練完成！Audio files intelligent training completed!', 'ready');
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = true;
+
+            document.getElementById('downloadSection').style.display = 'block';
+            debugLog('Training session stopped successfully');
+        }
+
+        // Add message to conversation
+        function addMessage(speaker, text, notes = null) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${speaker}-message`;
+
+            const header = document.createElement('div');
+            header.className = 'message-header';
+            header.innerHTML = speaker === 'student' ?
+                '👩‍⚕️ 護理學生何同學 Student Ho' :
+                '👨 病人陈女士 Patient Ms. Chan';
+
+            const content = document.createElement('div');
+            content.className = 'message-content';
+            content.innerHTML = `<span class="cantonese-text">${text}</span>`;
+
+            messageDiv.appendChild(header);
+            messageDiv.appendChild(content);
+
+            if (notes && speaker === 'patient') {
+                const notesDiv = document.createElement('div');
+                notesDiv.className = 'procedure-notes';
+                notesDiv.textContent = `📝 ${notes}`;
+                messageDiv.appendChild(notesDiv);
+            }
+
+            document.getElementById('messages').appendChild(messageDiv);
+            document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+        }
+
+        // Timer functions
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                const elapsed = Date.now() - sessionStartTime;
+                const minutes = Math.floor(elapsed / 60000);
+                const seconds = Math.floor((elapsed % 60000) / 1000);
+                document.getElementById('timer').textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+        }
+
+        // Create download link for recording
+        function createDownloadLink(audioBlob) {
+            const url = URL.createObjectURL(audioBlob);
+            document.getElementById('downloadBtn').onclick = function () {
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `audio-files-nursing-training-${new Date().toISOString().slice(0, 19)}.webm`;
+                a.click();
+            };
+        }
+
+        // Update status display
+        function updateStatus(message, type) {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = message;
+            statusEl.className = `status ${type}`;
+        }
+
+        // Debug logging function
+        function debugLog(message, type = 'info') {
+            console.log(`[${type.toUpperCase()}] ${message}`);
+
+            if (debugMode) {
+                const debugLogs = document.getElementById('debugLogs');
+                const logDiv = document.createElement('div');
+                logDiv.className = `debug-log debug-${type}`;
+                logDiv.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+                debugLogs.appendChild(logDiv);
+                debugLogs.scrollTop = debugLogs.scrollHeight;
+            }
+        }
+
+        function clearDebugLogs() {
+            document.getElementById('debugLogs').innerHTML = '';
+        }
+
+        function toggleDebug() {
+            debugMode = !debugMode;
+            const debugSection = document.getElementById('debugSection');
+            debugSection.style.display = debugMode ? 'block' : 'none';
+        }
+
+        // Volume control
+        const volumeSlider = document.getElementById('volumeSlider');
+        const volumeDisplay = document.getElementById('volumeDisplay');
+
+        volumeSlider.addEventListener('input', (e) => {
+            currentVolume = parseFloat(e.target.value);
+            volumeDisplay.textContent = Math.round(currentVolume * 100) + '%';
+            debugLog(`Volume set to: ${Math.round(currentVolume * 100)}%`);
+        });
+
+        // Settings
+        document.getElementById('responseMode').addEventListener('change', (e) => {
+            selectedResponseMode = e.target.value;
+            debugLog(`Response mode changed to: ${selectedResponseMode}`);
+        });
+
+        document.getElementById('recognitionLang').addEventListener('change', (e) => {
+            selectedRecognitionLang = e.target.value;
+            debugLog(`Recognition language changed to: ${selectedRecognitionLang}`);
+            if (recognition) {
+                recognition.lang = selectedRecognitionLang;
+            }
+        });
+
+        // Initialize the application
+        async function init() {
+            try {
+                debugLog('Starting initialization with audio files system...');
+                updateStatus('正在初始化音頻文件系統和AI... Initializing audio files system and AI...', 'loading');
+
+                // Enable audio context on first user interaction
+                document.addEventListener('click', enableAudioContext, { once: true });
+
+                // Load audio metadata first
+                debugLog('Loading audio metadata...');
+                await loadAudioMetadata();
+                debugLog('Audio metadata loaded successfully');
+
+                // Initialize AI model
+                debugLog('Initializing AI model...');
+                await initializeAI();
+                debugLog('AI model initialized successfully');
+
+                // Initialize speech recognition
+                updateStatus('正在載入語音識別... Loading speech recognition...', 'loading');
+                debugLog('Initializing speech recognition...');
+                await initSpeechRecognition();
+                debugLog('Speech recognition initialized successfully');
+
+                updateStatus('🎉 音頻文件系統準備就緒！點擊"測試音頻"確認聲音正常！Audio files system ready!', 'ready');
+                document.getElementById('startBtn').disabled = false;
+                debugLog('Initialization completed successfully with audio files system');
+
+            } catch (error) {
+                console.error('Initialization error:', error);
+                debugLog(`Initialization failed: ${error.message}`, 'error');
+                updateStatus(`⚠️ 初始化失敗 Initialization failed: ${error.message}`, 'error');
+            }
+        }
+
+        // Make functions available globally
+        window.testAudio = testAudio;
+        window.enableAudioContext = enableAudioContext;
+        window.clearDebugLogs = clearDebugLogs;
+        window.toggleDebug = toggleDebug;
+
+        // Event listeners
+        document.getElementById('startBtn').addEventListener('click', startSession);
+        document.getElementById('stopBtn').addEventListener('click', stopSession);
+
+        // Enhanced audio initialization
+        let audioContextReady = false;
+
+        const enableAudioOnInteraction = async () => {
+            if (!audioContextReady) {
+                await enableAudioContext();
+                audioContextReady = true;
+                debugLog('Audio context fully activated by user interaction');
+                
+                // Play silent test audio
+                try {
+                    const silentAudio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQEAAAA=');
+                    silentAudio.volume = 0;
+                    await silentAudio.play();
+                    debugLog('Silent audio test successful');
+                } catch (e) {
+                    debugLog('Silent audio test failed (this is usually OK)');
+                }
+            }
+        };
+
+        // Listen for interaction events
+        ['click', 'keydown', 'touchstart', 'mousedown'].forEach(eventType => {
+            document.addEventListener(eventType, enableAudioOnInteraction, { once: true });
+        });
+
+        // Initialize on page load
+        init();
+    </script>
+</body>
